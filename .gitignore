@@ -1,0 +1,10 @@
+# Yarn v2
+
+.pnp.*
+.yarn/*
+src/*/*/.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
