@@ -21,38 +21,48 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-namespace PRC;
-
-define( 'PRC_SCRIPTS_DIR', __DIR__ );
+define( 'PRC_SCRIPTS_DIR_PATH', __DIR__ );
 
 class PRC_Scripts {
+	public static $script_slugs = array();
+
 	public function __construct( $init = false ) {
 		if ( true === $init ) {
-
+			add_action('wp_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
+			add_action('admin_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
 		}
 	}
 
+	/**
+	 * Register first party scripts.
+	 * Fires early on wp_enqueue_scripts.
+	 * @return void
+	 */
 	public function init_first_party_scripts() {
 		// get all folders in the blocks directory as an array
-		$directories = glob( PRC_SCRIPTS_DIR . '/build/@prc/*', GLOB_ONLYDIR );
+		$directories = glob( plugin_dir_path( __FILE__ )  . 'build/@prc/*', GLOB_ONLYDIR );
 		foreach ($directories as $dir) {
-			$script = basename($dir);
-			// get index.asset.php file from $dir
-			$asset = require PRC_SCRIPTS_DIR . '/build/@prc/' . $script . '/index.asset.php';
+			// get contents of index.asset.php file from $dir
+			$asset_file  = include( $dir . '/index.asset.php' );
+			$script_name = basename($dir);
+			$script_slug = 'prc-' . $script_name;
+			$script_src  = plugin_dir_url( __FILE__ ) . 'build/@prc/' . $script_name . '/index.js';
 
-			wp_register_script(
-				'prc-first-party-' . $script,
-				plugins_url( wp_normalize_path( realpath( $asset ) ) . 'index.js', PRC_SCRIPTS_DIR ),
-				$asset['dependencies'],
-				$asset['version'],
+			$script = wp_register_script(
+				$script_slug,
+				$script_src,
+				$asset_file['dependencies'],
+				$asset_file['version'],
 				true
 			);
+
+			if ( ! is_wp_error( $script ) ) {
+				self::$script_slugs[] = $script_slug;
+			}
 		}
 	}
 
-	public function register_scripts() {
-
-	}
 }
 
-new PRC_Scripts(true);
+$prc_scripts = new PRC_Scripts(true);
+
