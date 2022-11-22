@@ -1,5 +1,5 @@
 /**
- * WordPress dependencies
+ * WordPress Dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
 
