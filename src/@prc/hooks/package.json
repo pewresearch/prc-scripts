@@ -1,0 +1,11 @@
+{
+	"name": "@prc/hooks",
+	"packageManager": "yarn@3.2.1",
+	"devDependencies": {
+		"@wordpress/element": "^4.20.0",
+		"@wordpress/scripts": "^24.6.0"
+	},
+	"scripts": {
+		"build": "wp-scripts build index.js --output-path=../../../build/@prc/hooks"
+	}
+}

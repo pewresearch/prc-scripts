@@ -1,0 +1,12 @@
+{
+	"name": "@prc/functions",
+	"packageManager": "yarn@3.2.1",
+	"devDependencies": {
+		"@wordpress/api-fetch": "^6.19.0",
+		"@wordpress/element": "^4.20.0",
+		"@wordpress/scripts": "^24.6.0"
+	},
+	"scripts": {
+		"build": "wp-scripts build index.js --output-path=../../../build/@prc/functions"
+	}
+}
