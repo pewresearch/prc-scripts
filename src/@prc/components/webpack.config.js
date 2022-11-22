@@ -20,9 +20,6 @@ module.exports = {
 				if (request.includes('@prc/functions')) {
 					return 'prcFunctions';
 				}
-				if (request.includes('@prc/components')) {
-					return 'prcComponents';
-				}
 				if (request.includes('@splidejs/splide')) {
 					return 'splide';
 				}
@@ -42,9 +39,6 @@ module.exports = {
 				}
 				if ('@prc/functions' === request) {
 					return 'prc-functions';
-				}
-				if ('@prc/components' === request) {
-					return 'prc-components';
 				}
 				if ('@splidejs/splide' === request) {
 					return 'splide';
