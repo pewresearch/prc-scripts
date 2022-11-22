@@ -28,8 +28,10 @@ class PRC_Scripts {
 
 	public function __construct( $init = false ) {
 		if ( true === $init ) {
-			add_action('wp_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
+			add_action('wp_enqueue_scripts',    array($this, 'init_first_party_scripts'), 0);
+			add_action('wp_enqueue_scripts',    array($this, 'init_third_party_scripts'), 0);
 			add_action('admin_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
+			add_action('admin_enqueue_scripts', array($this, 'init_third_party_scripts'), 0);
 		}
 	}
 
@@ -47,6 +49,35 @@ class PRC_Scripts {
 			$script_name = basename($dir);
 			$script_slug = 'prc-' . $script_name;
 			$script_src  = plugin_dir_url( __FILE__ ) . 'build/@prc/' . $script_name . '/index.js';
+
+			$script = wp_register_script(
+				$script_slug,
+				$script_src,
+				$asset_file['dependencies'],
+				$asset_file['version'],
+				true
+			);
+
+			if ( ! is_wp_error( $script ) ) {
+				self::$script_slugs[] = $script_slug;
+			}
+		}
+	}
+
+	/**
+	 * Register third party scripts.
+	 * Fires early on wp_enqueue_scripts.
+	 * @return void
+	 */
+	public function init_third_party_scripts() {
+		// get all folders in the blocks directory as an array
+		$directories = glob( plugin_dir_path( __FILE__ )  . 'build/third-party/*', GLOB_ONLYDIR );
+		foreach ($directories as $dir) {
+			// get contents of index.asset.php file from $dir
+			$asset_file  = include( $dir . '/index.asset.php' );
+			$script_name = basename($dir);
+			$script_slug = $script_name;
+			$script_src  = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/index.js';
 
 			$script = wp_register_script(
 				$script_slug,

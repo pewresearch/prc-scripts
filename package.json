@@ -5,7 +5,13 @@
     "@wordpress/element": "^4.20.0",
     "@wordpress/scripts": "^24.6.0"
   },
-	"scripts": {
-		"build:hooks": "wp-scripts build src/@prc/hooks/index.js --output-path=build/@prc/hooks"
-	}
+  "scripts": {
+    "build:hooks": "wp-scripts build src/@prc/hooks/index.js --output-path=build/@prc/hooks",
+		"build:functions": "wp-scripts build src/@prc/functions/index.js --output-path=build/@prc/functions",
+		"build:splide": "wp-scripts build src/third-party/splide/index.js --output-path=build/third-party/splide"
+  },
+  "dependencies": {
+    "@splidejs/splide": "^4.1.4",
+    "@splidejs/splide-extension-intersection": "^0.2.0"
+  }
 }
