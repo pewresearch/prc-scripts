@@ -6,6 +6,7 @@ import {
 	actions,
 	reducer,
 } from './list-store';
+import MediaDropZone from './media-dropzone';
 
 function loadScript(slug, script) {
 	if (!window.prcComponents[slug]) {
@@ -22,5 +23,6 @@ loadScript('registerListStore', registerListStore);
 loadScript('ListStoreItem', ListStoreItem);
 loadScript('listStoreActions', actions);
 loadScript('listStoreReducer', reducer);
+loadScript('MediaDropZone', MediaDropZone);
 
 console.log('Loading @prc/components...', window.prcComponents);
