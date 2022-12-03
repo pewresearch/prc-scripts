@@ -3,6 +3,81 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 
+const mailChimpInterests = [
+	{
+		label: 'Weekly roundup of all new publications',
+		value: '7c1390ba46',
+	},
+	{
+		label: 'Quarterly update from the president',
+		value: 'a33430a835',
+	},
+	{
+		label: '--',
+		value: false,
+	},
+	{
+		label: 'Global attitudes & trends (twice a month)',
+		value: '9203343b04',
+	},
+	{
+		label: 'Internet, science & tech (monthly)',
+		value: 'ea87b26abe',
+	},
+	{
+		label: 'Daily briefing of media news',
+		value: '1d2638430b',
+	},
+	{
+		label: 'Race & ethnicity (monthly)',
+		value: '0e7495c7b2',
+	},
+	{
+		label: 'Religion & public life - Weekly newsletter',
+		value: 'a7d4f3268f',
+	},
+	{
+		label: 'Religion & public life - Daily religion headlines',
+		value: '1a647764b2',
+	},
+	{
+		label: 'Social & demographic trends (monthly)',
+		value: '3836f62305',
+	},
+	{
+		label: 'Methodological research (quarterly)',
+		value: '6d1e80bbaf',
+	},
+	{
+		label: 'U.S. politics & policy (monthly)',
+		value: 'fa5fdbc701',
+	},
+	{
+		label: '--',
+		value: false,
+	},
+	{
+		label: 'SELECT ALL',
+		value: 'select-all',
+	},
+	{
+		label: '--',
+		value: false,
+	},
+	{
+		label: 'Mini-course - U.S. Immigration',
+		value: 'xxx',
+	},
+	{
+		label: 'Mini-course - U.S. Census',
+		value: 'xxxx',
+	},
+	{
+		label: 'Mini-course - Muslims and Islam',
+		value: 'xxxxx',
+	},
+];
+
 function ifMatchSetAttribute(
 	needle,
 	haystack,
@@ -129,4 +204,5 @@ export {
 	getTermsAsTree,
 	ifMatchSetAttribute,
 	randomId,
+	mailChimpInterests,
 };
