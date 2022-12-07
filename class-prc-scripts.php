@@ -37,7 +37,7 @@ class PRC_Scripts {
 
 	/**
 	 * Register first party scripts.
-	 * Fires early on wp_enqueue_scripts.
+	 * Fires early, on wp_enqueue_scripts.
 	 * @return void
 	 */
 	public function init_first_party_scripts() {
@@ -66,11 +66,10 @@ class PRC_Scripts {
 
 	/**
 	 * Register third party scripts.
-	 * Fires early on wp_enqueue_scripts.
+	 * Fires early, on wp_enqueue_scripts.
 	 * @return void
 	 */
 	public function init_third_party_scripts() {
-		// get all folders in the blocks directory as an array
 		$directories = glob( plugin_dir_path( __FILE__ )  . 'build/third-party/*', GLOB_ONLYDIR );
 		foreach ($directories as $dir) {
 			// get contents of index.asset.php file from $dir
@@ -79,16 +78,29 @@ class PRC_Scripts {
 			$script_slug = $script_name;
 			$script_src  = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/index.js';
 
-			$script = wp_register_script(
-				$script_slug,
-				$script_src,
-				$asset_file['dependencies'],
-				$asset_file['version'],
-				true
-			);
+			// Check if index.js file exists and register it if it does.
+			if ( file_exists( $dir . '/index.js' ) ) {
+				$script = wp_register_script(
+					$script_slug,
+					$script_src,
+					$asset_file['dependencies'],
+					$asset_file['version'],
+					true
+				);
+				if ( ! is_wp_error( $script ) ) {
+					self::$script_slugs[] = $script_slug;
+				}
+			}
 
-			if ( ! is_wp_error( $script ) ) {
-				self::$script_slugs[] = $script_slug;
+			// Check for index.css file and register it if it exists.
+			$style_src = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/index.css';
+			if ( file_exists( $dir . '/index.css' ) ) {
+				$style = wp_register_style(
+					$script_slug,
+					$style_src,
+					array(),
+					$asset_file['version']
+				);
 			}
 		}
 	}
