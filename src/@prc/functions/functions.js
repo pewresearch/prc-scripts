@@ -197,6 +197,39 @@ function getTermsAsTree(taxonomy) {
 	});
 }
 
+function convertTableToCSV(id) {
+	const table = document.getElementById(id);
+	const rows = table.querySelectorAll('tr');
+
+	const csv = [];
+	rows.forEach((row) => {
+		const cols = row.querySelectorAll('td, th');
+		const rowArray = [];
+		cols.forEach((col) => {
+			rowArray.push(col.innerText);
+		});
+		csv.push(rowArray.join(','));
+	});
+
+	return csv.join('\n');
+}
+
+// array of arrays to csv
+function arrayToCSV(objArray) {
+	const array = 'object' !== typeof objArray ? JSON.parse(objArray) : objArray;
+	let str = '';
+	for (let i = 0; i < array.length; i += 1) {
+		let line = '';
+		for (let index = 0; index < array[i].length; index += 1) {
+			if ('' !== line) line += ',';
+			line += array[i][index];
+		}
+		str += `${line}
+`;
+	}
+	return str;
+}
+
 export {
 	getTerms,
 	getTermsByLetter,
@@ -205,4 +238,5 @@ export {
 	ifMatchSetAttribute,
 	randomId,
 	mailChimpInterests,
+	arrayToCSV,
 };
