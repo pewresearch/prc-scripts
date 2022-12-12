@@ -3,6 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 
+//@TODO: move these into VIP environment values or into the DB?
 const mailChimpInterests = [
 	{
 		label: 'Weekly roundup of all new publications',
