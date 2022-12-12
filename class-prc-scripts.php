@@ -93,14 +93,15 @@ class PRC_Scripts {
 			}
 
 			// Check for index.css file and register it if it exists.
-			$style_src = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/index.css';
-			if ( file_exists( $dir . '/index.css' ) ) {
+			$style_src = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/style-index.css';
+			if ( file_exists( $dir . '/style-index.css' ) ) {
 				$style = wp_register_style(
 					$script_slug,
 					$style_src,
 					array(),
 					$asset_file['version']
 				);
+				do_action('qm/debug', "Style: ".print_r($style, true));
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import {
 	reducer,
 } from './list-store';
 import MediaDropZone from './media-dropzone';
+import TaxonomySelect from './taxonomy-select';
 
 function loadScript(slug, script) {
 	if (!window.prcComponents[slug]) {
@@ -24,5 +25,6 @@ loadScript('ListStoreItem', ListStoreItem);
 loadScript('listStoreActions', actions);
 loadScript('listStoreReducer', reducer);
 loadScript('MediaDropZone', MediaDropZone);
+loadScript('TaxonomySelect', TaxonomySelect);
 
 console.log('Loading @prc/components...', window.prcComponents);
