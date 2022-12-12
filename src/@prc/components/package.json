@@ -17,5 +17,9 @@
 	},
 	"scripts": {
 		"build": "wp-scripts build index.js --output-path=../../../build/@prc/components"
+	},
+	"dependencies": {
+		"@codeamp/block-components": "^0.0.1-beta.8",
+		"@emotion/styled": "^11.10.5"
 	}
 }

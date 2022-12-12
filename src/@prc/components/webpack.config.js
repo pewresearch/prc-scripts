@@ -20,12 +20,6 @@ module.exports = {
 				if (request.includes('@prc/functions')) {
 					return 'prcFunctions';
 				}
-				if (request.includes('@splidejs/splide')) {
-					return 'splide';
-				}
-				if (request.includes('@splidejs/splide-extension-intersection')) {
-					return 'splideInterscection';
-				}
 				if (request.includes('enquire.js')) {
 					return 'enquire';
 				}
@@ -39,12 +33,6 @@ module.exports = {
 				}
 				if ('@prc/functions' === request) {
 					return 'prc-functions';
-				}
-				if ('@splidejs/splide' === request) {
-					return 'splide';
-				}
-				if ('@splidejs/splide-extension-intersection' === request) {
-					return 'splide';
 				}
 				if ('enquire.js' === request) {
 					return 'enquire.js';

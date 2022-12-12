@@ -1444,6 +1444,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codeamp/block-components@npm:^0.0.1-beta.8":
+  version: 0.0.1-beta.8
+  resolution: "@codeamp/block-components@npm:0.0.1-beta.8"
+  dependencies:
+    "@wordpress/icons": ^9.11.0
+    classnames: ^2.3.2
+    dom-scroll-into-view: ^2.0.1
+  checksum: eae544b1c58111496d037b3174e17b27c7743ff25fa5fb369ebfdd00a14c006e8221417acf213fb72464e9ff867189a5e6cbb6d06e4dea9b3eb862caba44b907
+  languageName: node
+  linkType: hard
+
 "@csstools/selector-specificity@npm:^2.0.2":
   version: 2.0.2
   resolution: "@csstools/selector-specificity@npm:2.0.2"
@@ -1597,7 +1608,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.6.0":
+"@emotion/styled@npm:^11.10.5, @emotion/styled@npm:^11.6.0":
   version: 11.10.5
   resolution: "@emotion/styled@npm:11.10.5"
   dependencies:
@@ -2222,6 +2233,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@prc/components@workspace:."
   dependencies:
+    "@codeamp/block-components": ^0.0.1-beta.8
+    "@emotion/styled": ^11.10.5
     "@wordpress/api-fetch": ^6.19.0
     "@wordpress/block-editor": ^10.5.0
     "@wordpress/components": ^22.1.0
@@ -3749,7 +3762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wordpress/icons@npm:^9.13.0":
+"@wordpress/icons@npm:^9.11.0, @wordpress/icons@npm:^9.13.0":
   version: 9.13.0
   resolution: "@wordpress/icons@npm:9.13.0"
   dependencies:
@@ -5129,7 +5142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.1":
+"classnames@npm:^2.3.1, classnames@npm:^2.3.2":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -5991,6 +6004,13 @@ __metadata:
   version: 1.2.1
   resolution: "dom-scroll-into-view@npm:1.2.1"
   checksum: 22bb90a809b3f609d1c9ca4adb0ca1acb17ef6ec27e198af5fda39d340129a1757c58cb4a538a19effb61dcaeb022acc26c2ddea1d904df596791cfba3efbc53
+  languageName: node
+  linkType: hard
+
+"dom-scroll-into-view@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "dom-scroll-into-view@npm:2.0.1"
+  checksum: a1a37a62d173658034ab83f9428a04c787d2a3cd1d79e42acf4f6c91af356000588191a41ebb46103a3f70143cceb5039a426c6b080ec345b4b99c20c775c709
   languageName: node
   linkType: hard
 

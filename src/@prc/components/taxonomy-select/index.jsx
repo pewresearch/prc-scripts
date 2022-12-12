@@ -1,29 +1,71 @@
-import { useEntityRecords } from '@wordpress/core-data';
-import { SelectControl, Spinner } from '@wordpress/components';
+/**
+ * External Dependencies
+ */
+import { MultiSelectControl } from '@codeamp/block-components';
+import styled from '@emotion/styled';
 
-export default function TaxonomySelect({ value, onChange }) {
-	const { records, isResolving } = useEntityRecords('taxonomy', value, {
-		per_page: -1,
-		hide_empty: false,
-		context: 'view',
+/**
+ * WordPress Dependencies
+ */
+import { SelectControl, Spinner } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
+
+const MultiSelectWrapper = styled('div')`
+	& .components-button.has-icon {
+		padding: 0px !important;
+	}
+`;
+
+export default function TaxonomySelect({
+	value,
+	onChange,
+	allowMultiple = false,
+}) {
+	const { records } = useSelect((select) => {
+		const { getEntitiesConfig } = select('core');
+		return {
+			records: getEntitiesConfig('taxonomy'),
+		};
 	});
-	const hasRecords = records ? 0 < records.length : false;
+
+	const [tokens, setTokens] = useState([]);
+
+	useEffect(() => {
+		if (0 < records.length) {
+			const newTokens = records.map((taxonomy) => ({
+				label: taxonomy.label,
+				value: taxonomy.name,
+			}));
+			setTokens(newTokens);
+		}
+	}, [records]);
+
+	const hasTokens = tokens ? 0 < tokens.length : false;
 
 	return (
 		<div>
-			{isResolving && <Spinner />}
-			{!isResolving && hasRecords && (
+			{!hasTokens && <Spinner />}
+			{hasTokens && !allowMultiple && (
 				<SelectControl
-					value={value}
-					options={records.map((term) => ({
-						label: term.name,
-						value: term.slug,
-					}))}
-					onChange={(l) => {
-						onChange({ label: l });
-					}}
+					label="Taxonomy"
+					value={value[0]}
+					options={tokens}
+					onChange={(newValue) => onChange([newValue])}
 					style={{ marginBottom: '0px' }}
 				/>
+			)}
+			{hasTokens && allowMultiple && (
+				<MultiSelectWrapper>
+					<MultiSelectControl
+						label="Taxonomy"
+						value={value}
+						options={tokens}
+						onChange={(newValue) => {
+							onChange(newValue);
+						}}
+					/>
+				</MultiSelectWrapper>
 			)}
 		</div>
 	);
