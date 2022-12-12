@@ -197,27 +197,34 @@ function getTermsAsTree(taxonomy) {
 	});
 }
 
-function convertTableToCSV(id) {
-	const table = document.getElementById(id);
+// convert an html table into a flat array of arrays
+function tableToArray(table) {
 	const rows = table.querySelectorAll('tr');
-
-	const csv = [];
-	rows.forEach((row) => {
+	const data = [];
+	for (let i = 0; i < rows.length; i += 1) {
+		const row = rows[i];
 		const cols = row.querySelectorAll('td, th');
-		const rowArray = [];
-		cols.forEach((col) => {
-			rowArray.push(col.innerText);
-		});
-		csv.push(rowArray.join(','));
-	});
-
-	return csv.join('\n');
+		const rowData = [];
+		for (let j = 0; j < cols.length; j += 1) {
+			const col = cols[j];
+			rowData.push(col.innerText);
+		}
+		data.push(rowData);
+	}
+	return data;
 }
 
-// array of arrays to csv
-function arrayToCSV(objArray) {
+// cnovert array of arrays to formatted csv, with optional metadata
+function arrayToCSV(objArray, metadata) {
 	const array = 'object' !== typeof objArray ? JSON.parse(objArray) : objArray;
+	const checkIfEmpty = (str) => (str !== undefined ? str : '');
 	let str = '';
+	if (undefined !== metadata) {
+		str += `${checkIfEmpty(metadata.title)}
+${checkIfEmpty(metadata.subtitle)}
+
+`;
+	}
 	for (let i = 0; i < array.length; i += 1) {
 		let line = '';
 		for (let index = 0; index < array[i].length; index += 1) {
@@ -226,6 +233,12 @@ function arrayToCSV(objArray) {
 		}
 		str += `${line}
 `;
+	}
+	if (undefined !== metadata) {
+		str += `
+${checkIfEmpty(metadata.note)}
+${checkIfEmpty(metadata.source)}
+${checkIfEmpty(metadata.tag)}`;
 	}
 	return str;
 }
@@ -238,5 +251,6 @@ export {
 	ifMatchSetAttribute,
 	randomId,
 	mailChimpInterests,
+	tableToArray,
 	arrayToCSV,
 };
