@@ -6,6 +6,8 @@ import {
 	ifMatchSetAttribute,
 	randomId,
 	mailChimpInterests,
+	arrayToCSV,
+	tableToArray,
 } from './functions';
 
 function loadScript(slug, script) {
@@ -23,5 +25,7 @@ loadScript('getTermsAsTree', getTermsAsTree);
 loadScript('ifMatchSetAttribute', ifMatchSetAttribute);
 loadScript('randomId', randomId);
 loadScript('mailChimpInterests', mailChimpInterests);
+loadScript('arrayToCSV', arrayToCSV);
+loadScript('tableToArray', tableToArray);
 
 console.log('Loading @prc/functions...', window.prcFunctions);
