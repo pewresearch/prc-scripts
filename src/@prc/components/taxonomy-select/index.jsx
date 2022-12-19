@@ -18,10 +18,12 @@ const MultiSelectWrapper = styled('div')`
 `;
 
 export default function TaxonomySelect({
+	className,
 	value,
 	onChange,
 	allowMultiple = false,
 }) {
+	const [currentValue, setCurrentValue] = useState();
 	const { records } = useSelect((select) => {
 		const { getEntitiesConfig } = select('core');
 		return {
@@ -41,28 +43,35 @@ export default function TaxonomySelect({
 		}
 	}, [records]);
 
+	useEffect(() => {
+		console.log("Value Changed: ", currentValue);
+		onChange(currentValue);
+	}, [currentValue]);
+
 	const hasTokens = tokens ? 0 < tokens.length : false;
 
 	return (
-		<div>
+		<div className={className}>
 			{!hasTokens && <Spinner />}
 			{hasTokens && !allowMultiple && (
 				<SelectControl
 					label="Taxonomy"
-					value={value[0]}
+					value={currentValue}
 					options={tokens}
-					onChange={(newValue) => onChange([newValue])}
-					style={{ marginBottom: '0px' }}
+					onChange={(newValue) => {
+						setCurrentValue(newValue);
+					}}
+					__nextHasNoMarginBottom
 				/>
 			)}
 			{hasTokens && allowMultiple && (
 				<MultiSelectWrapper>
 					<MultiSelectControl
 						label="Taxonomy"
-						value={value}
+						value={currentValue}
 						options={tokens}
 						onChange={(newValue) => {
-							onChange(newValue);
+							setCurrentValue(newValue);
 						}}
 					/>
 				</MultiSelectWrapper>
