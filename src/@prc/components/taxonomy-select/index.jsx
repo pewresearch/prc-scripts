@@ -23,18 +23,17 @@ export default function TaxonomySelect({
 	onChange,
 	allowMultiple = false,
 }) {
-	const [currentValue, setCurrentValue] = useState();
+	const [currentValue, setCurrentValue] = useState(value);
 	const { records } = useSelect((select) => {
 		const { getEntitiesConfig } = select('core');
 		return {
 			records: getEntitiesConfig('taxonomy'),
 		};
 	});
-
 	const [tokens, setTokens] = useState([]);
 
 	useEffect(() => {
-		if (0 < records.length) {
+		if (0 < records.length && 0 === tokens.length) {
 			const newTokens = records.map((taxonomy) => ({
 				label: taxonomy.label,
 				value: taxonomy.name,
@@ -44,8 +43,10 @@ export default function TaxonomySelect({
 	}, [records]);
 
 	useEffect(() => {
-		console.log("Value Changed: ", currentValue);
-		onChange(currentValue);
+		if (currentValue) {
+			console.log('Value Changed 2: ', currentValue);
+			onChange(currentValue);
+		}
 	}, [currentValue]);
 
 	const hasTokens = tokens ? 0 < tokens.length : false;
@@ -59,6 +60,7 @@ export default function TaxonomySelect({
 					value={currentValue}
 					options={tokens}
 					onChange={(newValue) => {
+						console.log('Value Changed 1: ', newValue);
 						setCurrentValue(newValue);
 					}}
 					__nextHasNoMarginBottom
