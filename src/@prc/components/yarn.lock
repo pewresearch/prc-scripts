@@ -1564,7 +1564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.7.1":
+"@emotion/react@npm:^11.10.5, @emotion/react@npm:^11.7.1":
   version: 11.10.5
   resolution: "@emotion/react@npm:11.10.5"
   dependencies:
@@ -2234,6 +2234,7 @@ __metadata:
   resolution: "@prc/components@workspace:."
   dependencies:
     "@codeamp/block-components": ^0.0.1-beta.8
+    "@emotion/react": ^11.10.5
     "@emotion/styled": ^11.10.5
     "@wordpress/api-fetch": ^6.19.0
     "@wordpress/block-editor": ^10.5.0
@@ -2246,6 +2247,7 @@ __metadata:
     "@wordpress/icons": ^9.13.0
     "@wordpress/media-utils": ^4.13.0
     "@wordpress/scripts": ^24.6.0
+    prop-types: ^15.8.1
     underscore: ^1.13.6
   languageName: unknown
   linkType: soft
