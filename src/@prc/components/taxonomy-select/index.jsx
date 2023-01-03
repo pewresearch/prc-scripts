@@ -51,12 +51,14 @@ export default function TaxonomySelect({
 
 	const hasTokens = tokens ? 0 < tokens.length : false;
 
+	const label = `Select a taxonomy`;
+
 	return (
 		<div className={className}>
 			{!hasTokens && <Spinner />}
 			{hasTokens && !allowMultiple && (
 				<SelectControl
-					label="Taxonomy"
+					label={label}
 					value={currentValue}
 					options={tokens}
 					onChange={(newValue) => {
@@ -69,7 +71,7 @@ export default function TaxonomySelect({
 			{hasTokens && allowMultiple && (
 				<MultiSelectWrapper>
 					<MultiSelectControl
-						label="Taxonomy"
+						label={label}
 						value={currentValue}
 						options={tokens}
 						onChange={(newValue) => {

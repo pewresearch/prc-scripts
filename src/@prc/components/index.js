@@ -8,7 +8,7 @@ import {
 } from './list-store';
 import MediaDropZone from './media-dropzone';
 import TaxonomySelect from './taxonomy-select';
-import WPObjectSearch from './wp-object-search';
+import TermSelect from './term-select';
 
 function loadScript(slug, script) {
 	if (!window.prcComponents[slug]) {
@@ -27,6 +27,6 @@ loadScript('listStoreActions', actions);
 loadScript('listStoreReducer', reducer);
 loadScript('MediaDropZone', MediaDropZone);
 loadScript('TaxonomySelect', TaxonomySelect);
-loadScript('WPObjectSearch', WPObjectSearch);
+loadScript('TermSelect', TermSelect);
 
 console.log('Loading @prc/components...', window.prcComponents);
