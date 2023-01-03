@@ -24,14 +24,7 @@ const TermSelectControl = styled('div')`
 	}
 `;
 
-function TermSelect({
-	allowMultiple,
-	className,
-	onChange,
-	taxonomy,
-	value,
-	maxSelection,
-}) {
+function TermSelect({ className, onChange, taxonomy, value, maxTerms }) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const debounceSearchTerm = useDebounce(setSearchTerm, 500);
 
@@ -65,6 +58,8 @@ function TermSelect({
 				onInputChange={debounceSearchTerm}
 				displayTransform={(token) => decodeEntities(token)}
 				onChange={(e) => {
+					//@TODO: need to build in support for selecting multiple terms.
+					console.log("Changing...", e);
 					if (isEmpty(e)) {
 						onChange({});
 						return;
@@ -80,7 +75,7 @@ function TermSelect({
 							.filter((key) =>
 								['id', 'name', 'slug', 'taxonomy', 'parent', 'link'].includes(
 									key,
-								// eslint-disable-next-line prettier/prettier
+									// eslint-disable-next-line prettier/prettier
 								))
 							.reduce(
 								(obj, key) => ({
@@ -93,7 +88,7 @@ function TermSelect({
 					}
 				}}
 				label={`Select a ${taxonomy} term`}
-				maxLength={maxSelection}
+				maxLength={maxTerms}
 				__experimentalShowHowTo={false}
 			/>
 			{isResolving && <Spinner />}
@@ -102,9 +97,8 @@ function TermSelect({
 }
 
 TermSelect.defaultProps = {
-	allowMultiple: true,
 	className: '',
-	maxSelection: 1,
+	maxTerms: 1,
 	onChange: (term) => {
 		console.log('Selected Term: ', term);
 	},
@@ -113,9 +107,8 @@ TermSelect.defaultProps = {
 };
 
 TermSelect.propTypes = {
-	allowMultiple: PropTypes.bool,
 	className: PropTypes.string,
-	maxSelection: PropTypes.number,
+	maxTerms: PropTypes.number,
 	onChange: PropTypes.func,
 	taxonomy: PropTypes.string,
 	value: PropTypes.array,
