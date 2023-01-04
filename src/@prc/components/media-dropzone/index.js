@@ -26,7 +26,7 @@ function MediaDropZone({
 	singularLabel = __('image'),
 }) {
 	const fallbackInstructions = __(
-		`Drop an ${singularLabel} here, or click to replace.`,
+		`Drop a ${singularLabel} here, or click to replace.`,
 		'prc-block-library',
 	);
 	const l = null !== label ? label : `Set ${singularLabel}`;
