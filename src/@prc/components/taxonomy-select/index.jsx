@@ -24,6 +24,7 @@ export default function TaxonomySelect({
 	allowMultiple = false,
 }) {
 	const [currentValue, setCurrentValue] = useState(value);
+
 	const { records } = useSelect((select) => {
 		const { getEntitiesConfig } = select('core');
 		return {
