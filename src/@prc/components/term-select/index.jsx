@@ -15,6 +15,8 @@ import { useEntityRecords } from '@wordpress/core-data';
 import { useDebounce } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
 import { isEmpty } from 'lodash';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 
 const TermSelectControl = styled('div')`
 	& .components-spinner {
@@ -24,19 +26,54 @@ const TermSelectControl = styled('div')`
 	}
 `;
 
-function TermSelect({ className, onChange, taxonomy, value, maxTerms }) {
+function usePrimarySiteEntityRecords(taxonomy, query) {
+	const [records, setRecords] = useState([]);
+	const [isResolving, setIsResolving] = useState(false);
+	const [hasResolved, setHasResolved] = useState(false);
+
+	const endpointUrl = addQueryArgs(
+		`${window.location.origin}/wp-json/wp/v2/${taxonomy}`,
+		query,
+	);
+
+	console.log('usePrimarySiteEntityRecords: ', endpointUrl, query);
+
+	useEffect(() => {
+		setIsResolving(true);
+		apiFetch({
+			url: endpointUrl,
+		}).then((response) => {
+			setRecords(response);
+			setIsResolving(false);
+			setHasResolved(true);
+		});
+	});
+
+	return { records, isResolving, hasResolved };
+}
+
+function TermSelect({
+	className,
+	onChange,
+	taxonomy,
+	value,
+	maxTerms,
+	usePrimaryRestAPI = false,
+}) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const debounceSearchTerm = useDebounce(setSearchTerm, 500);
 
-	const { records, isResolving, hasResolved, status } = useEntityRecords(
-		'taxonomy',
-		taxonomy,
-		{
+	const { records, isResolving, hasResolved } = usePrimaryRestAPI
+		? usePrimarySiteEntityRecords(taxonomy, {
 			per_page: 10,
 			context: 'view',
 			search: searchTerm,
-		},
-	);
+		  })
+		: useEntityRecords('taxonomy', taxonomy, {
+				per_page: 10,
+				context: 'view',
+				search: searchTerm,
+		  });
 
 	const suggestions = useMemo(() => {
 		if (hasResolved && records) {
@@ -58,8 +95,8 @@ function TermSelect({ className, onChange, taxonomy, value, maxTerms }) {
 				onInputChange={debounceSearchTerm}
 				displayTransform={(token) => decodeEntities(token)}
 				onChange={(e) => {
-					//@TODO: need to build in support for selecting multiple terms.
-					console.log("Changing...", e);
+					// @TODO: need to build in support for selecting multiple terms.
+					console.log('Changing...', e);
 					if (isEmpty(e)) {
 						onChange({});
 						return;
