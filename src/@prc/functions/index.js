@@ -8,6 +8,7 @@ import {
 	mailChimpInterests,
 	arrayToCSV,
 	tableToArray,
+	wpRestApiTermsToTree,
 } from './functions';
 
 function loadScript(slug, script) {
@@ -27,5 +28,6 @@ loadScript('randomId', randomId);
 loadScript('mailChimpInterests', mailChimpInterests);
 loadScript('arrayToCSV', arrayToCSV);
 loadScript('tableToArray', tableToArray);
+loadScript('wpRestApiTermsToTree', wpRestApiTermsToTree);
 
 console.log('Loading @prc/functions...', window.prcFunctions);

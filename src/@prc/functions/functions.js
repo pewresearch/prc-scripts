@@ -3,7 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 
-//@TODO: move these into VIP environment values or into the DB?
+// @TODO: move these into VIP environment values or into the DB?
 const mailChimpInterests = [
 	{
 		label: 'Weekly roundup of all new publications',
@@ -244,6 +244,59 @@ ${checkIfEmpty(metadata.tag)}`;
 	return str;
 }
 
+function wpRestApiTermsToTree(terms, restrictTo = []) {
+	const getTopLevel = (termId) => {
+		const term = terms.find((t) => t.id === termId);
+		if (0 === term.parent) {
+			return term;
+		}
+		return getTopLevel(term.parent, terms);
+	};
+
+	const treeData = [];
+	if (!terms) {
+		return treeData;
+	}
+	// Convert data from object of objects to array of objects.
+	const convertedData = Object.keys(terms).map((i) => terms[i]);
+	// Filter out the parent terms first
+	const parentTerms = convertedData.filter((e) => 0 === e.parent);
+	parentTerms.forEach((e) => {
+		// Get children by filtering for terms with parent matching this id in loop.
+		const c = convertedData.filter((f) => f.parent === e.id);
+		const children = [];
+		// Construct children array.
+		c.forEach((cT) => {
+			children.push({
+				name: cT.name,
+				id: cT.id,
+				meta: cT.meta,
+			});
+		});
+		// Finally, push the fully structured parent -> child relationship to the tree data.
+		treeData.push({
+			name: e.name,
+			id: e.id,
+			meta: e.meta,
+			children,
+		});
+	});
+
+	let r = treeData;
+
+	if (0 < restrictTo.length) {
+		const restrictedTreeData = [];
+		restrictTo.forEach((termId) => {
+			const topLevel = getTopLevel(termId);
+			const topLevelIndex = treeData.findIndex((t) => t.id === topLevel.id);
+			restrictedTreeData.push(treeData[topLevelIndex]);
+		});
+		r = restrictedTreeData;
+	}
+
+	return r;
+}
+
 export {
 	getTerms,
 	getTermsByLetter,
@@ -254,4 +307,5 @@ export {
 	mailChimpInterests,
 	tableToArray,
 	arrayToCSV,
+	wpRestApiTermsToTree,
 };

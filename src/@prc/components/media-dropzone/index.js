@@ -24,6 +24,7 @@ function MediaDropZone({
 	mediaSize = DEFAULT_IMAGE_SIZE,
 	label = null,
 	singularLabel = __('image'),
+	children,
 }) {
 	const fallbackInstructions = __(
 		`Drop a ${singularLabel} here, or click to replace.`,
@@ -95,16 +96,16 @@ function MediaDropZone({
 		setIsUploading(false);
 	};
 
-	const onDropImage = (filesList) => {
+	const onDropFile = (filesList) => {
 		uploadMedia({
 			allowedTypes: mediaType,
 			filesList,
-			onFileChange([image]) {
-				if (!image.id) {
+			onFileChange([file]) {
+				if (!file.id) {
 					setIsUploading(true);
 				} else {
-					image.sizes = image.media_details.sizes;
-					onMediaUpdate(image);
+					file.sizes = file.media_details.sizes;
+					onMediaUpdate(file);
 				}
 			},
 			onError(message) {
@@ -137,12 +138,15 @@ function MediaDropZone({
 									border: 'none',
 								}}
 							>
-								<img
-									alt={fallbackInstructions}
-									src={src}
-									width={`${width}px`}
-									height={`${height}px`}
-								/>
+								{!children && (
+									<img
+										alt={fallbackInstructions}
+										src={src}
+										width={`${width}px`}
+										height={`${height}px`}
+									/>
+								)}
+								{children && children}
 							</button>
 						)}
 						{((false !== id && false === media) || isUploading) && (
@@ -169,7 +173,7 @@ function MediaDropZone({
 								{l}
 							</Button>
 						)}
-						<DropZone onFilesDrop={onDropImage} />
+						<DropZone onFilesDrop={onDropFile} />
 					</div>
 				)}
 			/>
