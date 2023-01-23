@@ -127,15 +127,25 @@ export default function Multiple({ className, options, onChange, inline }) {
 			className={inline ? `${className}--inline` : className}
 			onKeyDown={handleKeyDown}
 		>
-			<div className="multi-selection" tabIndex={0} ref={selectionEl}>
+			<div
+				className="multi-selection"
+				tabIndex={0}
+				ref={selectionEl}
+				onClick={() => {
+					setDropdownVisible(!visible);
+				}}
+			>
 				<div
 					className="multi-selection__text"
-					onClick={() => {
-						setDropdownVisible(true);
-					}}
+					// onClick={() => {
+					// 	setDropdownVisible(true);
+					// }}
 				>
 					{selected.map((selectedOption) => (
-						<div className="multi-selection__text__item">
+						<div
+							className="multi-selection__text__item"
+							onClick={(e) => e.stopPropagation()}
+						>
 							<RawHTML>{selectedOption.content}</RawHTML>
 							<span
 								className="dashicons dashicons-no"
