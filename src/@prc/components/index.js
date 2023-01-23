@@ -9,6 +9,7 @@ import {
 import MediaDropZone from './media-dropzone';
 import TaxonomySelect from './taxonomy-select';
 import TermSelect from './term-select';
+import Dropdown from './dropdown';
 
 function loadScript(slug, script) {
 	if (!window.prcComponents[slug]) {
@@ -28,5 +29,6 @@ loadScript('listStoreReducer', reducer);
 loadScript('MediaDropZone', MediaDropZone);
 loadScript('TaxonomySelect', TaxonomySelect);
 loadScript('TermSelect', TermSelect);
+loadScript('Dropdown', Dropdown);
 
 console.log('Loading @prc/components...', window.prcComponents);

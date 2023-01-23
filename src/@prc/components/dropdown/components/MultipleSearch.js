@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { useState, useRef, RawHTML } from '@wordpress/element';
-import { useEffect } from 'react';
+import { useState, useRef, RawHTML, useEffect } from '@wordpress/element';
 
 export default function MultipleSearch({
 	className,
