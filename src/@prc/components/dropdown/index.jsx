@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
@@ -14,10 +15,14 @@ export default function Dropdown({
 	multipleSearch,
 	placeholder,
 	inline,
+	checkId,
 }) {
 	const [visible, setVisible] = useState(false);
 	const [selected, setSelected] = useState('');
 	const [focusIndex, setFocusIndex] = useState(0);
+	const [initialClicked, setInitialClicked] = useState(false);
+
+	const formRef = useRef(null);
 
 	const handleKeyDown = (e) => {
 		// If the selection list is visible, navigate to the first item in the list on keydown,
@@ -112,14 +117,30 @@ export default function Dropdown({
 		);
 	}
 
+	// console.log(formRef.current);
+
 	return (
 		<form
 			className={inline ? `${className}--inline` : className}
 			onKeyDown={handleKeyDown}
+			id={
+				visible
+					? 'wp-block-prc-block-form-input-dropdown--active'
+					: 'wp-block-prc-block-form-input-dropdown'
+			}
+			ref={formRef}
 		>
 			<div
 				className="selection"
 				onClick={() => setDropdownVisible(!visible)}
+				// onClick={() => {
+				// 	setDropdownVisible(!visible);
+				// 	console.log(formRef.current.getAttribute('id'));
+				// 	if (!initialClicked) {
+				// 		// checkId(formRef.current);
+				// 		setInitialClicked(true);
+				// 	}
+				// }}
 				tabIndex={0}
 			>
 				<div className="selection__text">
