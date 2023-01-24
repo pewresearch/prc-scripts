@@ -31,23 +31,27 @@ function usePrimarySiteEntityRecords(taxonomy, query) {
 	const [isResolving, setIsResolving] = useState(false);
 	const [hasResolved, setHasResolved] = useState(false);
 
-	const endpointUrl = addQueryArgs(
-		`${window.location.origin}/wp-json/wp/v2/${taxonomy}`,
-		query,
-	);
-
-	console.log('usePrimarySiteEntityRecords: ', endpointUrl, query);
-
 	useEffect(() => {
+		const endpointUrl = addQueryArgs(
+			`${window.location.origin}/wp-json/wp/v2/${taxonomy}`,
+			query,
+		);
+		console.log('usePrimarySiteEntityRecords: ', endpointUrl, query);
 		setIsResolving(true);
 		apiFetch({
 			url: endpointUrl,
-		}).then((response) => {
-			setRecords(response);
-			setIsResolving(false);
-			setHasResolved(true);
-		});
-	});
+		})
+			.then((response) => {
+				setRecords(response);
+				setIsResolving(false);
+				setHasResolved(true);
+			})
+			.catch((error) => {
+				console.error('Error fetching records: ', error);
+				setIsResolving(false);
+				setHasResolved(true);
+			});
+	}, [taxonomy, query]);
 
 	return { records, isResolving, hasResolved };
 }
@@ -65,14 +69,14 @@ function TermSelect({
 
 	const { records, isResolving, hasResolved } = usePrimaryRestAPI
 		? usePrimarySiteEntityRecords(taxonomy, {
-			per_page: 10,
-			context: 'view',
-			search: searchTerm,
-		  })
-		: useEntityRecords('taxonomy', taxonomy, {
 				per_page: 10,
 				context: 'view',
 				search: searchTerm,
+		  })
+		: useEntityRecords('taxonomy', taxonomy, {
+			per_page: 10,
+			context: 'view',
+			search: searchTerm,
 		  });
 
 	const suggestions = useMemo(() => {
