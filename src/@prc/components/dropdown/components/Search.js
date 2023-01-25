@@ -1,13 +1,17 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
+import classNames from 'classnames';
 
 export default function Search({
 	className,
+	id,
 	options,
 	onChange,
 	placeholder,
 	inline,
+	animated,
 }) {
 	const [visible, setVisible] = useState(false);
 	const [searchInput, setSearchInput] = useState('');
@@ -94,7 +98,14 @@ export default function Search({
 	}, []);
 
 	return (
-		<form className={inline ? `${className}--inline` : className}>
+		<form
+			id={id}
+			className={classNames('wp-block-prc-block-form-input-dropdown', {
+				'wp-block-prc-block-form-input-dropdown--active': visible,
+				'wp-block-prc-block-form-input-dropdown--inline': inline,
+				'wp-block-prc-block-form-input-dropdown--animated': animated,
+			})}
+		>
 			<div className="search-selection">
 				<div
 					className={
@@ -109,44 +120,66 @@ export default function Search({
 				</div>
 				<i
 					className="search-selection__icon"
-					onClick={() => setDropdownVisible(!visible)}
+					// onClick={() => setDropdownVisible(!visible)}
+					onClick={() => {
+						const currentlyActive = document.querySelector(
+							'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
+						);
+						if (currentlyActive) {
+							currentlyActive.classList.toggle(
+								'wp-block-prc-block-form-input-dropdown--active',
+							);
+						}
+
+						setDropdownVisible(!visible);
+					}}
 				/>
 				<input
 					onChange={handleInputChange}
 					onKeyDown={handleKeyDown}
 					className="search-selection__input"
 					value={searchInput}
-					onClick={() => setDropdownVisible(true)}
+					// onClick={() => setDropdownVisible(true)}
+					onClick={() => {
+						const currentlyActive = document.querySelector(
+							'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
+						);
+						// if currently active is THIS form, don't toggle
+						if (currentlyActive) {
+							currentlyActive.classList.toggle(
+								'wp-block-prc-block-form-input-dropdown--active',
+							);
+						}
+
+						setDropdownVisible(!visible);
+					}}
 				/>
 			</div>
-			{visible && (
-				<ul className="search-list">
-					{searchFilter(searchInput, options).length > 0 ? (
-						searchFilter(searchInput, options).map((option, i) => (
-							<li
-								className={
-									focusIndex === i
-										? `${option.className} selection-list__item--selected`
-										: `${option.className} selection-list__item`
-								}
-								style={option.style}
-								onClick={() => {
-									setSearchInput('');
-									setSelected(option.content);
-									setDropdownVisible(false);
-									onChange(option.value);
-								}}
-							>
-								<RawHTML>{option.content}</RawHTML>
-							</li>
-						))
-					) : (
-						<li className="selection-list__item--no-results">
-							No results found
+
+			<ul className={animated ? 'selection-list--animated' : 'selection-list'}>
+				{searchFilter(searchInput, options).length > 0 ? (
+					searchFilter(searchInput, options).map((option, i) => (
+						<li
+							className={
+								focusIndex === i
+									? `${option.className} selection-list__item--selected`
+									: `${option.className} selection-list__item`
+							}
+							style={option.style}
+							onClick={() => {
+								setSearchInput('');
+								setSelected(option.content);
+								setDropdownVisible(false);
+								onChange(option.value);
+							}}
+						>
+							<RawHTML>{option.content}</RawHTML>
 						</li>
-					)}
-				</ul>
-			)}
+					))
+				) : (
+					<li className="selection-list__item--no-results">No results found</li>
+				)}
+			</ul>
 		</form>
 	);
 }

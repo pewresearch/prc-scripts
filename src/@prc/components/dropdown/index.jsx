@@ -2,12 +2,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
+import classNames from 'classnames';
 import Search from './components/Search';
 import Multiple from './components/Multiple';
 import MultipleSearch from './components/MultipleSearch';
 
 export default function Dropdown({
 	className,
+	id,
 	options,
 	onChange,
 	search,
@@ -15,14 +17,11 @@ export default function Dropdown({
 	multipleSearch,
 	placeholder,
 	inline,
-	checkId,
+	animated,
 }) {
 	const [visible, setVisible] = useState(false);
 	const [selected, setSelected] = useState('');
 	const [focusIndex, setFocusIndex] = useState(0);
-	const [initialClicked, setInitialClicked] = useState(false);
-
-	const formRef = useRef(null);
 
 	const handleKeyDown = (e) => {
 		// If the selection list is visible, navigate to the first item in the list on keydown,
@@ -83,14 +82,26 @@ export default function Dropdown({
 		});
 	}, []);
 
+	// // Run this on dropdown initial click....
+	// function checkId(elm) {
+	// 	const id = elm.getAttribute('id');
+	// 	const { active } = dropDownBlockArgs;
+	// 	if (false !== id && active !== id) {
+	// 		// do close function against window.prcBlocks.dropDownBlockArgs.active id
+	// 		console.log('CLOSING OTHER DROPDOWNS');
+	// 	}
+	// }
+
 	if (multipleSearch) {
 		return (
 			<MultipleSearch
 				className={className}
+				id={id}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}
 				inline={inline}
+				animated={animated}
 			/>
 		);
 	}
@@ -98,10 +109,12 @@ export default function Dropdown({
 		return (
 			<Search
 				className={className}
+				id={id}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}
 				inline={inline}
+				animated={animated}
 			/>
 		);
 	}
@@ -109,10 +122,12 @@ export default function Dropdown({
 		return (
 			<Multiple
 				className={className}
+				id={id}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}
 				inline={inline}
+				animated={animated}
 			/>
 		);
 	}
@@ -121,26 +136,29 @@ export default function Dropdown({
 
 	return (
 		<form
-			className={inline ? `${className}--inline` : className}
+			id={id}
+			className={classNames('wp-block-prc-block-form-input-dropdown', {
+				'wp-block-prc-block-form-input-dropdown--active': visible,
+				'wp-block-prc-block-form-input-dropdown--inline': inline,
+				'wp-block-prc-block-form-input-dropdown--animated': animated,
+			})}
 			onKeyDown={handleKeyDown}
-			id={
-				visible
-					? 'wp-block-prc-block-form-input-dropdown--active'
-					: 'wp-block-prc-block-form-input-dropdown'
-			}
-			ref={formRef}
 		>
 			<div
 				className="selection"
-				onClick={() => setDropdownVisible(!visible)}
-				// onClick={() => {
-				// 	setDropdownVisible(!visible);
-				// 	console.log(formRef.current.getAttribute('id'));
-				// 	if (!initialClicked) {
-				// 		// checkId(formRef.current);
-				// 		setInitialClicked(true);
-				// 	}
-				// }}
+				// onClick={() => setDropdownVisible(!visible)}
+				onClick={() => {
+					const currentlyActive = document.querySelector(
+						'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
+					);
+					if (currentlyActive) {
+						currentlyActive.classList.toggle(
+							'wp-block-prc-block-form-input-dropdown--active',
+						);
+					}
+
+					setDropdownVisible(!visible);
+				}}
 				tabIndex={0}
 			>
 				<div className="selection__text">
@@ -148,30 +166,29 @@ export default function Dropdown({
 				</div>
 				<i className="selection__icon" />
 			</div>
-			{visible && (
-				<ul className="selection-list">
-					{options.map((option, i) => (
-						<li
-							className={
-								focusIndex === i
-									? `${option.className} selection-list__item--selected`
-									: `${option.className} selection-list__item`
-							}
-							value={option.value}
-							style={option.style}
-							onClick={() => {
-								setSelected(option.content);
-								setDropdownVisible(false);
-								onChange(option.value);
 
-								// if option.value is a link, navigate to the link
-							}}
-						>
-							<RawHTML>{option.content}</RawHTML>
-						</li>
-					))}
-				</ul>
-			)}
+			<ul className={animated ? 'selection-list--animated' : 'selection-list'}>
+				{options.map((option, i) => (
+					<li
+						className={
+							focusIndex === i
+								? `${option.className} selection-list__item--selected`
+								: `${option.className} selection-list__item`
+						}
+						value={option.value}
+						style={option.style}
+						onClick={() => {
+							setSelected(option.content);
+							setDropdownVisible(false);
+							onChange(option.value);
+
+							// if option.value is a link, navigate to the link
+						}}
+					>
+						<RawHTML>{option.content}</RawHTML>
+					</li>
+				))}
+			</ul>
 		</form>
 	);
 }

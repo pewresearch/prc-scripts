@@ -1,13 +1,17 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, useRef, RawHTML, useEffect } from '@wordpress/element';
+import classNames from 'classnames';
 
 export default function MultipleSearch({
 	className,
+	id,
 	options,
 	onChange,
 	placeholder,
 	inline,
+	animated,
 }) {
 	// States
 	const [visible, setVisible] = useState(false);
@@ -120,13 +124,32 @@ export default function MultipleSearch({
 	}, []);
 
 	return (
-		<form className={inline ? `${className}--inline` : className}>
+		<form
+			id={id}
+			className={classNames('wp-block-prc-block-form-input-dropdown', {
+				'wp-block-prc-block-form-input-dropdown--active': visible,
+				'wp-block-prc-block-form-input-dropdown--inline': inline,
+				'wp-block-prc-block-form-input-dropdown--animated': animated,
+			})}
+		>
 			<div className="multi-search-selection">
 				<div
 					className="multi-search-selection__text"
+					// onClick={() => {
+					// 	setDropdownVisible(true);
+					// 	inputRef.current.focus();
+					// }}
 					onClick={() => {
-						setDropdownVisible(true);
-						inputRef.current.focus();
+						const currentlyActive = document.querySelector(
+							'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
+						);
+						if (currentlyActive) {
+							currentlyActive.classList.toggle(
+								'wp-block-prc-block-form-input-dropdown--active',
+							);
+						}
+
+						setDropdownVisible(!visible);
 					}}
 				>
 					{selected.map((selectedOption) => (
@@ -156,27 +179,26 @@ export default function MultipleSearch({
 					}}
 				/>
 			</div>
-			{visible && (
-				<ul className="selection-list">
-					{searchFilter(searchInput, listItems).map((option, i) => (
-						<li
-							className={
-								focusIndex === i
-									? `${option.className} selection-list__item--selected`
-									: `${option.className} selection-list__item`
-							}
-							value={option.value}
-							style={option.style}
-							index={option.index}
-							onClick={() => {
-								handleSelectItem(option);
-							}}
-						>
-							<RawHTML>{option.content}</RawHTML>
-						</li>
-					))}
-				</ul>
-			)}
+
+			<ul className={animated ? 'selection-list--animated' : 'selection-list'}>
+				{searchFilter(searchInput, listItems).map((option, i) => (
+					<li
+						className={
+							focusIndex === i
+								? `${option.className} selection-list__item--selected`
+								: `${option.className} selection-list__item`
+						}
+						value={option.value}
+						style={option.style}
+						index={option.index}
+						onClick={() => {
+							handleSelectItem(option);
+						}}
+					>
+						<RawHTML>{option.content}</RawHTML>
+					</li>
+				))}
+			</ul>
 		</form>
 	);
 }

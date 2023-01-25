@@ -2,8 +2,16 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
+import classNames from 'classnames';
 
-export default function Multiple({ className, options, onChange, inline }) {
+export default function Multiple({
+	className,
+	id,
+	options,
+	onChange,
+	inline,
+	animated,
+}) {
 	const [visible, setVisible] = useState(false);
 	const [selected, setSelected] = useState([]);
 	const [listItems, setListItems] = useState([...options]);
@@ -124,23 +132,35 @@ export default function Multiple({ className, options, onChange, inline }) {
 
 	return (
 		<form
-			className={inline ? `${className}--inline` : className}
+			id={id}
+			className={classNames('wp-block-prc-block-form-input-dropdown', {
+				'wp-block-prc-block-form-input-dropdown--active': visible,
+				'wp-block-prc-block-form-input-dropdown--inline': inline,
+				'wp-block-prc-block-form-input-dropdown--animated': animated,
+			})}
 			onKeyDown={handleKeyDown}
 		>
 			<div
 				className="multi-selection"
 				tabIndex={0}
 				ref={selectionEl}
+				// onClick={() => {
+				// 	setDropdownVisible(!visible);
+				// }}
 				onClick={() => {
+					const currentlyActive = document.querySelector(
+						'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
+					);
+					if (currentlyActive) {
+						currentlyActive.classList.toggle(
+							'wp-block-prc-block-form-input-dropdown--active',
+						);
+					}
+
 					setDropdownVisible(!visible);
 				}}
 			>
-				<div
-					className="multi-selection__text"
-					// onClick={() => {
-					// 	setDropdownVisible(true);
-					// }}
-				>
+				<div className="multi-selection__text">
 					{selected.map((selectedOption) => (
 						<div
 							className="multi-selection__text__item"
@@ -161,27 +181,25 @@ export default function Multiple({ className, options, onChange, inline }) {
 					}}
 				/>
 			</div>
-			{visible && (
-				<ul className="selection-list">
-					{listItems.map((option, i) => (
-						<li
-							className={
-								focusIndex === i
-									? `${option.className} selection-list__item--selected`
-									: `${option.className} selection-list__item`
-							}
-							value={option.value}
-							style={option.style}
-							index={option.index}
-							onClick={() => {
-								handleSelectItem(option);
-							}}
-						>
-							<RawHTML>{option.content}</RawHTML>
-						</li>
-					))}
-				</ul>
-			)}
+			<ul className={animated ? 'selection-list--animated' : 'selection-list'}>
+				{listItems.map((option, i) => (
+					<li
+						className={
+							focusIndex === i
+								? `${option.className} selection-list__item--selected`
+								: `${option.className} selection-list__item`
+						}
+						value={option.value}
+						style={option.style}
+						index={option.index}
+						onClick={() => {
+							handleSelectItem(option);
+						}}
+					>
+						<RawHTML>{option.content}</RawHTML>
+					</li>
+				))}
+			</ul>
 		</form>
 	);
 }
