@@ -36,7 +36,7 @@ function usePrimarySiteEntityRecords(taxonomy, query) {
 			`${window.location.origin}/wp-json/wp/v2/${taxonomy}`,
 			query,
 		);
-		console.log('usePrimarySiteEntityRecords: ', endpointUrl, query);
+		console.log('usePrimarySiteEntityRecords!: ', endpointUrl, query);
 		setIsResolving(true);
 		apiFetch({
 			url: endpointUrl,
@@ -56,6 +56,31 @@ function usePrimarySiteEntityRecords(taxonomy, query) {
 	return { records, isResolving, hasResolved };
 }
 
+function useRecords(searchTerm, taxonomy, usePrimarySite) {
+	let entityHandler = null;
+	if (usePrimarySite) {
+		entityHandler = usePrimarySiteEntityRecords(taxonomy, {
+			per_page: 10,
+			context: 'view',
+			search: searchTerm,
+		});
+	} else {
+		entityHandler = useEntityRecords('taxonomy', taxonomy, {
+			per_page: 10,
+			context: 'view',
+			search: searchTerm,
+		});
+	}
+
+	const { records, isResolving, hasResolved } = entityHandler;
+
+	return {
+		records,
+		isResolving,
+		hasResolved,
+	};
+}
+
 function TermSelect({
 	className,
 	onChange,
@@ -67,17 +92,11 @@ function TermSelect({
 	const [searchTerm, setSearchTerm] = useState('');
 	const debounceSearchTerm = useDebounce(setSearchTerm, 500);
 
-	const { records, isResolving, hasResolved } = usePrimaryRestAPI
-		? usePrimarySiteEntityRecords(taxonomy, {
-				per_page: 10,
-				context: 'view',
-				search: searchTerm,
-		  })
-		: useEntityRecords('taxonomy', taxonomy, {
-			per_page: 10,
-			context: 'view',
-			search: searchTerm,
-		  });
+	const { records, isResolving, hasResolved } = useRecords(
+		searchTerm,
+		taxonomy,
+		usePrimaryRestAPI,
+	);
 
 	const suggestions = useMemo(() => {
 		if (hasResolved && records) {
