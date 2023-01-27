@@ -1,1 +1,0 @@
-<?php return array('dependencies' => array('lodash', 'prc-hooks', 'react', 'wp-api-fetch', 'wp-block-editor', 'wp-components', 'wp-compose', 'wp-core-data', 'wp-data', 'wp-date', 'wp-element', 'wp-html-entities', 'wp-i18n', 'wp-media-utils', 'wp-polyfill', 'wp-primitives', 'wp-url'), 'version' => 'e1625ab9890becc31ccb');
