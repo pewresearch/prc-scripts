@@ -1,8 +1,19 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
+/**
+ * External Dependencies
+ */
 import classNames from 'classnames';
+
+/**
+ * WordPress Dependencies
+ */
+import { useState, RawHTML, useEffect, useRef } from '@wordpress/element';
+
+/**
+ * Internal Dependencies
+ */
 import Search from './components/Search';
 import Multiple from './components/Multiple';
 import MultipleSearch from './components/MultipleSearch';
@@ -10,7 +21,12 @@ import MultipleSearch from './components/MultipleSearch';
 export default function Dropdown({
 	className,
 	id,
-	options,
+	options = [
+		{
+			value: 'option-placeholder',
+			content: 'Option Placeholder...',
+		},
+	],
 	onChange,
 	search,
 	multiple,
@@ -20,7 +36,9 @@ export default function Dropdown({
 	animated,
 }) {
 	const [visible, setVisible] = useState(false);
-	const [selected, setSelected] = useState('');
+	const [selected, setSelected] = useState(
+		options.length ? options[0].content : '',
+	);
 	const [focusIndex, setFocusIndex] = useState(0);
 
 	const handleKeyDown = (e) => {
@@ -67,30 +85,14 @@ export default function Dropdown({
 	// Watch for clicks outside the component to close the dropdown
 	useEffect(() => {
 		document.addEventListener('click', (event) => {
-			// console.log('EVENT?', event.target);
 			const dropdownWindow =
 				event.target.closest('.wp-block-prc-block-form-input-dropdown') ||
 				event.target.closest('.wp-block-prc-block-form-input-dropdown--inline');
-			try {
-				if (dropdownWindow.contains(event.target)) {
-					// console.log('inside dropdown');
-				}
-			} catch (e) {
-				// console.log('outside dropdown');
+			if (!dropdownWindow.contains(event.target)) {
 				setDropdownVisible(false);
 			}
 		});
 	}, []);
-
-	// // Run this on dropdown initial click....
-	// function checkId(elm) {
-	// 	const id = elm.getAttribute('id');
-	// 	const { active } = dropDownBlockArgs;
-	// 	if (false !== id && active !== id) {
-	// 		// do close function against window.prcBlocks.dropDownBlockArgs.active id
-	// 		console.log('CLOSING OTHER DROPDOWNS');
-	// 	}
-	// }
 
 	if (multipleSearch) {
 		return (
@@ -132,8 +134,6 @@ export default function Dropdown({
 		);
 	}
 
-	// console.log(formRef.current);
-
 	return (
 		<form
 			id={id}
@@ -146,7 +146,6 @@ export default function Dropdown({
 		>
 			<div
 				className="selection"
-				// onClick={() => setDropdownVisible(!visible)}
 				onClick={() => {
 					const currentlyActive = document.querySelector(
 						'.wp-block-prc-block-form-input-dropdown.wp-block-prc-block-form-input-dropdown--active',
@@ -162,7 +161,7 @@ export default function Dropdown({
 				tabIndex={0}
 			>
 				<div className="selection__text">
-					<RawHTML>{selected || options[0].content}</RawHTML>
+					<RawHTML>{selected}</RawHTML>
 				</div>
 				<i className="selection__icon" />
 			</div>
@@ -180,9 +179,12 @@ export default function Dropdown({
 						onClick={() => {
 							setSelected(option.content);
 							setDropdownVisible(false);
-							onChange(option.value);
-
-							// if option.value is a link, navigate to the link
+							// if option.value is a link, go to the link
+							if (option.value.startsWith('http')) {
+								window.location.href = option.value;
+							} else {
+								onChange(option.value);
+							}
 						}}
 					>
 						<RawHTML>{option.content}</RawHTML>
