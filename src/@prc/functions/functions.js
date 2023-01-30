@@ -273,6 +273,8 @@ function wpRestApiTermsToTree(terms, restrictTo = []) {
 				meta: cT.meta,
 			});
 		});
+		// sort children by name
+		children.sort((a, b) => (a.name > b.name ? 1 : -1));
 		// Finally, push the fully structured parent -> child relationship to the tree data.
 		treeData.push({
 			name: e.name,

@@ -1,15 +1,43 @@
 /**
+ * External Dependencies
+ */
+import styled from '@emotion/styled';
+
+/**
  * WordPress Dependencies
  */
 import { has } from 'underscore';
 import { __ } from '@wordpress/i18n';
-import { Button, DropZone } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { Button as WPComButton, DropZone } from '@wordpress/components';
+import { useState, Fragment } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { uploadMedia } from '@wordpress/media-utils';
 
 const DEFAULT_IMAGE_SIZE = 'full';
+
+const Button = styled(WPComButton)`
+	margin: 0 !important;
+`;
+
+const MediaControls = styled.div`
+	display: flex;
+	align-items: center;
+`;
+
+const OpenButton = styled.button`
+	cursor: pointer,
+	background: none,
+	border: none,
+	margin: 0,
+`;
+
+const OpenAction = styled.div`
+	cursor: pointer,
+	background: none,
+	border: none,
+	margin: 0,
+`;
 
 function MediaDropZone({
 	attachmentId = false,
@@ -24,6 +52,7 @@ function MediaDropZone({
 	mediaSize = DEFAULT_IMAGE_SIZE,
 	label = null,
 	singularLabel = __('image'),
+	className = '',
 	children,
 }) {
 	const fallbackInstructions = __(
@@ -127,27 +156,21 @@ function MediaDropZone({
 				allowedTypes={mediaType}
 				value={id}
 				render={({ open }) => (
-					<div>
+					<MediaControls className={className}>
 						{displayImage && (
-							<button
-								type="button"
-								onClick={open}
-								style={{
-									cursor: 'pointer',
-									background: 'none',
-									border: 'none',
-								}}
-							>
+							<Fragment>
 								{!children && (
-									<img
-										alt={fallbackInstructions}
-										src={src}
-										width={`${width}px`}
-										height={`${height}px`}
-									/>
+									<OpenButton type="button" onClick={open}>
+										<img
+											alt={fallbackInstructions}
+											src={src}
+											width={`${width}px`}
+											height={`${height}px`}
+										/>
+									</OpenButton>
 								)}
-								{children && children}
-							</button>
+								{children && <OpenAction onClick={open}>{children}</OpenAction>}
+							</Fragment>
 						)}
 						{((false !== id && false === media) || isUploading) && (
 							<Button variant="secondary" isBusy onClick={open}>
@@ -174,7 +197,7 @@ function MediaDropZone({
 							</Button>
 						)}
 						<DropZone onFilesDrop={onDropFile} />
-					</div>
+					</MediaControls>
 				)}
 			/>
 		</MediaUploadCheck>
