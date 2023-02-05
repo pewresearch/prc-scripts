@@ -1933,8 +1933,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@prc/hooks@workspace:."
   dependencies:
-    "@splidejs/splide": ^4.1.4
-    "@splidejs/splide-extension-intersection": ^0.2.0
     "@wordpress/element": ^4.20.0
     "@wordpress/scripts": ^24.6.0
   languageName: unknown
@@ -1978,20 +1976,6 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^1.7.0
   checksum: 09b5a158ce013a6c37613258bad79ca4efeb99b1f59c41c73cca36cac00b258aefcf46eeea970fccf06b989414d86fe9f54c1102272c0c3bdd51a313cea80949
-  languageName: node
-  linkType: hard
-
-"@splidejs/splide-extension-intersection@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@splidejs/splide-extension-intersection@npm:0.2.0"
-  checksum: a01525179bae1588348cff78861b7b735fd768b5449188e93e4c0f8e019f7f1066d1b77cc336caaa98019c436c6124016b8fc102590a2039489dddeaba00f16e
-  languageName: node
-  linkType: hard
-
-"@splidejs/splide@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "@splidejs/splide@npm:4.1.4"
-  checksum: 919f6e1e5da1ebdfe6df77592fab25d0dd52b1809ac61723157cf1c8dd1804bf7739a28e2bb7a22257c5f7628eacba0439ff1268e9bab8577f638f5376fd4b5e
   languageName: node
   linkType: hard
 
