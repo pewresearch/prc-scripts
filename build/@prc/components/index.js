@@ -3,16 +3,17 @@
 `,Wo=Qe.div`
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 `,qo=Qe.button`
-	cursor: pointer,
-	background: none,
-	border: none,
-	margin: 0,
+	cursor: pointer;
+	background: none;
+	border: none;
+	margin: 0;
 `,Go=Qe.div`
-	cursor: pointer,
-	background: none,
-	border: none,
-	margin: 0,
+	cursor: pointer;
+	background: none;
+	border: none;
+	margin: 0;
 `;var Ko=n(157);const Zo=Qe("div")`
 	& .components-button.has-icon {
 		padding: 0px !important;

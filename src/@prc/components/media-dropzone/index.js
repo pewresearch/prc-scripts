@@ -23,20 +23,21 @@ const Button = styled(WPComButton)`
 const MediaControls = styled.div`
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 `;
 
 const OpenButton = styled.button`
-	cursor: pointer,
-	background: none,
-	border: none,
-	margin: 0,
+	cursor: pointer;
+	background: none;
+	border: none;
+	margin: 0;
 `;
 
 const OpenAction = styled.div`
-	cursor: pointer,
-	background: none,
-	border: none,
-	margin: 0,
+	cursor: pointer;
+	background: none;
+	border: none;
+	margin: 0;
 `;
 
 function MediaDropZone({
