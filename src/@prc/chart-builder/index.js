@@ -1,6 +1,6 @@
 import {
 	ChartBuilderWrapper,
-	masterConfig,
+	baseConfig,
 	ChartBuilderTextWrapper,
 } from '@pewresearch/chart-builder/dist';
 
@@ -14,6 +14,6 @@ window.prcChartBuilder = {};
 
 loadScript('ChartBuilderWrapper', ChartBuilderWrapper);
 loadScript('ChartBuilderTextWrapper', ChartBuilderTextWrapper);
-loadScript('masterConfig', masterConfig);
+loadScript('baseConfig', baseConfig);
 
 console.log('Loading @prc/chart-builder...', window.prcChartBuilder);
