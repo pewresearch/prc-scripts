@@ -42,6 +42,7 @@ const OpenAction = styled.div`
 
 function MediaDropZone({
 	attachmentId = false,
+	disabled = false,
 	onUpdate = (attachment) => {
 		console.warn(
 			'Media DropZone Attachment, use onUpdate prop when using <MediaDropZone/>: ',
@@ -156,50 +157,59 @@ function MediaDropZone({
 				onSelect={onMediaUpdate}
 				allowedTypes={mediaType}
 				value={id}
-				render={({ open }) => (
-					<MediaControls className={className}>
-						{displayImage && (
-							<Fragment>
-								{!children && (
-									<OpenButton type="button" onClick={open}>
-										<img
-											alt={fallbackInstructions}
-											src={src}
-											width={`${width}px`}
-											height={`${height}px`}
-										/>
-									</OpenButton>
-								)}
-								{children && <OpenAction onClick={open}>{children}</OpenAction>}
-							</Fragment>
-						)}
-						{((false !== id && false === media) || isUploading) && (
-							<Button variant="secondary" isBusy onClick={open}>
-								{__(` Loading...`)}
-							</Button>
-						)}
-						{false !== onClear && displayClearButton && (
-							<Button
-								variant="link"
-								isSmall
-								onClick={() => {
-									if ('function' === typeof onClear) {
-										onClear();
-									}
-									setId(false);
-								}}
-							>
-								Clear {singularLabel}
-							</Button>
-						)}
-						{false === id && (
-							<Button variant="secondary" onClick={open}>
-								{l}
-							</Button>
-						)}
-						<DropZone onFilesDrop={onDropFile} />
-					</MediaControls>
-				)}
+				render={({ open }) => {
+					const onClick = () => {
+						if (true !== disabled) {
+							open();
+						}
+					};
+					return (
+						<MediaControls className={className}>
+							{displayImage && (
+								<Fragment>
+									{!children && (
+										<OpenButton type="button" onClick={onClick}>
+											<img
+												alt={fallbackInstructions}
+												src={src}
+												width={`${width}px`}
+												height={`${height}px`}
+											/>
+										</OpenButton>
+									)}
+									{children && (
+										<OpenAction onClick={onClick}>{children}</OpenAction>
+									)}
+								</Fragment>
+							)}
+							{((false !== id && false === media) || isUploading) && (
+								<Button variant="secondary" isBusy onClick={onClick}>
+									{__(` Loading...`)}
+								</Button>
+							)}
+							{false !== onClear && displayClearButton && (
+								<Button
+									variant="link"
+									isSmall
+									onClick={() => {
+										if ('function' === typeof onClear) {
+											onClear();
+										}
+										setId(false);
+									}}
+								>
+									Clear {singularLabel}
+								</Button>
+							)}
+							{false === id && (
+								<Button variant="secondary" onClick={onClick}>
+									{l}
+								</Button>
+							)}
+							<DropZone onFilesDrop={onDropFile} />
+						</MediaControls>
+					);
+				}}
 			/>
 		</MediaUploadCheck>
 	);
