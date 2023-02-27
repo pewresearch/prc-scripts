@@ -1394,10 +1394,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
-"@pewresearch/chart-builder@file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.19.tgz":
-  "integrity" "sha512-wdSrMdxoO4UjSxzUK9RQK+7vNvnL1FBNvI5GjQVZCxT1Hk3qW00nCCrNVY5hF3TlADrtW/NUHmdltTQCyAA4Lg=="
-  "resolved" "file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.19.tgz"
-  "version" "0.5.19"
+"@pewresearch/chart-builder@file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.20.tgz":
+  "integrity" "sha512-6QXHZbECE0XopI39v9m44DbJGF6eSIJrn/lKQBE35Xz7DnOQFTU/nwpRB16F/60DDe0tAzFDe0MwwZaaaqq0eg=="
+  "resolved" "file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.20.tgz"
+  "version" "0.5.20"
   dependencies:
     "@visx/axis" "^2.12.2"
     "@visx/event" "^2.6.0"
