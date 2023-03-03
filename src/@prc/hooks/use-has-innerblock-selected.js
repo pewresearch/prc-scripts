@@ -13,5 +13,15 @@ import { useSelect } from '@wordpress/data';
  */
 export default function useHasSelectedInnerBlock(clientId) {
 	// eslint-disable-next-line prettier/prettier
-	return useSelect((select) => select('core/block-editor').hasSelectedInnerBlock(clientId, true));
+	return useSelect(
+		(select) => {
+			const hasChildrenSelected = select(
+				'core/block-editor',
+			).hasSelectedInnerBlock(clientId, true);
+			const hasParentSelected =
+				select('core/block-editor').getSelectedBlockClientId() === clientId;
+			return hasChildrenSelected || hasParentSelected;
+		},
+		[clientId],
+	);
 }
