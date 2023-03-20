@@ -1394,10 +1394,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
-"@pewresearch/chart-builder@file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.35.tgz":
-  "integrity" "sha512-0NUVY/RChrGC4sczV2UFcbvkErnvgFTd4VHEnxDlDI/N2kNoRQ/uhz8J7fydmtFMYM1dH7x8A9G7H+piK+O+oA=="
-  "resolved" "file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.35.tgz"
-  "version" "0.5.35"
+"@pewresearch/chart-builder@file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.50.tgz":
+  "integrity" "sha512-mYvqC5UAxg3ulH2QIFdXGLepgP+81Qg5S/B3Im4r2/iyV9tkz4VrTWc9srlivzNk8CzmlyCGdNjUMvUWjplTPA=="
+  "resolved" "file:../../../../../../../Desktop/pewresearch-chart-builder-0.5.50.tgz"
+  "version" "0.5.50"
   dependencies:
     "@visx/axis" "^2.12.2"
     "@visx/event" "^2.6.0"
@@ -1406,6 +1406,7 @@
     "@visx/legend" "^2.10.0"
     "@visx/mock-data" "^2.1.2"
     "@visx/pattern" "^3.0.0"
+    "@visx/responsive" "^3.0.0"
     "@visx/scale" "^2.2.2"
     "@visx/shape" "^2.12.2"
     "@visx/tooltip" "^2.10.0"
@@ -2172,6 +2173,16 @@
   "integrity" "sha512-fUdGQBLGaSVbFTbQ6k+1nPisbqYjTjAdo9FhlwLd3W3uyXN/39Sx2z3N2579sVNBDzmCKdYNQIU0HC+/3Vqo6w=="
   "resolved" "https://registry.npmjs.org/@visx/point/-/point-2.17.0.tgz"
   "version" "2.17.0"
+
+"@visx/responsive@^3.0.0":
+  "integrity" "sha512-immnxQwOWlrxbnlCIqJWuDpPfrM6tglgMTN1WsyXyGluLMJqhuuxqxllfXaRPkQFS4fcvs66KCEELdazh96U2w=="
+  "resolved" "https://registry.npmjs.org/@visx/responsive/-/responsive-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "@types/lodash" "^4.14.172"
+    "@types/react" "*"
+    "lodash" "^4.17.21"
+    "prop-types" "^15.6.1"
 
 "@visx/scale@^2.2.2", "@visx/scale@2.18.0":
   "integrity" "sha512-clH8HFblMlCuHvUjGRwenvbY1w9YXHU9fPl91Vbtd5bdM9xAN0Lo2+cgV46cvaX3YpnyVb4oNhlbPCBu3h6Rhw=="
