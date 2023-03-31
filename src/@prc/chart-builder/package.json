@@ -9,7 +9,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@pewresearch/chart-builder": "file:pewresearch-chart-builder-0.5.61.tgz",
+		"@pewresearch/chart-builder": "file:pewresearch-chart-builder-0.5.63.tgz",
 		"styled-components": "^5.3.6"
 	},
 	"devDependencies": {

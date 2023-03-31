@@ -1394,19 +1394,16 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
-"@pewresearch/chart-builder@file:pewresearch-chart-builder-0.5.61.tgz":
-  "integrity" "sha512-sDrHqD0/aN/HCV5Pz350r61jF1WgWl+9C8LHFIqXLoN/zcTmp6j3pJyRLtjvEKljD6O84An/M6uxrC5yaKmpnw=="
-  "resolved" "file:pewresearch-chart-builder-0.5.61.tgz"
-  "version" "0.5.61"
+"@pewresearch/chart-builder@file:pewresearch-chart-builder-0.5.63.tgz":
+  "integrity" "sha512-ylluOB7gmV3Pf/59dwjD1YkXKr/Z90TwUMP85ELAHQMs1B17szSmiRGXpe8qDj6s/PoJuBBbFu4adle854sYCA=="
+  "resolved" "file:pewresearch-chart-builder-0.5.63.tgz"
+  "version" "0.5.63"
   dependencies:
     "@visx/axis" "^2.12.2"
     "@visx/event" "^2.6.0"
     "@visx/grid" "^2.12.2"
     "@visx/group" "^2.10.0"
     "@visx/legend" "^2.10.0"
-    "@visx/mock-data" "^2.1.2"
-    "@visx/pattern" "^3.0.0"
-    "@visx/responsive" "^3.0.0"
     "@visx/scale" "^2.2.2"
     "@visx/shape" "^2.12.2"
     "@visx/tooltip" "^2.10.0"
@@ -1691,11 +1688,6 @@
   "integrity" "sha512-NaIeSIBiFgSC6IGUBjZWcscUJEq7vpVu7KthHN8eieTV9d9MqkSOZLH4chq1PmcKy06PNe3axLeKmRIyxJ+PZQ=="
   "resolved" "https://registry.npmjs.org/@types/d3-path/-/d3-path-1.0.9.tgz"
   "version" "1.0.9"
-
-"@types/d3-random@^2.2.0":
-  "integrity" "sha512-5vvxn6//poNeOxt1ZwC7QU//dG9QqABjy1T7fP/xmFHY95GnaOw3yABf29hiu5SR1Oo34XcpyHFbzod+vemQjA=="
-  "resolved" "https://registry.npmjs.org/@types/d3-random/-/d3-random-2.2.1.tgz"
-  "version" "2.2.1"
 
 "@types/d3-scale@^3.3.0":
   "integrity" "sha512-gGqr7x1ost9px3FvIfUMi5XA/F/yAf4UkUDtdQhpH92XCT0Oa7zkkRzY61gPVJq+DxpHn/btouw5ohWkbBsCzQ=="
@@ -2152,37 +2144,10 @@
     "classnames" "^2.3.1"
     "prop-types" "^15.5.10"
 
-"@visx/mock-data@^2.1.2":
-  "integrity" "sha512-l+9tcJAZ+H5mtXaGbHUqgmo1b3Hcq+k6aIWmZt6VGgvPBFK3Rn68BORP8My+OA/CgMG3/ZNJBhJxLKxNN5Hkjw=="
-  "resolved" "https://registry.npmjs.org/@visx/mock-data/-/mock-data-2.17.0.tgz"
-  "version" "2.17.0"
-  dependencies:
-    "@types/d3-random" "^2.2.0"
-    "d3-random" "^2.2.2"
-
-"@visx/pattern@^3.0.0":
-  "integrity" "sha512-ItvyKkvwFoPrJ+Iz09qwjPsvViGdJdElUpofIor60OhsBIT4/pN0MNRKwpTE/e64Womr0UDaZC85BvB4zxSB2A=="
-  "resolved" "https://registry.npmjs.org/@visx/pattern/-/pattern-3.0.0.tgz"
-  "version" "3.0.0"
-  dependencies:
-    "@types/react" "*"
-    "classnames" "^2.3.1"
-    "prop-types" "^15.5.10"
-
 "@visx/point@2.17.0":
   "integrity" "sha512-fUdGQBLGaSVbFTbQ6k+1nPisbqYjTjAdo9FhlwLd3W3uyXN/39Sx2z3N2579sVNBDzmCKdYNQIU0HC+/3Vqo6w=="
   "resolved" "https://registry.npmjs.org/@visx/point/-/point-2.17.0.tgz"
   "version" "2.17.0"
-
-"@visx/responsive@^3.0.0":
-  "integrity" "sha512-immnxQwOWlrxbnlCIqJWuDpPfrM6tglgMTN1WsyXyGluLMJqhuuxqxllfXaRPkQFS4fcvs66KCEELdazh96U2w=="
-  "resolved" "https://registry.npmjs.org/@visx/responsive/-/responsive-3.0.0.tgz"
-  "version" "3.0.0"
-  dependencies:
-    "@types/lodash" "^4.14.172"
-    "@types/react" "*"
-    "lodash" "^4.17.21"
-    "prop-types" "^15.6.1"
 
 "@visx/scale@^2.2.2", "@visx/scale@2.18.0":
   "integrity" "sha512-clH8HFblMlCuHvUjGRwenvbY1w9YXHU9fPl91Vbtd5bdM9xAN0Lo2+cgV46cvaX3YpnyVb4oNhlbPCBu3h6Rhw=="
@@ -3821,11 +3786,6 @@
   "integrity" "sha512-VLaYcn81dtHVTjEHd8B+pbe9yHWpXKZUC87PzoFmsFrJqgFwDe/qxfp5MlfsfM1V5E/iVt0MmEbWQ7FVIXh/bg=="
   "resolved" "https://registry.npmjs.org/d3-path/-/d3-path-1.0.9.tgz"
   "version" "1.0.9"
-
-"d3-random@^2.2.2":
-  "integrity" "sha512-0D9P8TRj6qDAtHhRQn6EfdOtHMfsUWanl3yb/84C4DqpZ+VsgfI5iTVRNRbELCfNvRfpMr8OrqqUTQ6ANGCijw=="
-  "resolved" "https://registry.npmjs.org/d3-random/-/d3-random-2.2.2.tgz"
-  "version" "2.2.2"
 
 "d3-regression@^1.3.10":
   "integrity" "sha512-PF8GWEL70cHHWpx2jUQXc68r1pyPHIA+St16muk/XRokETzlegj5LriNKg7o4LR0TySug4nHYPJNNRz/W+/Niw=="
