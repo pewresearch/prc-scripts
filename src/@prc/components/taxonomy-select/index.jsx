@@ -22,6 +22,14 @@ export default function TaxonomySelect({
 	value,
 	onChange,
 	allowMultiple = false,
+	restrictToTaxonomies = [
+		'category',
+		'post_tag',
+		'formats',
+		'regions-countries',
+		'research-teams',
+		'collection',
+	],
 }) {
 	const [currentValue, setCurrentValue] = useState(value);
 
@@ -40,7 +48,14 @@ export default function TaxonomySelect({
 				label: taxonomy.label,
 				value: taxonomy.name,
 			}));
-			setTokens(newTokens);
+			if (0 < restrictToTaxonomies.length) {
+				const filteredTokens = newTokens.filter((token) =>
+					restrictToTaxonomies.includes(token.value)
+				);
+				setTokens(filteredTokens);
+			} else {
+				setTokens(newTokens);
+			}
 		}
 	}, [records]);
 
