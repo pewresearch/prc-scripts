@@ -31,6 +31,7 @@ export default function TaxonomySelect({
 			records: getEntitiesConfig('taxonomy'),
 		};
 	});
+
 	const [tokens, setTokens] = useState([]);
 
 	useEffect(() => {
@@ -41,7 +42,7 @@ export default function TaxonomySelect({
 			}));
 			setTokens(newTokens);
 		}
-	}, [records]);
+	}, [records, tokens.length]);
 
 	useEffect(() => {
 		if (currentValue) {
