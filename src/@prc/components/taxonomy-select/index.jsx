@@ -42,11 +42,10 @@ export default function TaxonomySelect({
 			}));
 			setTokens(newTokens);
 		}
-	}, [records, tokens.length]);
+	}, [records]);
 
 	useEffect(() => {
 		if (currentValue) {
-			console.log('Value Changed 2: ', currentValue);
 			onChange(currentValue);
 		}
 	}, [currentValue]);
