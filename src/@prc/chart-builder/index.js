@@ -3,6 +3,7 @@ import {
 	baseConfig,
 	ChartBuilderTextWrapper,
 } from '@pewresearch/chart-builder/dist';
+// @TODO: @benwormald This needs to be brought in to prc-scripts proper.
 
 function loadScript(slug, script) {
 	if (!window.prcChartBuilder[slug]) {
