@@ -84,7 +84,7 @@ function ifMatchSetAttribute(
 	haystack,
 	attrKey,
 	attrValue,
-	setAttributes,
+	setAttributes
 ) {
 	if (needle === haystack) {
 		setAttributes({ [attrKey]: attrValue });
@@ -117,7 +117,7 @@ function getTerms(taxonomy, perPage = 25) {
 			for (let index = 0; index < terms.length; index++) {
 				const slug = terms[index].slug.replace(
 					`${taxonomy.toLowerCase()}_`,
-					'',
+					''
 				);
 				data[terms[index].id] = {
 					id: terms[index].id,
@@ -135,7 +135,7 @@ function getTermsAsOptions(
 	taxonomy,
 	perPage,
 	termValue = 'slug',
-	sortByLabel = true,
+	sortByLabel = true
 ) {
 	return new Promise((resolve) => {
 		getTerms(taxonomy, perPage).then((data) => {
@@ -217,14 +217,16 @@ function tableToArray(table) {
 
 // cnovert array of arrays to formatted csv, with optional metadata
 function arrayToCSV(objArray, metadata) {
-	const array = 'object' !== typeof objArray ? JSON.parse(objArray) : objArray;
+	if (undefined === objArray || objArray.length === 0) return false;
+	const array =
+		'object' !== typeof objArray ? JSON.parse(objArray) : objArray;
 	const checkIfEmpty = (str) => (str !== undefined ? str : '');
 	let str = '';
 	if (undefined !== metadata) {
 		str += `${checkIfEmpty(metadata.title)}
-${checkIfEmpty(metadata.subtitle)}
+			${checkIfEmpty(metadata.subtitle)}
 
-`;
+			`;
 	}
 	for (let i = 0; i < array.length; i += 1) {
 		let line = '';
@@ -233,13 +235,13 @@ ${checkIfEmpty(metadata.subtitle)}
 			line += array[i][index];
 		}
 		str += `${line}
-`;
+		`;
 	}
 	if (undefined !== metadata) {
 		str += `
-${checkIfEmpty(metadata.note)}
-${checkIfEmpty(metadata.source)}
-${checkIfEmpty(metadata.tag)}`;
+		${checkIfEmpty(metadata.note)}
+		${checkIfEmpty(metadata.source)}
+		${checkIfEmpty(metadata.tag)}`;
 	}
 	return str;
 }
@@ -290,7 +292,9 @@ function wpRestApiTermsToTree(terms, restrictTo = []) {
 		const restrictedTreeData = [];
 		restrictTo.forEach((termId) => {
 			const topLevel = getTopLevel(termId);
-			const topLevelIndex = treeData.findIndex((t) => t.id === topLevel.id);
+			const topLevelIndex = treeData.findIndex(
+				(t) => t.id === topLevel.id
+			);
 			restrictedTreeData.push(treeData[topLevelIndex]);
 		});
 		r = restrictedTreeData;
