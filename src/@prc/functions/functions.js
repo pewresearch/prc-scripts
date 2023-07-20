@@ -228,12 +228,19 @@ function arrayToCSV(objArray, metadata) {
 
 			`;
 	}
+	console.log({ array });
 	for (let i = 0; i < array.length; i += 1) {
 		let line = '';
-		for (let index = 0; index < array[i].length; index += 1) {
-			if ('' !== line) line += ',';
-			line += array[i][index];
+		// if a value has a comma in it, wrap it in quotes
+		for (let j = 0; j < array[i].length; j += 1) {
+			if (j > 0) line += ',';
+			if (array[i][j].indexOf(',') > -1) {
+				line += `"${array[i][j]}"`;
+			} else {
+				line += array[i][j];
+			}
 		}
+
 		str += `${line}
 		`;
 	}
