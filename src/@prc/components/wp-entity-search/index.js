@@ -38,6 +38,7 @@ import List from './search-results/List';
  * @return
  */
 export default function WPEntitySearch({
+	placeholder = "Climate Change",
 	searchLabel = __('Search'),
 	searchValue = '',
 	entityId = null,
@@ -47,6 +48,7 @@ export default function WPEntitySearch({
 	onKeyEnter = () => {},
 	onKeyESC = () => {},
 	perPage = 10,
+	showExcerpt = false,
 }) {
 	const [siteId] = useEntityProp('root', 'site', 'siteId');
 
@@ -114,7 +116,7 @@ export default function WPEntitySearch({
 				<SearchControl
 					value={searchInput}
 					onChange={(keyword) => setSearchInput(keyword)}
-					placeholder="Climate Change..."
+					placeholder={placeholder}
 					autoComplete="off"
 				/>
 			</KeyboardShortcuts>
@@ -159,6 +161,9 @@ export default function WPEntitySearch({
 							{...{
 								searchRecords,
 								onSelect,
+								entityType,
+								showExcerpt,
+								entityId,
 							}}
 						/>
 					)}
