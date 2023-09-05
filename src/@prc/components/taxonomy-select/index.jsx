@@ -24,11 +24,11 @@ export default function TaxonomySelect({
 	allowMultiple = false,
 	restrictToTaxonomies = [
 		'category',
-		'post_tag',
 		'formats',
 		'regions-countries',
 		'research-teams',
 		'collection',
+		'topic',
 	],
 }) {
 	const [currentValue, setCurrentValue] = useState(value);
