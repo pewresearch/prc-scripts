@@ -49,6 +49,7 @@ export default function WPEntitySearch({
 	onKeyESC = () => {},
 	perPage = 10,
 	showExcerpt = false,
+	children,
 }) {
 	const [siteId] = useEntityProp('root', 'site', 'siteId');
 
@@ -169,6 +170,7 @@ export default function WPEntitySearch({
 					)}
 				</Fragment>
 			)}
+			{children}
 		</TabbableContainer>
 	);
 }
