@@ -49,9 +49,11 @@ export default function WPEntitySearch({
 	onKeyESC = () => {},
 	perPage = 10,
 	showExcerpt = false,
+	clearOnSelect = false,
 	children,
 }) {
 	const [siteId] = useEntityProp('root', 'site', 'siteId');
+	const [selectedId, setSelectedId] = useState(entityId);
 
 	const [isLoading, toggleLoading] = useState(!!searchValue);
 	const [searchInput, setSearchInput] = useState(searchValue);
@@ -95,6 +97,19 @@ export default function WPEntitySearch({
 	useEffect(() => {
 		toggleLoading(isResolving);
 	}, [isResolving]);
+
+	// useMemo for entityId if it changes value then get the the value by id from searchRecords and pass it to onSelect
+	useMemo(() => {
+		if (selectedId && searchRecords) {
+			const entity = searchRecords.find((record) => record.id === selectedId);
+			if (entity) {
+				onSelect(entity);
+			}
+			if (clearOnSelect) {
+				setSearchInput('');
+			}
+		}
+	}, [selectedId, searchRecords]);
 
 	return (
 		<TabbableContainer
@@ -164,7 +179,8 @@ export default function WPEntitySearch({
 								onSelect,
 								entityType,
 								showExcerpt,
-								entityId,
+								selectedId,
+								setSelectedId,
 							}}
 						/>
 					)}

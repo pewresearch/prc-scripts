@@ -4,7 +4,7 @@
 import { Card, CardBody, NavigableMenu } from '@wordpress/components';
 import { date as formatDate } from '@wordpress/date';
 import { decodeEntities } from '@wordpress/html-entities';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 function SearchItem({ item, onSelect, entityType, selectedId, setSelectedId, showExcerpt }) {
 	if (!item) {
@@ -24,7 +24,7 @@ function SearchItem({ item, onSelect, entityType, selectedId, setSelectedId, sho
 		<Card
 			onClick={() => {
 				console.log('On click', onSelect, item);
-				onSelect(item);
+				// onSelect(item);
 				setSelectedId(item.id);
 			}}
 			size="small"
@@ -83,9 +83,8 @@ function SearchItem({ item, onSelect, entityType, selectedId, setSelectedId, sho
 	);
 }
 
-export default function List({ searchRecords, onSelect, entityType, entityId, showExcerpt = false }) {
-	const [selectedId, setSelectedId] = useState(entityId);
+export default function List({ searchRecords, onSelect, entityType, selectedId, setSelectedId, showExcerpt = false }) {
 	return searchRecords.map((item) => (
-		<SearchItem key={item.id} item={item} onSelect={onSelect} entityType={entityType} selectedId={selectedId} setSelectedId={setSelectedId} showExcerpt={showExcerpt} />
+		<SearchItem key={item.id} item={item} onSelect={onSelect} entityType={entityType} selectedId={selectedId} showExcerpt={showExcerpt} setSelectedId={setSelectedId} />
 	));
 }
