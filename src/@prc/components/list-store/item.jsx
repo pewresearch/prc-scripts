@@ -2,23 +2,22 @@
  * WordPress Dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import { useDispatch } from '@wordpress/data';
+import { dispatch } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Icon, IconButton } from '@wordpress/components';
 import { dragHandle } from '@wordpress/icons';
 
 function ListStoreItem({
 	label,
-	icon = false,
 	defaultLabel,
 	keyValue,
-	onRemove = false,
 	index,
 	children,
-	storeName = 'report',
+	onRemove = false,
+	storeName = null,
 	lastItem = false,
+	icon = false,
 }) {
-	const { remove } = useDispatch(`prc/${storeName}`);
 	const [labelText, setLabelText] = useState(
 		undefined !== label ? label : defaultLabel,
 	);
@@ -89,7 +88,10 @@ function ListStoreItem({
 							if (false !== onRemove && 'function' === typeof onRemove) {
 								onRemove();
 							}
-							remove(index);
+							if ( null !== storeName ) {
+								const { remove } = dispatch(`prc/${storeName}`);
+								remove(index);
+							}
 						}}
 					/>
 				</div>
