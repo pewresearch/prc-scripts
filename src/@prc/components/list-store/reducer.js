@@ -1,3 +1,8 @@
+/**
+ * WordPress Dependencies
+ */
+import { combineReducers } from "@wordpress/data";
+
 const DEFAULT_STATE = [];
 
 const reducer = (state = DEFAULT_STATE, action) => {
