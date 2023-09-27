@@ -3,15 +3,15 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 
-// @TODO: move these into VIP environment values or into the DB?
+//@TODO make our mailchimp api have an endpoint to return these values from the db. also build an interface to manage them.
 const mailChimpInterests = [
 	{
 		label: 'Weekly roundup of all new publications',
-		value: '7c1390ba46',
+		value: 'xyz',
 	},
 	{
 		label: 'Quarterly update from the president',
-		value: 'a33430a835',
+		value: 'xyz',
 	},
 	{
 		label: '--',
@@ -19,39 +19,39 @@ const mailChimpInterests = [
 	},
 	{
 		label: 'Global attitudes & trends (twice a month)',
-		value: '9203343b04',
+		value: 'xyz',
 	},
 	{
 		label: 'Internet, science & tech (monthly)',
-		value: 'ea87b26abe',
+		value: 'xyz',
 	},
 	{
 		label: 'Daily briefing of media news',
-		value: '1d2638430b',
+		value: 'xyz',
 	},
 	{
 		label: 'Race & ethnicity (monthly)',
-		value: '0e7495c7b2',
+		value: 'xyz',
 	},
 	{
 		label: 'Religion & public life - Weekly newsletter',
-		value: 'a7d4f3268f',
+		value: 'xyz',
 	},
 	{
 		label: 'Religion & public life - Daily religion headlines',
-		value: '1a647764b2',
+		value: 'xyz',
 	},
 	{
 		label: 'Social & demographic trends (monthly)',
-		value: '3836f62305',
+		value: 'xyz',
 	},
 	{
 		label: 'Methodological research (quarterly)',
-		value: '6d1e80bbaf',
+		value: 'xyz',
 	},
 	{
 		label: 'U.S. politics & policy (monthly)',
-		value: 'fa5fdbc701',
+		value: 'xyz',
 	},
 	{
 		label: '--',
