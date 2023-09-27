@@ -1,21 +1,22 @@
 <?php
+namespace PRC\Platform;
 /**
- * PRC Core Block Library
+ * PRC Common Scripts, Hooks, Functions, Components, etc.
  *
  * @package           PRC_Scripts
- * @author            Seth Rubenstein
+ * @author            Seth Rubenstein and Ben Wormald
  * @copyright         2022 Pew Research Center
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       PRC Scripts
- * Plugin URI:        https://github.com/pewresearch/pewresearch-org
- * Description:       A collection of scripts used by Pew Research Center in PRC App.
+ * Plugin URI:        https://github.com/pewresearch/prc-scripts
+ * Description:       A collection of common scripts, hooks, functions, components, etc for the PRC Platform.
  * Version:           1.0.0
  * Requires at least: 6.1
- * Requires PHP:      8.0
- * Author:            Seth Rubenstein
- * Author URI:        https://sethrubenstein.info
+ * Requires PHP:      8.1
+ * Author:            Seth Rubenstein and Ben Wormald
+ * Author URI:        https://www.pewresearch.org
  * Text Domain:       prc-scripts
  * License:           GPL v2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -23,7 +24,7 @@
 
 define( 'PRC_SCRIPTS_DIR_PATH', __DIR__ );
 
-class PRC_Scripts {
+class Scripts {
 	public static $script_slugs = array();
 
 	public function __construct( $init = false ) {
@@ -108,5 +109,5 @@ class PRC_Scripts {
 
 }
 
-$prc_scripts = new PRC_Scripts(true);
+$prc_scripts = new Scripts(true);
 
