@@ -3,7 +3,7 @@ namespace PRC\Platform;
 /**
  * PRC Common Scripts, Hooks, Functions, Components, etc.
  *
- * @package           PRC_Scripts
+ * @package           \PRC\Platform\Scripts
  * @author            Seth Rubenstein and Ben Wormald
  * @copyright         2022 Pew Research Center
  * @license           GPL-2.0-or-later
