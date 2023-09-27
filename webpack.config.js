@@ -1,3 +1,6 @@
+/**
+ * Drop this webpack.config.js file into your projects package.json directory when using @wordpress/scripts to handle dependency extraction.
+ */
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 
@@ -13,7 +16,6 @@ module.exports = {
 			injectPolyfill: true,
 			// eslint-disable-next-line consistent-return
 			requestToExternal(request) {
-				/* My externals */
 				if (request.includes('@prc/hooks')) {
 					return 'prcHooks';
 				}
@@ -23,21 +25,13 @@ module.exports = {
 				if (request.includes('@prc/components')) {
 					return 'prcComponents';
 				}
-				if (request.includes('@splidejs/splide')) {
-					return 'splide';
-				}
-				if (request.includes('@splidejs/splide-extension-intersection')) {
-					return 'splideInterscection';
-				}
 				if (request.includes('enquire.js')) {
 					return 'enquire';
 				}
 			},
 			// eslint-disable-next-line consistent-return
 			requestToHandle(request) {
-				// Handle imports like `import myModule from 'my-module'`
 				if ('@prc/hooks' === request) {
-					// `my-module` depends on the script with the 'my-module-script-handle' handle.
 					return 'prc-hooks';
 				}
 				if ('@prc/functions' === request) {
@@ -45,12 +39,6 @@ module.exports = {
 				}
 				if ('@prc/components' === request) {
 					return 'prc-components';
-				}
-				if ('@splidejs/splide' === request) {
-					return 'splide';
-				}
-				if ('@splidejs/splide-extension-intersection' === request) {
-					return 'splide';
 				}
 				if ('enquire.js' === request) {
 					return 'enquire.js';
