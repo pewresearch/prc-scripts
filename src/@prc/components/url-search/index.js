@@ -24,52 +24,7 @@ import {
 import { date as formatDate } from '@wordpress/date';
 import { useEntityRecords, useEntityProp } from '@wordpress/core-data';
 import apiFetch from '@wordpress/api-fetch';
-
-/**
- * Converts a post object to attributes for a story item.
- * @TODO Have moment clean up the date data.
- * @param {*} post
- * @param {*} imageSize
- * @param {*} isRefresh
- * @returns
- */
-const getAttributesFromPost = (opts) => {
-	const { post, imageSize = false, isRefresh = false } = opts;
-	console.log('getAttributesFromPost', post);
-
-	if (null === post) {
-		return {};
-	}
-
-	const date = formatDate('M j, Y', post.date);
-
-	const storyItem = {
-		title:
-			post.hasOwnProperty('title') && post.title.hasOwnProperty('rendered')
-				? post.title.rendered
-				: '',
-		excerpt:
-			post.hasOwnProperty('excerpt') && post.excerpt.hasOwnProperty('rendered')
-				? post.excerpt.rendered
-				: '',
-		url: post.canonical_url, // @TODO where is this `link` coming from, why is it not url or permalink.
-		label: post.hasOwnProperty('label') ? post.label : 'report',
-		date,
-		postId: post.id || post.ID,
-	};
-
-	if (true !== isRefresh) {
-		storyItem.extra = '';
-	}
-
-	if (false !== imageSize && post.art) {
-		const { art } = post;
-		storyItem.image = art[imageSize].rawUrl;
-		storyItem.isChartArt = art[imageSize].chartArt;
-	}
-
-	return storyItem;
-};
+import { addQueryArgs } from '@wordpress/url';
 
 function SearchRecords({
 	searchRecords,
@@ -117,12 +72,7 @@ function SearchItem({
 		// eslint-disable-next-line jsx-a11y/click-events-have-key-events
 		<Card
 			onClick={() => {
-				const postAttrs = getAttributesFromPost({
-					post: item,
-					imageSize,
-					isRefresh: false,
-				});
-				onSelect(postAttrs);
+				onSelect(item);
 			}}
 			size="small"
 			style={{
@@ -176,22 +126,17 @@ function SearchItem({
 }
 
 export function URLSearchField({
-	attributes,
-	setAttributes,
+	postId,
+	postType = 'post',
+	url,
 	disableImage = false,
 	onSelect = () => {},
 	onKeyEnter = () => {},
 	onKeyESC = () => {},
 	onUpdateURL = () => {},
 }) {
-	const { imageSize, url, postId } = attributes;
-
-	const [siteId] = useEntityProp('root', 'site', 'siteId');
-	const postType = 1 === siteId ? 'stub' : 'post';
-
 	const [isLoading, toggleLoading] = useState(!!url);
-
-	const [searchInput, setSearchInput] = useState(url);
+	const [searchInput, setSearchInput] = useState(url ?? ''); // If we have a url lets use it
 	const searchString = useDebounce(searchInput, 500);
 	const searchStringIsUrl = useMemo(() => {
 		if (
@@ -224,18 +169,30 @@ export function URLSearchField({
 		!isLoading && searchStringIsUrl && null !== foundObject;
 	const hasNothingFound = !isLoading && !hasSearchRecords && !hasFoundObject;
 
+	// First we get the post id by url then we get the post by id.
 	const getPostByUrl = (newUrl) =>
 		new Promise((resolve, reject) => {
 			apiFetch({
-				path: '/prc-api/v2/stub/get-post-by-url',
-				method: 'POST',
-				data: { url: newUrl },
+				path: addQueryArgs('/prc-api/v3/utils/postid-by-url', {
+					url: newUrl,
+				}),
+				method: 'GET',
 			})
-				.then((post) => {
-					if ('object' !== typeof post) {
-						reject(new Error('post is not an object'));
-					}
-					resolve(post);
+				.then((resp) => {
+					const type = 'post' === resp?.postType ? 'posts' : resp?.postType;
+					const postSearchPath = addQueryArgs(`/wp/v2/${type}/${resp?.postId}`, {
+						context: 'view',
+					});
+					console.log('postSearchPath', postSearchPath);
+					apiFetch({
+						path: postSearchPath,
+						method: 'GET',
+					})
+						.then((post) => {
+							console.log("GOT THE POST", post);
+							resolve(post);
+						})
+						.catch((err) => reject(err));
 				})
 				.catch((err) => reject(err));
 		});
@@ -273,7 +230,7 @@ export function URLSearchField({
 					},
 					// enter: () => {
 					// 	if (searchStringIsUrl && hasNothingFound) {
-					// 		setAttributes({
+					// 		onSelect({
 					// 			url: searchString,
 					// 		});
 					// 	}
@@ -335,10 +292,7 @@ export function URLSearchField({
 									<Button
 										variant="secondary"
 										onClick={() => {
-											onUpdateURL();
-											setAttributes({
-												url: searchString,
-											});
+											onUpdateURL(searchString);
 										}}
 									>
 										{__('Change the URL', 'prc-block-library')}
@@ -351,7 +305,7 @@ export function URLSearchField({
 					{hasFoundObject && (
 						<div>
 							<SearchItem
-								{...{ item: foundObject, onSelect, imageSize, disableImage }}
+								{...{ item: foundObject, onSelect, disableImage }}
 							/>
 							<div
 								style={{
@@ -384,10 +338,7 @@ export function URLSearchField({
 												<Button
 													variant="secondary"
 													onClick={() => {
-														onUpdateURL();
-														setAttributes({
-															url: searchString,
-														});
+														onUpdateURL(searchString);
 													}}
 												>
 													{__('Change the URL', 'prc-block-library')}
@@ -402,7 +353,7 @@ export function URLSearchField({
 
 					{hasSearchRecords && !searchStringIsUrl && (
 						<SearchRecords
-							{...{ searchRecords, onSelect, imageSize, disableImage }}
+							{...{ searchRecords, onSelect, disableImage }}
 						/>
 					)}
 				</Fragment>
@@ -412,13 +363,13 @@ export function URLSearchField({
 }
 
 export function URLSearchToolbar({
-	attributes,
-	setAttributes,
+	postId,
+	postType = 'post',
+	url,
+	disableImage = false,
 	onSelect = () => {},
+	onUpdateURL = () => {},
 }) {
-	const [siteId] = useEntityProp('root', 'site', 'siteId');
-	const postType = 1 === siteId ? 'stub' : 'post';
-
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	return (
@@ -454,15 +405,18 @@ export function URLSearchToolbar({
 					>
 						<URLSearchField
 							{...{
-								attributes,
-								setAttributes,
-								onSelect: (postAttrs) => {
-									onSelect(postAttrs);
+								postId,
+								postType,
+								url,
+								disableImage,
+								onSelect: (itemAttrs) => {
+									onSelect(itemAttrs);
 									setIsModalOpen(false);
 								},
 								onKeyEnter: () => setIsModalOpen(false),
 								onKeyESC: () => setIsModalOpen(false),
-								onUpdateURL: () => {
+								onUpdateURL: (newUrl) => {
+									onUpdateURL(newUrl);
 									setIsModalOpen(false);
 								},
 							}}

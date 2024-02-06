@@ -7,6 +7,20 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { Icon, IconButton } from '@wordpress/components';
 import { dragHandle } from '@wordpress/icons';
 
+/**
+ * List Store Item
+ * @param {object} props
+ * @param {string} props.label
+ * @param {string} props.defaultLabel
+ * @param {string} props.keyValue
+ * @param {number} props.index
+ * @param {object} props.children
+ * @param {function} props.onRemove
+ * @param {string} props.storeName
+ * @param {boolean} props.lastItem
+ * @param {boolean} props.icon
+ * @returns {JSX.Element}
+ */
 function ListStoreItem({
 	label,
 	defaultLabel,

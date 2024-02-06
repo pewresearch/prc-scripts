@@ -27,7 +27,7 @@ const registerListStore = (name, resolvers = false, selectors = false) => {
 		controls: {},
 		resolvers,
 	});
-	console.log('Registering custom Redux store...', name);
+	console.log(`@prc/components/list-store: registerListStore(${name})`);
 	register(store);
 };
 

@@ -2,6 +2,7 @@
  * WordPress Dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { getEntityRecord } from '@wordpress/core-data';
 
 //@TODO make our mailchimp api have an endpoint to return these values from the db. also build an interface to manage them.
 const mailChimpInterests = [
@@ -228,7 +229,7 @@ function arrayToCSV(objArray, metadata) {
 
 			`;
 	}
-	console.log({ array });
+
 	for (let i = 0; i < array.length; i += 1) {
 		let line = '';
 		// if a value has a comma in it, wrap it in quotes
@@ -254,6 +255,7 @@ function arrayToCSV(objArray, metadata) {
 }
 
 function wpRestApiTermsToTree(terms, restrictTo = []) {
+	console.log('wpRestApiTermsToTree', terms, restrictTo);
 	const getTopLevel = (termId) => {
 		const term = terms.find((t) => t.id === termId);
 		if (0 === term.parent) {
@@ -320,5 +322,5 @@ export {
 	mailChimpInterests,
 	tableToArray,
 	arrayToCSV,
-	wpRestApiTermsToTree,
+	wpRestApiTermsToTree
 };

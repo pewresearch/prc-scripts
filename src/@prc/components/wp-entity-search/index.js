@@ -8,8 +8,8 @@ import { useDebounce } from '@prc/hooks';
 /**
  * WordPress Dependencies
  */
+import { Fragment, useState, useMemo, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Fragment, useState, useMemo, useEffect } from '@wordpress/element';
 import {
 	Button,
 	Card,
@@ -50,6 +50,7 @@ export default function WPEntitySearch({
 	perPage = 10,
 	showExcerpt = false,
 	clearOnSelect = false,
+	createNew = false,
 	children,
 }) {
 	const [siteId] = useEntityProp('root', 'site', 'siteId');
@@ -165,9 +166,18 @@ export default function WPEntitySearch({
 									padding: '1em 0',
 								}}
 							>
-								<span>
-									{__('Nothing found.', 'prc-block-library')}
-								</span>
+								{'function' !== typeof createNew && (
+									<div>
+										<span>
+											{__('No results found.')}
+										</span>
+									</div>
+								)}
+								{typeof createNew === 'function' && (
+									<div>
+										{createNew()}
+									</div>
+								)}
 							</div>
 						</div>
 					)}

@@ -1,0 +1,13 @@
+{
+	"name": "classnames",
+	"packageManager": "yarn@3.2.1",
+	"devDependencies": {
+		"@wordpress/scripts": "^26.13.0"
+	},
+	"scripts": {
+		"build": "wp-scripts build index.js --output-path=../../../build/third-party/classnames"
+	},
+	"dependencies": {
+		"classnames": "^2.3.2"
+	}
+}

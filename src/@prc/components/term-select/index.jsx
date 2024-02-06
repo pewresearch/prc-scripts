@@ -26,77 +26,21 @@ const TermSelectControl = styled('div')`
 	}
 `;
 
-function usePrimarySiteEntityRecords(taxonomy, query) {
-	const [records, setRecords] = useState([]);
-	const [isResolving, setIsResolving] = useState(false);
-	const [hasResolved, setHasResolved] = useState(false);
-
-	useEffect(() => {
-		const endpointUrl = addQueryArgs(
-			`${window.location.origin}/wp-json/wp/v2/${taxonomy}`,
-			query,
-		);
-		console.log('usePrimarySiteEntityRecords!: ', endpointUrl, query);
-		setIsResolving(true);
-		apiFetch({
-			url: endpointUrl,
-		})
-			.then((response) => {
-				setRecords(response);
-				setIsResolving(false);
-				setHasResolved(true);
-			})
-			.catch((error) => {
-				console.error('Error fetching records: ', error);
-				setIsResolving(false);
-				setHasResolved(true);
-			});
-	}, [taxonomy, query]);
-
-	return { records, isResolving, hasResolved };
-}
-
-function useRecords(searchTerm, taxonomy, usePrimarySite) {
-	let entityHandler = null;
-	if (usePrimarySite) {
-		entityHandler = usePrimarySiteEntityRecords(taxonomy, {
-			per_page: 10,
-			context: 'view',
-			search: searchTerm,
-		});
-	} else {
-		entityHandler = useEntityRecords('taxonomy', taxonomy, {
-			per_page: 10,
-			context: 'view',
-			search: searchTerm,
-		});
-	}
-
-	const { records, isResolving, hasResolved } = entityHandler;
-
-	return {
-		records,
-		isResolving,
-		hasResolved,
-	};
-}
-
 function TermSelect({
 	className,
 	onChange,
 	taxonomy,
 	value,
 	maxTerms,
-	usePrimaryRestAPI = false,
 }) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const debounceSearchTerm = useDebounce(setSearchTerm, 500);
 
-	const { records, isResolving, hasResolved } = useRecords(
-		searchTerm,
-		taxonomy,
-		usePrimaryRestAPI,
-	);
+	const { records, isResolving, hasResolved } = useEntityRecords('taxonomy', taxonomy, {
+		per_page: 10,
+		context: 'view',
+		search: searchTerm,
+	});
 
 	const suggestions = useMemo(() => {
 		if (hasResolved && records) {
@@ -119,7 +63,7 @@ function TermSelect({
 				displayTransform={(token) => decodeEntities(token)}
 				onChange={(e) => {
 					// @TODO: need to build in support for selecting multiple terms.
-					console.log('Changing...', e);
+					console.log('Changing... <TermSelect/>', e);
 					if (isEmpty(e)) {
 						onChange({});
 						return;

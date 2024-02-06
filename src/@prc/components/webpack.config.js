@@ -7,7 +7,7 @@ module.exports = {
 	plugins: [
 		...defaultConfig.plugins.filter(
 			(plugin) =>
-				'DependencyExtractionWebpackPlugin' !== plugin.constructor.name,
+				'DependencyExtractionWebpackPlugin' !== plugin.constructor.name
 		),
 		new DependencyExtractionWebpackPlugin({
 			injectPolyfill: true,
@@ -23,8 +23,20 @@ module.exports = {
 				if (request.includes('@prc/components')) {
 					return 'prcComponents';
 				}
+				if (request.includes('@prc/controls')) {
+					return 'prcControls';
+				}
 				if (request.includes('@prc/icons')) {
 					return 'prcIcons';
+				}
+				if (request.includes('firebase/app')) {
+					return 'firebase';
+				}
+				if (request.includes('firebase/auth')) {
+					return 'firebaseAuth';
+				}
+				if (request.includes('firebase/database')) {
+					return 'firebaseDatabase';
 				}
 			},
 			// eslint-disable-next-line consistent-return
@@ -38,8 +50,20 @@ module.exports = {
 				if ('@prc/components' === request) {
 					return 'prc-components';
 				}
+				if ('@prc/controls' === request) {
+					return 'prc-controls';
+				}
 				if ('@prc/icons' === request) {
 					return 'prc-icons';
+				}
+				if ('firebase/app' === request) {
+					return 'firebase';
+				}
+				if ('firebase/auth' === request) {
+					return 'firebase';
+				}
+				if ('firebase/database' === request) {
+					return 'firebase';
 				}
 			},
 		}),

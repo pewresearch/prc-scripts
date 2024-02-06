@@ -50,11 +50,13 @@ function MediaDropZone({
 		);
 	},
 	onClear = false,
-	mediaType = ['image'],
+	allowedTypes = ['image'],
 	mediaSize = DEFAULT_IMAGE_SIZE,
 	label = null,
 	singularLabel = __('image'),
+	editButtonLabel = __('Edit image'),
 	className = '',
+	mediaType, // @TODO: mark deprecated.
 	children,
 }) {
 	const fallbackInstructions = __(
@@ -65,6 +67,8 @@ function MediaDropZone({
 
 	const [id, setId] = useState(attachmentId);
 	const [isUploading, setIsUploading] = useState(false);
+
+	const allowedMediaTypes = !mediaType ? allowedTypes : mediaType;
 
 	/**
 	 * When id (attachmentId) changes update the media and get its src, dimensions, and type.
@@ -113,7 +117,7 @@ function MediaDropZone({
 				src: mediaSourceUrl,
 				width: mediaWidth,
 				height: mediaHeight,
-				type: false !== m ? m.type : false,
+				type: false !== m ? m?.media_type : false,
 			};
 		},
 		[id],
@@ -129,9 +133,10 @@ function MediaDropZone({
 
 	const onDropFile = (filesList) => {
 		uploadMedia({
-			allowedTypes: mediaType,
+			allowedTypes: allowedMediaTypes,
 			filesList,
 			onFileChange([file]) {
+				console.log("onFileChange", file);
 				if (!file.id) {
 					setIsUploading(true);
 				} else {
@@ -145,8 +150,7 @@ function MediaDropZone({
 		});
 	};
 
-	const displayImage =
-		false !== id && false !== media && false !== src && false === isUploading;
+	const isUploaded = false !== id && false !== media && false !== src && false === isUploading;
 
 	const displayClearButton = false !== type;
 
@@ -155,7 +159,7 @@ function MediaDropZone({
 			<MediaUpload
 				title={__(`${singularLabel} Upload`, 'prc-block-library')}
 				onSelect={onMediaUpdate}
-				allowedTypes={mediaType}
+				allowedTypes={allowedMediaTypes}
 				value={id}
 				render={({ open }) => {
 					const onClick = () => {
@@ -165,9 +169,9 @@ function MediaDropZone({
 					};
 					return (
 						<MediaControls className={className}>
-							{displayImage && (
+							{isUploaded && (
 								<Fragment>
-									{!children && (
+									{!children && 'image' === type && (
 										<OpenButton type="button" onClick={onClick}>
 											<img
 												alt={fallbackInstructions}
@@ -177,15 +181,15 @@ function MediaDropZone({
 											/>
 										</OpenButton>
 									)}
+									{!children && 'image' !== type && (
+										<Button variant="secondary" onClick={onClick}>
+											{editButtonLabel}
+										</Button>
+									)}
 									{children && (
 										<OpenAction onClick={onClick}>{children}</OpenAction>
 									)}
 								</Fragment>
-							)}
-							{((false !== id && false === media) || isUploading) && (
-								<Button variant="secondary" isBusy onClick={onClick}>
-									{__(` Loading...`)}
-								</Button>
 							)}
 							{false !== onClear && displayClearButton && (
 								<Button
@@ -201,8 +205,13 @@ function MediaDropZone({
 									Clear {singularLabel}
 								</Button>
 							)}
-							{false === id && (
-								<Button variant="secondary" onClick={onClick}>
+							{!isUploaded && isUploading && (
+								<Button variant="secondary" isBusy>
+									{__(` Loading...`)}
+								</Button>
+							)}
+							{!isUploaded && !isUploading && (
+								<Button variant="primary" onClick={onClick}>
 									{l}
 								</Button>
 							)}
