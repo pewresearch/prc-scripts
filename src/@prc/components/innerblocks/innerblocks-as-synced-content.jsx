@@ -4,12 +4,11 @@
  * WordPress Dependencies
  */
 import { useMemo, useEffect } from 'react';
-import { __ } from '@wordpress/i18n';
 import { useEntityBlockEditor, useEntityRecord } from '@wordpress/core-data';
 import {
 	useInnerBlocksProps,
-	__experimentalRecursionProvider as RecursionProvider,
-	__experimentalUseHasRecursion as useHasRecursion,
+	RecursionProvider,
+	useHasRecursion,
 	InnerBlocks,
 	Warning,
 } from '@wordpress/block-editor';
@@ -25,17 +24,17 @@ import LoadingIndicator from '../loading-indicator';
  *
  * This component supports @wordpress/sync for real-time multi-user editing.
  *
- * @param {object} props
- * @param {number} props.postId - the id of the entity.
- * @param {string} props.postType - the post type of the entity.
- * @param {string} props.postTypeLabel - the label of the post type.
- * @param {object} props.blockProps - the props of the block.
- * @param {string} props.clientId - the client id of the block.
- * @param {boolean} props.allowDetach - whether or not to allow the user to detach the blocks from the entity.
- * @param {function} props.isMissingChildren - a function that will be called when the record is missing, useful for passing a component to render when the record is missing.
- * @param {function} props.collector - a function that will be called when the record changes, useful for passing information about the entitty to a higher level component.
- * @param {any} props.children
- * @returns
+ * @param {Object}   props
+ * @param {number}   props.postId            - the id of the entity.
+ * @param {string}   props.postType          - the post type of the entity.
+ * @param {string}   props.postTypeLabel     - the label of the post type.
+ * @param {Object}   props.blockProps        - the props of the block.
+ * @param {string}   props.clientId          - the client id of the block.
+ * @param {boolean}  props.allowDetach       - whether or not to allow the user to detach the blocks from the entity.
+ * @param {Function} props.isMissingChildren - a function that will be called when the record is missing, useful for passing a component to render when the record is missing.
+ * @param {Function} props.collector         - a function that will be called when the record changes, useful for passing information about the entitty to a higher level component.
+ * @param {any}      props.children
+ * @return
  */
 export default function InnerBlocksAsSyncedContent({
 	postId,
@@ -48,7 +47,7 @@ export default function InnerBlocksAsSyncedContent({
 	collector,
 	children,
 }) {
-	const {record, isResolving, hasResolved} = useEntityRecord(
+	const { record, isResolving, hasResolved } = useEntityRecord(
 		'postType',
 		postType,
 		postId
@@ -59,7 +58,8 @@ export default function InnerBlocksAsSyncedContent({
 		{ id: postId }
 	);
 
-	const isMissing = true === hasResolved && false === isResolving && undefined === record;
+	const isMissing =
+		true === hasResolved && false === isResolving && undefined === record;
 
 	const recursionKey = useMemo(() => {
 		return JSON.stringify(postId, postType);
@@ -85,16 +85,21 @@ export default function InnerBlocksAsSyncedContent({
 			: InnerBlocks.ButtonBlockAppender,
 	});
 
-	useEffect(()=> {
-		console.log('InnerBlocksAsSyncedContent', {isResolving, hasResolved, record, isMissing});
+	useEffect(() => {
+		console.log('InnerBlocksAsSyncedContent', {
+			isResolving,
+			hasResolved,
+			record,
+			isMissing,
+		});
 	}, [isResolving, isMissing, hasResolved, record]);
 
 	if (hasAlreadyRendered) {
 		return (
 			<div {...blockProps}>
-			<Warning>
-				{__(`${postTypeLabel} cannot be rendered inside itself.`)}
-			</Warning>
+				<Warning>
+					{`${postTypeLabel} cannot be rendered inside itself.`}
+				</Warning>
 			</div>
 		);
 	}
@@ -102,9 +107,12 @@ export default function InnerBlocksAsSyncedContent({
 	if (isResolving || !hasResolved) {
 		return (
 			<div {...blockProps}>
-			<Warning>
-				<LoadingIndicator enabled={true} label={__(`Loading ${postTypeLabel}...`)}/>
-			</Warning>
+				<Warning>
+					<LoadingIndicator
+						enabled={true}
+						label={`Loading ${postTypeLabel} …`}
+					/>
+				</Warning>
 			</div>
 		);
 	}
@@ -112,12 +120,14 @@ export default function InnerBlocksAsSyncedContent({
 	if (isMissing) {
 		return (
 			<div {...blockProps}>
-			<Warning>
-				{__(
-					`A matching ${postTypeLabel.toLocaleLowerCase()} could not be found. It may be unavailable at this time.`
-				)}
-				{isMissingChildren && <div style={{marginTop: '1em'}}>{isMissingChildren()}</div>}
-			</Warning>
+				<Warning>
+					{`A matching ${postTypeLabel.toLocaleLowerCase()} could not be found. It may be unavailable at this time.`}
+					{isMissingChildren && (
+						<div style={{ marginTop: '1em' }}>
+							{isMissingChildren()}
+						</div>
+					)}
+				</Warning>
 			</div>
 		);
 	}
@@ -126,7 +136,13 @@ export default function InnerBlocksAsSyncedContent({
 		<RecursionProvider uniqueId={recursionKey}>
 			<div {...innerBlocksProps} />
 			{allowDetach && (
-				<DetachBlocksToolbarControl {...{blocks, clientId, label: `Detach %s blocks from ${postTypeLabel}`}}/>
+				<DetachBlocksToolbarControl
+					{...{
+						blocks,
+						clientId,
+						label: `Detach %s blocks from ${postTypeLabel}`,
+					}}
+				/>
 			)}
 			{children}
 		</RecursionProvider>

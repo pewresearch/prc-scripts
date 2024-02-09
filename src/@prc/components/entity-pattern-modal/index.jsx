@@ -2,7 +2,7 @@
  * External Dependencies
  */
 import styled from '@emotion/styled';
-import {useDebounce} from '@prc/hooks';
+import { useDebounce } from '@prc/hooks';
 
 /**
  * WordPress Dependencies
@@ -38,25 +38,25 @@ const ModalSearch = styled.div`
 	top: 0;
 	z-index: 100;
 	input:focus {
-		box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+		box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 	}
 `;
 
 /**
  * Uses the useEntityRecords hook to query for a entity.
- * @param {*} param0
- * @param {string} param0.entityType - the post type of the entity.
- * @param {boolean} param0.enabled - whether or not the query should be enabled.
- * @param {number} param0.excludeId - the id of the entity to exclude from the query.
- * @param {object} param0.args - the args to pass to the query.
- * @returns
+ * @param {*}       param0
+ * @param {string}  param0.entityType - the post type of the entity.
+ * @param {boolean} param0.enabled    - whether or not the query should be enabled.
+ * @param {number}  param0.excludeId  - the id of the entity to exclude from the query.
+ * @param {Object}  param0.args       - the args to pass to the query.
+ * @return
  */
-function useQuery( {
+function useQuery({
 	entityType = 'post',
 	enabled = false,
 	excludeId = null,
 	args = {},
-} ) {
+}) {
 	const queryArgs = {
 		context: 'view',
 		orderby: 'date',
@@ -64,7 +64,7 @@ function useQuery( {
 		per_page: 25,
 	};
 
-	const {hasResolved, isResolving, records, status} = useEntityRecords(
+	const { hasResolved, isResolving, records, status } = useEntityRecords(
 		'postType',
 		entityType,
 		{ ...queryArgs, ...args },
@@ -72,16 +72,12 @@ function useQuery( {
 	);
 
 	// Filter out any block modules that have the same id as the excluded block module.
-	const filteredRecords = useMemo( () => {
-		if ( ! records ) {
+	const filteredRecords = useMemo(() => {
+		if (!records) {
 			return [];
 		}
-		return (
-			records.filter(
-				( record ) => record.id !== excludeId
-			) || []
-		);
-	}, [ records, excludeId ] );
+		return records.filter((record) => record.id !== excludeId) || [];
+	}, [records, excludeId]);
 
 	return {
 		records: filteredRecords,
@@ -92,18 +88,18 @@ function useQuery( {
 
 /**
  * Renders a modal with the <BlockPatternsList /> component to select a entity from a block based entity list. It is important that your entity be of a `post` type and it's contents comprised of blocks.
- * @param {object} props
- * @param {string} props.title - the title of the modal.
- * @param {string} props.instructions - the instructions for the modal.
- * @param {string} props.entityType - the post type of the entity.
- * @param {string} props.entityTypeLabel - the label of the post type.
- * @param {function} props.onSelect - a function that will be called when the user selects a entity.
- * @param {function} props.onClose - a function that will be called when the user closes the modal.
- * @param {number} props.selectedId - the id of the selected entity.
- * @param {string} props.clientId - the client id of the block.
- * @returns {object} The entity pattern modal component.
+ * @param {Object}   props
+ * @param {string}   props.title           - the title of the modal.
+ * @param {string}   props.instructions    - the instructions for the modal.
+ * @param {string}   props.entityType      - the post type of the entity.
+ * @param {string}   props.entityTypeLabel - the label of the post type.
+ * @param {Function} props.onSelect        - a function that will be called when the user selects a entity.
+ * @param {Function} props.onClose         - a function that will be called when the user closes the modal.
+ * @param {number}   props.selectedId      - the id of the selected entity.
+ * @param {string}   props.clientId        - the client id of the block.
+ * @return {Object} The entity pattern modal component.
  */
-export default function EntityPatternModal( {
+export default function EntityPatternModal({
 	title,
 	instructions,
 	entityType = 'post',
@@ -111,9 +107,10 @@ export default function EntityPatternModal( {
 	onSelect = () => {},
 	onClose = () => {},
 	selectedId = null,
+	status = 'publish',
 	clientId,
-} ) {
-	const [ searchValue, setSearchValue ] = useState(null);
+}) {
+	const [searchValue, setSearchValue] = useState(null);
 	const debouncedSearchValue = useDebounce(searchValue, 600);
 
 	const { records, isResolving, hasResolved } = useQuery({
@@ -123,33 +120,37 @@ export default function EntityPatternModal( {
 		args: {
 			per_page: 50,
 			context: 'edit',
-		}
+			status,
+		},
 	});
 
 	// We can map block modules, like template parts, to block patterns to reuse the BlockPatternsList UI
-	const filteredRecords = useMemo( () => {
-		const recordsAsPatterns = records.map( ( record ) => ( {
+	const filteredRecords = useMemo(() => {
+		const recordsAsPatterns = records.map((record) => ({
 			id: record.id,
 			name: record.slug,
 			title: record.title.rendered,
-			blocks: parse( record.content.raw ),
+			blocks: parse(record.content.raw),
 			content: record.content.raw,
-		} ) );
+		}));
 
 		// Filter only the block modules that have title and content that match the search value
-		return recordsAsPatterns.filter( ( record ) => {
-			if ( ! debouncedSearchValue ) {
+		return recordsAsPatterns.filter((record) => {
+			if (!debouncedSearchValue) {
 				return true;
 			}
-			return record.title.toLowerCase().includes( debouncedSearchValue ) || record.content.includes( debouncedSearchValue );
-		} );
-	}, [ records, debouncedSearchValue ] );
+			return (
+				record.title.toLowerCase().includes(debouncedSearchValue) ||
+				record.content.includes(debouncedSearchValue)
+			);
+		});
+	}, [records, debouncedSearchValue]);
 
-	const shownRecords = useAsyncList( filteredRecords );
+	const shownRecords = useAsyncList(filteredRecords);
 
-	const { createSuccessNotice } = useDispatch( noticesStore );
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
-	const onPatternSelect = ( response ) => {
+	const onPatternSelect = (response) => {
 		console.log('onPatternSelect', response);
 		const { title } = response;
 
@@ -158,7 +159,7 @@ export default function EntityPatternModal( {
 		createSuccessNotice(
 			sprintf(
 				/* translators: %s: template part title. */
-				__( '%s "%s" inserted.' ),
+				__('%s "%s" inserted.'),
 				entityTypeLabel,
 				title
 			),
@@ -172,7 +173,7 @@ export default function EntityPatternModal( {
 
 	// const createFromBlocks = useCreateTemplatePartFromBlocks(setAttributes);
 
-	const hasRecords = !! filteredRecords.length;
+	const hasRecords = !!filteredRecords.length;
 
 	return (
 		<Modal title={title} onRequestClose={onClose}>
@@ -181,34 +182,32 @@ export default function EntityPatternModal( {
 					<ModalSearch>
 						<SearchControl
 							__nextHasNoMarginBottom
-							onChange={ setSearchValue }
-							value={ searchValue }
-							label={ `Search for ${entityTypeLabel}` }
-							placeholder={ __( 'Search' ) }
+							onChange={setSearchValue}
+							value={searchValue}
+							label={`Search for ${entityTypeLabel}`}
+							placeholder={__('Search')}
 						/>
 					</ModalSearch>
 
-					{ hasRecords && (
+					{hasRecords && (
 						<div>
-							<h2>{ `Existing ${entityTypeLabel}` }</h2>
-							{instructions && (
-								<p>{ instructions }</p>
-							)}
+							<h2>{`Existing ${entityTypeLabel}`}</h2>
+							{instructions && <p>{instructions}</p>}
 							<BlockPatternsList
-								blockPatterns={ filteredRecords }
-								shownPatterns={ shownRecords }
-								onClickPattern={ ( pattern ) => {
-									onPatternSelect( pattern );
-								} }
+								blockPatterns={filteredRecords}
+								shownPatterns={shownRecords}
+								onClickPattern={(pattern) => {
+									onPatternSelect(pattern);
+								}}
 							/>
 						</div>
-					) }
+					)}
 
-					{ ! hasRecords && (
+					{!hasRecords && (
 						<HStack alignment="center">
-							<p>{ __( 'No records found.' ) }</p>
+							<p>{__('No records found.')}</p>
 						</HStack>
-					) }
+					)}
 				</VStack>
 			</ModalContent>
 		</Modal>

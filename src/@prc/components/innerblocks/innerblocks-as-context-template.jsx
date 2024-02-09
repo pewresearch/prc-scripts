@@ -1,4 +1,3 @@
-
 /**
  * External Dependencies
  */
@@ -7,9 +6,8 @@ import md5 from 'md5';
 /**
  * WordPress Dependencies
  */
-import { memo, useMemo, useState, useEffect, Fragment } from '@wordpress/element';
+import { memo, useMemo, useState, useEffect, Fragment } from 'react';
 import { useSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
 import {
 	BlockContextProvider,
 	__experimentalUseBlockPreview as useBlockPreview,
@@ -21,7 +19,13 @@ import { Spinner, Flex, FlexBlock, FlexItem } from '@wordpress/components';
 import { useEntityRecords } from '@wordpress/core-data';
 
 function InnerBlocksTemplateBlocks({
-	allowedBlocks = ['core/post-title', 'core/post-date', 'core/post-excerpt', 'core/group', 'core/paragraph'],
+	allowedBlocks = [
+		'core/post-title',
+		'core/post-date',
+		'core/post-excerpt',
+		'core/group',
+		'core/paragraph',
+	],
 	template,
 }) {
 	const innerBlocksProps = useInnerBlocksProps(
@@ -29,7 +33,7 @@ function InnerBlocksTemplateBlocks({
 		{
 			allowedBlocks,
 			template,
-		},
+		}
 	);
 	return <div {...innerBlocksProps} />;
 }
@@ -40,7 +44,7 @@ function InnerBlocksAsContextTemplatePreview({
 	isHidden,
 	setActiveBlockContextId,
 }) {
-	const blockPreviewProps = useBlockPreview({blocks});
+	const blockPreviewProps = useBlockPreview({ blocks });
 
 	// When clicking into the preview, set the active block context as whichever block you click on.
 	const handleOnClick = () => {
@@ -63,18 +67,16 @@ function InnerBlocksAsContextTemplatePreview({
 	);
 }
 
-const MemoziedInnerBlocksTemplatePreview = memo(InnerBlocksAsContextTemplatePreview);
+const MemoziedInnerBlocksTemplatePreview = memo(
+	InnerBlocksAsContextTemplatePreview
+);
 
 export function getInnerBlocksContextAsQuery(postType, perPage = 10) {
-	const { records, isResolving } = useEntityRecords(
-		'postType',
-		postType,
-		{
-			per_page: perPage,
-			post_parent: 0, // exclude child posts
-			context: 'view',
-		},
-	);
+	const { records, isResolving } = useEntityRecords('postType', postType, {
+		per_page: perPage,
+		post_parent: 0, // exclude child posts
+		context: 'view',
+	});
 
 	/**
 	 * Constructs a context of blocks for each post.
@@ -84,17 +86,17 @@ export function getInnerBlocksContextAsQuery(postType, perPage = 10) {
 			return [];
 		}
 		return records?.map((post) => {
-			console.log("POST?", post);
+			console.log('POST?', post);
 			return {
-				'queryId': 0,
-				'postId': post.id,
-				'postType': post.type,
+				queryId: 0,
+				postId: post.id,
+				postType: post.type,
 				props: post.props,
 			};
 		});
 	}, [records, isResolving]);
 
-	return {blockContexts, isResolving};
+	return { blockContexts, isResolving };
 }
 
 export function InnerBlocksAsContextTemplate({
@@ -114,7 +116,7 @@ export function InnerBlocksAsContextTemplate({
 				blocks: getBlocks(clientId),
 			};
 		},
-		[clientId],
+		[clientId]
 	);
 
 	useEffect(() => {
@@ -129,9 +131,7 @@ export function InnerBlocksAsContextTemplate({
 		return (
 			<Warning>
 				<Flex align="center" gap="10px">
-					<FlexBlock>
-						{`${loadingLabel}`}
-					</FlexBlock>
+					<FlexBlock>{`${loadingLabel}`}</FlexBlock>
 					<FlexItem>
 						<Spinner />
 					</FlexItem>
@@ -151,7 +151,8 @@ export function InnerBlocksAsContextTemplate({
 					const contextId = md5(JSON.stringify(blockContext));
 					const isVisible =
 						contextId ===
-						(activeBlockContextId || md5(JSON.stringify(blockContexts[0])));
+						(activeBlockContextId ||
+							md5(JSON.stringify(blockContexts[0])));
 
 					return (
 						<BlockContextProvider
@@ -159,15 +160,19 @@ export function InnerBlocksAsContextTemplate({
 							value={blockContext}
 						>
 							{activeBlockContextId === null || isVisible ? (
-								<InnerBlocksTemplateBlocks {...{
-									allowedBlocks,
-									template,
-								}} />
+								<InnerBlocksTemplateBlocks
+									{...{
+										allowedBlocks,
+										template,
+									}}
+								/>
 							) : null}
 							<MemoziedInnerBlocksTemplatePreview
 								blocks={blocks}
 								blockContextId={contextId}
-								setActiveBlockContextId={setActiveBlockContextId}
+								setActiveBlockContextId={
+									setActiveBlockContextId
+								}
 								isHidden={isVisible}
 							/>
 						</BlockContextProvider>
