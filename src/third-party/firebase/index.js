@@ -1,15 +1,26 @@
 /**
  * External Dependencies
  */
-import * as firebase from 'firebase/app';
-import * as auth from 'firebase/auth';
-import * as database from 'firebase/database';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
+import 'firebase/compat/auth';
 
 // Establish the main firebase config object
 const { prcFirebaseConfig, prcFirebaseInteractivesConfig } = window;
+
 const app = firebase.initializeApp(prcFirebaseConfig);
-// const interactives = firebase.initializeApp(prcFirebaseInteractivesConfig);
-console.log('@prc/firebase config:', prcFirebaseConfig, prcFirebaseInteractivesConfig, firebase);
+const interactives = firebase.initializeApp(
+	prcFirebaseInteractivesConfig,
+	'interactivesDB'
+);
+const auth = firebase.auth();
+
+console.log(
+	'@prc/firebase config:',
+	prcFirebaseConfig,
+	prcFirebaseInteractivesConfig,
+	firebase
+);
 
 function loadScript(slug, script) {
 	if (!window[slug]) {
@@ -18,6 +29,5 @@ function loadScript(slug, script) {
 }
 
 loadScript('firebase', app);
-// loadScript('firebaseInteractives', interactives);
+loadScript('interactivesDB', interactives);
 loadScript('firebaseAuth', auth);
-loadScript('firebaseDatabase', database);

@@ -98,7 +98,7 @@ class Scripts {
 		$api_key       = \PRC_PLATFORM_FIREBASE_KEY;
 		$auth_domain   = \PRC_PLATFORM_FIREBASE_AUTH_DOMAIN;
 		$auth_db       = \PRC_PLATFORM_FIREBASE_AUTH_DB;
-		$interactives_db = \PRC_PLATFORM_FIREBASE_INTERACTIVES_DB;
+		$interactives_db = 'https://prc-app-prod-interactives.firebaseio.com';
 		$project_id    = \PRC_PLATFORM_FIREBASE_PROJECT_ID;
 		wp_localize_script(
 			$script_slug,
