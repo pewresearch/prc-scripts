@@ -1,0 +1,10 @@
+{
+	"name": "@prc/scripts",
+	"devDependencies": {
+		"@wordpress/scripts": "^27.3.0"
+	},
+	"scripts": {
+		"build": "bash .scripts/build.sh",
+		"clean": "bash .scripts/clean.sh"
+	}
+}
