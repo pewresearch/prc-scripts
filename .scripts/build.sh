@@ -4,8 +4,6 @@ echo "This will clear the node_modules and package-lock.json files and run npm i
 # Start at the /src directory
 cd src || exit
 
-
-
 # Loop through all the directories in /@prc that have a package.json, so /@prc/*/package.json
 for dir in $(find ./@prc -mindepth 1 -maxdepth 1 -type d -exec test -e '{}/package.json' ';' -print); do
 	echo "Building..."

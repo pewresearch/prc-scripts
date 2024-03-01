@@ -5,7 +5,7 @@ namespace PRC\Platform;
  * Plugin URI:        https://github.com/pewresearch/prc-scripts
  * Description:       A collection of common scripts, hooks, functions, block controls, and components for the PRC Platform. *If it's shared javascript, it should be here.*
  * Version:           1.0.0
- * Requires at least: 6.1
+ * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Seth Rubenstein and Ben Wormald
  * Author URI:        https://www.pewresearch.org
