@@ -1,4 +1,3 @@
-import { useAuth, ProvideAuth } from './auth-provider-context';
 import Autocomplete from './autocomplete';
 import HeadingLevelToolbar from './heading-level-toolbar';
 import {
@@ -38,8 +37,6 @@ function loadScript(slug, script) {
 
 window.prcComponents = {};
 
-loadScript('useAuth', useAuth);
-loadScript('ProvideAuth', ProvideAuth);
 loadScript('Autocomplete', Autocomplete);
 loadScript('HeadingLevelToolbar', HeadingLevelToolbar);
 loadScript('InnerBlocksAsContextTemplate', InnerBlocksAsContextTemplate);
