@@ -52,10 +52,11 @@ export default function InnerBlocksAsSyncedContent({
 		postType,
 		postId
 	);
+	const lookup = { id: postId };
 	const [blocks, onInput, onChange] = useEntityBlockEditor(
 		'postType',
 		postType,
-		{ id: postId }
+		lookup
 	);
 
 	const isMissing =
@@ -87,10 +88,13 @@ export default function InnerBlocksAsSyncedContent({
 
 	useEffect(() => {
 		console.log('InnerBlocksAsSyncedContent', {
+			lookup,
 			isResolving,
 			hasResolved,
 			record,
 			isMissing,
+			postId,
+			postType,
 		});
 	}, [isResolving, isMissing, hasResolved, record]);
 
