@@ -1,3 +1,4 @@
+import useClientWidth from './use-client-width';
 import useDebounce from './use-debounce';
 import useFetch from './use-fetch';
 import useKeyPress from './use-keypress';
@@ -14,6 +15,7 @@ function loadScript(slug, script) {
 
 window.prcHooks = {};
 
+loadScript('useClientWidth', useClientWidth);
 loadScript('useDebounce', useDebounce);
 loadScript('useFetch', useFetch);
 loadScript('useKeyPress', useKeyPress);
