@@ -9,7 +9,7 @@ import 'firebase/compat/auth';
 const { prcFirebaseConfig, prcFirebaseInteractivesConfig } = window;
 
 const app = firebase.initializeApp(prcFirebaseConfig);
-const interactives = firebase.initializeApp(
+const interactivesDB = firebase.initializeApp(
 	prcFirebaseInteractivesConfig,
 	'interactivesDB'
 );
@@ -29,5 +29,5 @@ function loadScript(slug, script) {
 }
 
 loadScript('firebase', app);
-loadScript('interactivesDB', interactives);
+loadScript('interactivesDB', interactivesDB);
 loadScript('firebaseAuth', auth);
