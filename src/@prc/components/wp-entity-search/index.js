@@ -38,7 +38,7 @@ import List from './search-results/List';
  * @return
  */
 export default function WPEntitySearch({
-	placeholder = "Climate Change",
+	placeholder = 'Climate Change',
 	searchLabel = __('Search'),
 	searchValue = '',
 	entityId = null,
@@ -53,7 +53,6 @@ export default function WPEntitySearch({
 	createNew = false,
 	children,
 }) {
-	const [siteId] = useEntityProp('root', 'site', 'siteId');
 	const [selectedId, setSelectedId] = useState(entityId);
 
 	const [isLoading, toggleLoading] = useState(!!searchValue);
@@ -71,6 +70,10 @@ export default function WPEntitySearch({
 	const hasSearchString = !!searchString.length;
 
 	const entityArgs = useMemo(() => {
+		console.log("entityArgs: ", entityId, entityType, searchInput, searchString);
+		if (searchInput !== searchString) {
+			return {};
+		}
 		const args = {
 			per_page: perPage,
 			search:
@@ -91,26 +94,37 @@ export default function WPEntitySearch({
 		entitySubType,
 		entityArgs
 	);
-	const hasSearchRecords =
-		!isLoading && searchRecords ? 0 < searchRecords.length : false;
-	const hasNothingFound = !isLoading && !hasSearchRecords;
+	const hasSearchRecords = useMemo(
+		() => !isLoading && searchRecords && searchRecords.length > 0,
+		[isLoading, searchRecords]
+	);
+	const hasNothingFound = useMemo(
+		() => !isLoading && !hasSearchRecords,
+		[isLoading, hasSearchRecords]
+	);
 
 	useEffect(() => {
 		toggleLoading(isResolving);
 	}, [isResolving]);
 
-	// useMemo for entityId if it changes value then get the the value by id from searchRecords and pass it to onSelect
+	// Handle passing the selected entity to the onSelect callback
+	// When complete clear the search input if clearOnSelect is true
 	useMemo(() => {
 		if (selectedId && searchRecords) {
-			const entity = searchRecords.find((record) => record.id === selectedId);
+			// Get the selected entity from the search records
+			const entity = searchRecords.find(
+				(record) => record.id === selectedId
+			);
 			if (entity) {
 				onSelect(entity);
+				setSelectedId(null);
 			}
+
 			if (clearOnSelect) {
 				setSearchInput('');
 			}
 		}
-	}, [selectedId, searchRecords]);
+	}, [selectedId, searchRecords, clearOnSelect]);
 
 	return (
 		<TabbableContainer
@@ -168,15 +182,11 @@ export default function WPEntitySearch({
 							>
 								{'function' !== typeof createNew && (
 									<div>
-										<span>
-											{__('No results found.')}
-										</span>
+										<span>{__('No results found.')}</span>
 									</div>
 								)}
 								{typeof createNew === 'function' && (
-									<div>
-										{createNew()}
-									</div>
+									<div>{createNew()}</div>
 								)}
 							</div>
 						</div>
