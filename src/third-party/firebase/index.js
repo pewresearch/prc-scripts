@@ -15,13 +15,6 @@ const interactivesDB = firebase.initializeApp(
 );
 const auth = firebase.auth();
 
-console.log(
-	'@prc/firebase config:',
-	prcFirebaseConfig,
-	prcFirebaseInteractivesConfig,
-	firebase
-);
-
 function loadScript(slug, script) {
 	if (!window[slug]) {
 		window[slug] = script;
