@@ -43,7 +43,7 @@ export default function WPEntitySearch({
 	searchValue = '',
 	entityId = null,
 	entityType = 'postType', // postType, taxonomy, user
-	entitySubType = 'post', // post, page, stub, category, tag, user
+	entitySubType = 'post', // post, page, staff, category, tag, user
 	onSelect = () => {},
 	onKeyEnter = () => {},
 	onKeyESC = () => {},
