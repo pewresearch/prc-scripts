@@ -1,5 +1,7 @@
 <?php
 namespace PRC\Platform;
+use WP_REST_Request, WP_Error, WP_Query, WP_User_Query, WP_Term_Query;
+
 /**
  * Plugin Name:       PRC Scripts
  * Plugin URI:        https://github.com/pewresearch/prc-scripts
@@ -18,9 +20,11 @@ define( 'PRC_SCRIPTS_DIR_PATH', __DIR__ );
 
 class Scripts {
 	public static $script_slugs = array();
+	public static $rest_endpoints = array();
 
 	public function __construct( $init = false ) {
 		if ( true === $init ) {
+			add_action('init', array($this, 'init_component_rest_endpoints'));
 			add_action('wp_enqueue_scripts',    array($this, 'init_first_party_scripts'), 0);
 			add_action('wp_enqueue_scripts',    array($this, 'init_third_party_scripts'), 0);
 			add_action('admin_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
@@ -122,8 +126,20 @@ class Scripts {
 		);
 	}
 
-	public function init_modules() {
-		// @TODO: Placeholder for now, we'll start work on defining our modules here for the new importmap modules system.
+	public function init_component_rest_endpoints() {
+		// get all folders in the components directory as an array
+		$directories = glob( plugin_dir_path( __FILE__ )  . 'src/@prc/components/*', GLOB_ONLYDIR );
+		foreach ($directories as $dir) {
+			// check if class-wp-rest-api.php file exists and require it
+			if ( file_exists( $dir . '/class-wp-rest-api.php' ) ) {
+				require_once( $dir . '/class-wp-rest-api.php' );
+				$namespace = str_replace('-', '_', basename($dir));
+				$class_name = 'Rest_API_Endpoint';
+				$full_class_name = 'PRC\Platform\Scripts\\' . $namespace . '\\' . $class_name;
+				$endpoint = new $full_class_name();
+				self::$rest_endpoints[] = $endpoint->get_endpoint();
+			}
+		}
 	}
 
 }

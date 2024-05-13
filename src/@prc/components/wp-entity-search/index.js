@@ -1,34 +1,18 @@
-/* eslint-disable max-lines */
-/* eslint-disable max-lines-per-function */
-/**
- * External Dependencies
- */
-import { useDebounce } from '@prc/hooks';
-
 /**
  * WordPress Dependencies
  */
-import { Fragment, useState, useMemo, useEffect } from 'react';
-import { __ } from '@wordpress/i18n';
+import { Fragment, useState, useMemo, useEffect } from '@wordpress/element';
 import {
-	Button,
-	Card,
-	CardBody,
-	CardMedia,
 	SearchControl,
-	Spinner,
 	TabbableContainer,
 	KeyboardShortcuts,
-	Modal,
-	ToolbarButton,
-	ToolbarGroup,
 } from '@wordpress/components';
-import { useEntityRecords, useEntityProp } from '@wordpress/core-data';
 
 /**
  * Internal Dependencies
  */
-import List from './search-results/List';
+import SearchResults from './search-results';
+import { ProvideWPEntitySearch } from './context';
 
 /**
  * A component to search for a post or stub by url or title
@@ -38,93 +22,31 @@ import List from './search-results/List';
  * @return
  */
 export default function WPEntitySearch({
-	placeholder = 'Climate Change',
-	searchLabel = __('Search'),
-	searchValue = '',
-	entityId = null,
-	entityType = 'postType', // postType, taxonomy, user
-	entitySubType = 'post', // post, page, staff, category, tag, user
+	placeholder = 'Climate Change', // placeholder for the search input
+	searchValue = '', // pre-populate the search input
 	onSelect = () => {},
 	onKeyEnter = () => {},
 	onKeyESC = () => {},
+	entityId,
+	entityType = 'postType', // taxonomy, user
+	entitySubType = 'post', // ['post', 'page', 'staff'] || ['category', 'tag'] || 'user'
 	perPage = 10,
-	showExcerpt = false,
+	hideChildren = true,
 	clearOnSelect = false,
 	createNew = false,
+	showExcerpt = false,
+	showType = true,
+	searchSize = 'default', // compact also available
 	children,
 }) {
-	const [selectedId, setSelectedId] = useState(entityId);
-
-	const [isLoading, toggleLoading] = useState(!!searchValue);
+	// Setup our search value first thing.
 	const [searchInput, setSearchInput] = useState(searchValue);
-	const searchString = useDebounce(searchInput, 500);
-	const searchStringIsUrl = useMemo(() => {
-		if (
-			undefined !== searchString &&
-			searchString.match(/^(http|https):\/\//)
-		) {
-			return true;
-		}
-		return false;
-	}, [searchString]);
-	const hasSearchString = !!searchString.length;
-
-	const entityArgs = useMemo(() => {
-		console.log("entityArgs: ", entityId, entityType, searchInput, searchString);
-		if (searchInput !== searchString) {
-			return {};
-		}
-		const args = {
-			per_page: perPage,
-			search:
-				!!searchString.length && !searchStringIsUrl ? searchString : '',
-			context: 'view',
-		};
-		if (entityId) {
-			args.include = [entityId]; // explicitly include the current entity
-		}
-		if ('postType' === entityType) {
-			args.post_parent = 0; // exclude child posts
-		}
-		return args;
-	}, [entityId, entityType, perPage, searchString, searchStringIsUrl]);
-
-	const { records: searchRecords, isResolving } = useEntityRecords(
-		entityType,
-		entitySubType,
-		entityArgs
-	);
-	const hasSearchRecords = useMemo(
-		() => !isLoading && searchRecords && searchRecords.length > 0,
-		[isLoading, searchRecords]
-	);
-	const hasNothingFound = useMemo(
-		() => !isLoading && !hasSearchRecords,
-		[isLoading, hasSearchRecords]
-	);
-
-	useEffect(() => {
-		toggleLoading(isResolving);
-	}, [isResolving]);
-
-	// Handle passing the selected entity to the onSelect callback
-	// When complete clear the search input if clearOnSelect is true
-	useMemo(() => {
-		if (selectedId && searchRecords) {
-			// Get the selected entity from the search records
-			const entity = searchRecords.find(
-				(record) => record.id === selectedId
-			);
-			if (entity) {
-				onSelect(entity);
-				setSelectedId(null);
-			}
-
-			if (clearOnSelect) {
-				setSearchInput('');
-			}
-		}
-	}, [selectedId, searchRecords, clearOnSelect]);
+	const searchControlSize = useMemo(() => {
+		// Inverting the syntax to make it more readable.
+		// For us you say searchControlSize="large" to get
+		// the "default" otheriwse we default to "compact"
+		return 'large' === searchSize ? 'default' : 'compact';
+	}, [searchSize]);
 
 	return (
 		<TabbableContainer
@@ -135,6 +57,7 @@ export default function WPEntitySearch({
 					esc: () => {
 						if ('function' === typeof onKeyESC) {
 							onKeyESC();
+							setSearchInput('');
 						}
 					},
 					enter: () => {
@@ -149,64 +72,35 @@ export default function WPEntitySearch({
 					onChange={(keyword) => setSearchInput(keyword)}
 					placeholder={placeholder}
 					autoComplete="off"
+					size={searchControlSize}
 				/>
+				<ProvideWPEntitySearch
+					{...{
+						entityId,
+						entityType,
+						entitySubType,
+						perPage,
+						hideChildren,
+						searchInput,
+						setSearchInput,
+						onSelect,
+						clearOnSelect,
+						createNew,
+						showExcerpt,
+						showType,
+					}}
+				>
+					<SearchResults />
+				</ProvideWPEntitySearch>
 			</KeyboardShortcuts>
-			{hasSearchString && (
-				<Fragment>
-					{isLoading && (
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								color: '#666',
-							}}
-						>
-							<span>Loading... </span>
-							<Spinner />
-						</div>
-					)}
-
-					{hasNothingFound && (
-						<div
-							style={{
-								textAlign: 'center',
-								color: '#666',
-								paddingTop: '1em',
-							}}
-						>
-							<div
-								style={{
-									padding: '1em 0',
-								}}
-							>
-								{'function' !== typeof createNew && (
-									<div>
-										<span>{__('No results found.')}</span>
-									</div>
-								)}
-								{typeof createNew === 'function' && (
-									<div>{createNew()}</div>
-								)}
-							</div>
-						</div>
-					)}
-
-					{hasSearchRecords && (
-						<List
-							{...{
-								searchRecords,
-								onSelect,
-								entityType,
-								showExcerpt,
-								selectedId,
-								setSelectedId,
-							}}
-						/>
-					)}
-				</Fragment>
-			)}
-			{children}
+			<div
+				className="wp-entity-search__children"
+				style={{
+					paddingTop: '0.5em',
+				}}
+			>
+				{children}
+			</div>
 		</TabbableContainer>
 	);
 }

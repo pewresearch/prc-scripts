@@ -9,6 +9,7 @@ import {
 	arrayToCSV,
 	tableToArray,
 	wpRestApiTermsToTree,
+	getPostByUrl,
 } from './functions';
 
 function loadScript(slug, script) {
@@ -29,5 +30,6 @@ loadScript('mailChimpInterests', mailChimpInterests);
 loadScript('arrayToCSV', arrayToCSV);
 loadScript('tableToArray', tableToArray);
 loadScript('wpRestApiTermsToTree', wpRestApiTermsToTree);
+loadScript('getPostByUrl', getPostByUrl);
 
 console.log('Loading @prc/functions...', window.prcFunctions);

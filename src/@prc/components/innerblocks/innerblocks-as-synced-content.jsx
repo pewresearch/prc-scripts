@@ -3,7 +3,7 @@
 /**
  * WordPress Dependencies
  */
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, createRef } from 'react';
 import { useEntityBlockEditor, useEntityRecord } from '@wordpress/core-data';
 import {
 	useInnerBlocksProps,
@@ -34,6 +34,8 @@ import LoadingIndicator from '../loading-indicator';
  * @param {Function} props.isMissingChildren - a function that will be called when the record is missing, useful for passing a component to render when the record is missing.
  * @param {Function} props.collector         - a function that will be called when the record changes, useful for passing information about the entitty to a higher level component.
  * @param {any}      props.children
+ * @param            props.ref
+ * @param            props.passedRef
  * @return
  */
 export default function InnerBlocksAsSyncedContent({
@@ -46,7 +48,18 @@ export default function InnerBlocksAsSyncedContent({
 	isMissingChildren,
 	collector,
 	children,
+	passedRef,
 }) {
+	// if there is no ref, create one
+	let ref;
+	if (!passedRef) {
+		ref = createRef();
+	} else {
+		ref = passedRef;
+	}
+	// add ref to blockProps
+	blockProps.ref = ref;
+
 	const { record, isResolving, hasResolved } = useEntityRecord(
 		'postType',
 		postType,

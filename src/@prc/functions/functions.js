@@ -1,10 +1,12 @@
+/* eslint-disable max-lines */
 /**
  * WordPress Dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { getEntityRecord } from '@wordpress/core-data';
 
-//@TODO make our mailchimp api have an endpoint to return these values from the db. also build an interface to manage them.
+// @TODO make our mailchimp api have an endpoint to return these values from the db. also build an interface to manage them.
 const mailChimpInterests = [
 	{
 		label: 'Weekly roundup of all new publications',
@@ -312,6 +314,30 @@ function wpRestApiTermsToTree(terms, restrictTo = []) {
 	return r;
 }
 
+async function getPostByUrl(url) {
+	try {
+		const resp = await apiFetch({
+			path: addQueryArgs('/prc-api/v3/utils/postid-by-url', {
+				url,
+			}),
+			method: 'GET',
+		});
+		const type = 'post' === resp?.postType ? 'posts' : resp?.postType;
+		const postSearchPath = addQueryArgs(`/wp/v2/${type}/${resp?.postId}`, {
+			context: 'view',
+		});
+		console.log('postSearchPath', postSearchPath);
+		const post = await apiFetch({
+			path: postSearchPath,
+			method: 'GET',
+		});
+		console.log('GOT THE POST', post);
+		return post;
+	} catch (err) {
+		throw err;
+	}
+}
+
 export {
 	getTerms,
 	getTermsByLetter,
@@ -322,5 +348,6 @@ export {
 	mailChimpInterests,
 	tableToArray,
 	arrayToCSV,
-	wpRestApiTermsToTree
+	wpRestApiTermsToTree,
+	getPostByUrl,
 };

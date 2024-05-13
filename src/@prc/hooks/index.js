@@ -4,8 +4,11 @@ import useFetch from './use-fetch';
 import useKeyPress from './use-keypress';
 import useHasSelectedInnerBlock from './use-has-innerblock-selected';
 import useLocalStorage from './use-local-storage';
+import useMultiEntityRecords from './use-multi-entity-records';
 import useTaxonomy from './use-taxonomy';
 import useWindowSize from './use-window-size';
+import useAfterPreview from './use-after-preview';
+import useAfterPublish from './use-after-publish';
 
 function loadScript(slug, script) {
 	if (!window.prcHooks[slug]) {
@@ -23,5 +26,8 @@ loadScript('useLocalStorage', useLocalStorage);
 loadScript('useWindowSize', useWindowSize);
 loadScript('useTaxonomy', useTaxonomy);
 loadScript('useHasSelectedInnerBlock', useHasSelectedInnerBlock);
+loadScript('useMultiEntityRecords', useMultiEntityRecords);
+loadScript('useAfterPreview', useAfterPreview);
+loadScript('useAfterPublish', useAfterPublish);
 
 console.log('Loading @prc/hooks...', window.prcHooks);

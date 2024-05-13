@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /**
  * External Dependencies
  */
@@ -159,7 +160,7 @@ export function URLSearchField({
 			post_parent: 0, // exclude child posts
 			search: hasSearchString && !searchStringIsUrl ? searchString : '',
 			context: 'view',
-		},
+		}
 	);
 	const hasSearchRecords =
 		!isLoading && !searchStringIsUrl && searchRecords
@@ -179,17 +180,21 @@ export function URLSearchField({
 				method: 'GET',
 			})
 				.then((resp) => {
-					const type = 'post' === resp?.postType ? 'posts' : resp?.postType;
-					const postSearchPath = addQueryArgs(`/wp/v2/${type}/${resp?.postId}`, {
-						context: 'view',
-					});
+					const type =
+						'post' === resp?.postType ? 'posts' : resp?.postType;
+					const postSearchPath = addQueryArgs(
+						`/wp/v2/${type}/${resp?.postId}`,
+						{
+							context: 'view',
+						}
+					);
 					console.log('postSearchPath', postSearchPath);
 					apiFetch({
 						path: postSearchPath,
 						method: 'GET',
 					})
 						.then((post) => {
-							console.log("GOT THE POST", post);
+							console.log('GOT THE POST', post);
 							resolve(post);
 						})
 						.catch((err) => reject(err));
@@ -285,7 +290,9 @@ export function URLSearchField({
 									padding: '1em 0',
 								}}
 							>
-								<span>{__('Nothing found.', 'prc-block-library')}</span>
+								<span>
+									{__('Nothing found.', 'prc-block-library')}
+								</span>
 							</div>
 							{searchStringIsUrl && (
 								<span>
@@ -295,7 +302,10 @@ export function URLSearchField({
 											onUpdateURL(searchString);
 										}}
 									>
-										{__('Change the URL', 'prc-block-library')}
+										{__(
+											'Change the URL',
+											'prc-block-library'
+										)}
 									</Button>
 								</span>
 							)}
@@ -305,7 +315,11 @@ export function URLSearchField({
 					{hasFoundObject && (
 						<div>
 							<SearchItem
-								{...{ item: foundObject, onSelect, disableImage }}
+								{...{
+									item: foundObject,
+									onSelect,
+									disableImage,
+								}}
 							/>
 							<div
 								style={{
@@ -321,7 +335,7 @@ export function URLSearchField({
 								<span>
 									{__(
 										`Click the item to replace this block's content`,
-										'prc-block-library',
+										'prc-block-library'
 									)}
 								</span>
 								{undefined !== postId && (
@@ -331,17 +345,27 @@ export function URLSearchField({
 												padding: '1em 0',
 											}}
 										>
-											<span>{__('~ or ~', 'prc-block-library')}</span>
+											<span>
+												{__(
+													'~ or ~',
+													'prc-block-library'
+												)}
+											</span>
 										</div>
 										{searchStringIsUrl && (
 											<span>
 												<Button
 													variant="secondary"
 													onClick={() => {
-														onUpdateURL(searchString);
+														onUpdateURL(
+															searchString
+														);
 													}}
 												>
-													{__('Change the URL', 'prc-block-library')}
+													{__(
+														'Change the URL',
+														'prc-block-library'
+													)}
 												</Button>
 											</span>
 										)}
@@ -379,7 +403,7 @@ export function URLSearchToolbar({
 				aria-haspopup="true"
 				label={__(
 					`Search for a ${postType} or paste url here`,
-					'prc-block-library',
+					'prc-block-library'
 				)}
 				icon="admin-links"
 				onClick={() => setIsModalOpen(true)}
@@ -389,7 +413,7 @@ export function URLSearchToolbar({
 				<Modal
 					title={__(
 						`Search for a ${postType} or paste url here`,
-						'prc-block-library',
+						'prc-block-library'
 					)}
 					onRequestClose={() => setIsModalOpen(false)}
 					shouldCloseOnClickOutside={false}
