@@ -1,2 +1,3 @@
-# prc-scripts
-A collection of custom UI components, WordPress/Gutenberg components, custom React hooks, and 3rd party libraries like Visx and Enquire, exclusively built for use with the PRC Platform. Use these scripts to streamline development and ensure consistency across PRC projects.
+# PRC Scripts
+
+This plugin streamlines the management of a diverse collection of 3rd party and 1st party scripts, and offers a comprehensive set of hooks, functions, and components that can be used to enhance the functionality of modules in the PRC Platform.

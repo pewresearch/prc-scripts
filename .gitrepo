@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = prc-scripts
+	branch = develop
+	commit = d4554740f7f46bac440ea42266a09eb618e8616b
+	parent = dbed4f92715006c763a009871788aad275602f74
+	method = merge
+	cmdver = 0.4.6
