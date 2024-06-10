@@ -1,6 +1,7 @@
-//TODO: Should probably move this and the one in core-table block to prc scripts
+// TODO: Should probably move this and the one in core-table block to prc scripts
 
-/** External Dependencies
+/**
+  External Dependencies
  */
 import CSV from 'comma-separated-values';
 
@@ -22,7 +23,7 @@ function convertJSONToAttributes(d, tag = 'td') {
 	return d.map((row) => ({ cells: convertToRow(row, tag) }));
 }
 
-function parseCSV(csvInput, attribute, setItems, setAttributes) {
+function parseCSV(csvInput, attribute, setItems, setAttributes, onChange) {
 	const opts = {
 		header: false,
 	};
@@ -51,22 +52,32 @@ function parseCSV(csvInput, attribute, setItems, setAttributes) {
 	}, []);
 	console.log({ data });
 	setItems(data);
-	setAttributes({
-		[attribute]: data
-			.filter((i) => !i.disabled)
-			.map((i) => ({
-				label: i.label,
-				value: i.value,
-			})),
-	});
+	if (typeof onChange === 'function') {
+		onChange(data);
+	} else if (typeof setAttributes === 'function') {
+		setAttributes({
+			[attribute]: data
+				.filter((i) => !i.disabled)
+				.map((i) => ({
+					label: i.label,
+					value: i.value,
+				})),
+		});
+	}
 	return data;
 }
 
-export default function handleCSV(files, attribute, setItems, setAtttibutes) {
+export default function handleCSV(
+	files,
+	attribute,
+	setItems,
+	setAtttibutes,
+	onChange
+) {
 	// eslint-disable-next-line no-undef
 	const reader = new FileReader();
 	reader.onload = () => {
-		parseCSV(reader.result, attribute, setItems, setAtttibutes);
+		parseCSV(reader.result, attribute, setItems, setAtttibutes, onChange);
 	};
 	Array.from(files).forEach((file) => reader.readAsBinaryString(file));
 }

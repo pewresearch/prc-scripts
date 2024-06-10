@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /**
  * External Dependencies
  */
@@ -22,7 +23,7 @@ import handleCSV from './csv-parser';
 const PanelDescription = styled.div`
 	grid-column: span 2;
 `;
-function Sorter({ options, setAttributes, attribute, clientId }) {
+function Sorter({ options, setAttributes, attribute, onChange, clientId }) {
 	const [items, setItems] = useState(options);
 	const [inputValue, setInputValue] = useState('');
 	const hiddenFileInput = useRef(null);
@@ -33,20 +34,21 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 				<List
 					values={items}
 					onChange={({ oldIndex, newIndex }) => {
-						const newItems = arrayMove(
-							items,
-							oldIndex,
-							newIndex
-						);
+						const newItems = arrayMove(items, oldIndex, newIndex);
 						setItems(newItems);
-						setAttributes({
-							[attribute]: newItems
-								.filter((i) => !i.disabled)
-								.map((i) => ({
-									label: i.label,
-									value: i.value,
-								})),
-						});
+						// check if onChange is a function
+						if (typeof onChange === 'function') {
+							onChange(newItems, oldIndex, newIndex);
+						} else if (typeof setAttributes === 'function') {
+							setAttributes({
+								[attribute]: newItems
+									.filter((i) => !i.disabled)
+									.map((i) => ({
+										label: i.label,
+										value: i.value,
+									})),
+							});
+						}
 					}}
 					renderList={({ children, props }) => (
 						<ul {...props}>{children}</ul>
@@ -69,9 +71,7 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 									? 'line-through'
 									: 'none',
 								backgroundColor:
-									isDragged || isSelected
-										? '#EEE'
-										: '#FFF',
+									isDragged || isSelected ? '#EEE' : '#FFF',
 								paddingTop: '5px',
 								paddingBottom: '5px',
 								borderBottom: '1px solid #CCC',
@@ -96,14 +96,20 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 											newIndex
 										);
 										setItems(newItems);
-										setAttributes({
-											[attribute]: newItems
-												.filter((i) => !i.disabled)
-												.map((i) => ({
-													label: i.label,
-													value: i.value,
-												})),
-										});
+										if (typeof onChange === 'function') {
+											onChange(newItems);
+										} else if (
+											typeof setAttributes === 'function'
+										) {
+											setAttributes({
+												[attribute]: newItems
+													.filter((i) => !i.disabled)
+													.map((i) => ({
+														label: i.label,
+														value: i.value,
+													})),
+											});
+										}
 									}}
 									style={{
 										border: 'none',
@@ -127,57 +133,65 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 				/>
 			</div>
 			<div>
-			{/*
+				{/*
 			@TODO: InputControl doesn't yet have an onEnter event.
 			Ideally keying enter on your keyboard should update the
 			list of options.
 			*/}
-			<InputControl
-				style={{ width: '100%' }}
-				value={inputValue}
-				placeholder="A new option ..."
-				onChange={(val) => {
-					setInputValue(val);
-				}}
-			/>
-			<Button
-				style={{ width: '100%', marginBottom: '24px' }}
-				type="button"
-				variant="secondary"
-				onClick={() => {
-					const formattedValue = inputValue
-						.toLowerCase()
-						.replace(/\s/g, '-')
-						.replace(/[^a-zA-Z0-9-]/g, '');
-					const newItems = [
-						...items,
-						{ label: inputValue, value: formattedValue },
-					];
-					setItems(newItems);
-					setAttributes({
-						[attribute]: newItems
-							.filter((i) => !i.disabled)
-							.map((i) => ({
-								label: i.label,
-								value: i.value,
-							})),
-					});
-					setInputValue('');
-				}}
-			>
-				Add New Option
-			</Button>
-			<Button
-				style={{ width: '100%' }}
-				type="button"
-				className="is-secondary is-destructive"
-				onClick={() => {
-					setItems([]);
-					setAttributes({ [attribute]: [] });
-				}}
-			>
-				Remove All Options
-			</Button>
+				<InputControl
+					style={{ width: '100%' }}
+					value={inputValue}
+					placeholder="A new option ..."
+					onChange={(val) => {
+						setInputValue(val);
+					}}
+				/>
+				<Button
+					style={{ width: '100%', marginBottom: '24px' }}
+					type="button"
+					variant="secondary"
+					onClick={() => {
+						const formattedValue = inputValue
+							.toLowerCase()
+							.replace(/\s/g, '-')
+							.replace(/[^a-zA-Z0-9-]/g, '');
+						const newItems = [
+							...items,
+							{ label: inputValue, value: formattedValue },
+						];
+						setItems(newItems);
+						if (typeof onChange === 'function') {
+							onChange(newItems);
+						} else if (typeof setAttributes === 'function') {
+							setAttributes({
+								[attribute]: newItems
+									.filter((i) => !i.disabled)
+									.map((i) => ({
+										label: i.label,
+										value: i.value,
+									})),
+							});
+						}
+						setInputValue('');
+					}}
+				>
+					Add New Option
+				</Button>
+				<Button
+					style={{ width: '100%' }}
+					type="button"
+					className="is-secondary is-destructive"
+					onClick={() => {
+						setItems([]);
+						if (typeof onChange === 'function') {
+							onChange([]);
+						} else if (typeof setAttributes === 'function') {
+							setAttributes({ [attribute]: [] });
+						}
+					}}
+				>
+					Remove All Options
+				</Button>
 			</div>
 
 			<div>
@@ -204,7 +218,8 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 							e.target.files,
 							attribute,
 							setItems,
-							setAttributes
+							setAttributes,
+							onChange
 						);
 					}}
 					style={{ display: 'none' }}
@@ -215,7 +230,8 @@ function Sorter({ options, setAttributes, attribute, clientId }) {
 							droppedFiles,
 							attribute,
 							setItems,
-							setAttributes
+							setAttributes,
+							onChange
 						);
 					}}
 				/>
