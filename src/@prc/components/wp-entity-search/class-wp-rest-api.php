@@ -3,6 +3,8 @@ namespace PRC\Platform\Scripts\WP_Entity_Search; // Use the folder name as the e
 use WP_Query, WP_User_Query, WP_Term_Query, WP_REST_Request;
 use PRC\Platform\URL_Helper;
 
+use function PRC\Platform\log_error;
+
 /**
  * @TODO Use this as the template for future components that need their own rest endpoints.
  */
@@ -18,12 +20,12 @@ class Rest_API_Endpoint {
 				return current_user_can('edit_posts');
 			},
 			'args' => array(
-				'entityType' => array(
-					'required' => true,
+				'entity_type' => array(
+					'required' => false,
 					'type' => 'string',
 					'default' => 'postType',
 				),
-				'entitySubType' => array(
+				'entity_sub_type' => array(
 					'required' => true,
 					'type' => array('string', 'array'),
 					'default' => 'post',
@@ -153,11 +155,14 @@ class Rest_API_Endpoint {
 	 */
 	public function restfully_handle_wp_entity_search( WP_REST_Request $request ) {
 		$search_value = $request->get_param('search');
-		$entity_type = $request->get_param('entityType');
-		$entity_sub_type = $request->get_param('entitySubType');
+		$entity_type = $request->get_param('entity_type');
+		$entity_sub_type = $request->get_param('entity_sub_type');
 		// check if entity_sub_type is an array, if so split it otherwise
 		if ( !is_array($entity_sub_type) ) {
 			$entity_sub_type = explode(',', $entity_sub_type);
+		}
+		if ( !is_array($entity_sub_type) ) {
+			$entity_sub_type = array($entity_sub_type);
 		}
 		return $this->query_for_search_value($search_value, $entity_type, $entity_sub_type);
 	}

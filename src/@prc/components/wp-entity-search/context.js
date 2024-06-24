@@ -66,8 +66,8 @@ const useWPEntitySearchContext = ({
 			setIsLoading(true);
 			apiFetch({
 				path: addQueryArgs(REST_ENDPOINT, {
-					entityType,
-					entitySubType,
+					entity_type: entityType,
+					entity_sub_type: entitySubType,
 					search: searchString,
 				}),
 				method: 'GET',
@@ -87,6 +87,7 @@ const useWPEntitySearchContext = ({
 	// Once there is a selectedId and records...
 	// This then handles the onSelect callback to pass the selected entity up to the parent component.
 	useEffect(() => {
+		console.log("update selectedId and records", selectedId, records);
 		if (selectedId && records) {
 			const entity = records.find(
 				(record) => record.entityId === selectedId
