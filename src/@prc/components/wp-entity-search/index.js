@@ -32,6 +32,7 @@ export default function WPEntitySearch({
 	entitySubType = 'post', // ['post', 'page', 'staff'] || ['category', 'tag'] || 'user'
 	perPage = 10,
 	hideChildren = true,
+	onUpdateURL = false,
 	clearOnSelect = false,
 	createNew = false,
 	showExcerpt = false,
@@ -83,6 +84,7 @@ export default function WPEntitySearch({
 						hideChildren,
 						searchInput,
 						setSearchInput,
+						onUpdateURL,
 						onSelect,
 						clearOnSelect,
 						createNew,

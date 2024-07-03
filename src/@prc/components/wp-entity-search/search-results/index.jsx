@@ -2,6 +2,7 @@
  * WordPress Dependencies
  */
 import { Fragment, useMemo } from '@wordpress/element';
+import { Button } from '@wordpress/components';
 
 /**
  * Internal Dependencies
@@ -19,6 +20,7 @@ export default function SearchResults({}) {
 		hasNothingFound,
 		hasSearchRecords,
 		createNew,
+		onUpdateURL,
 	} = useWPEntitySearch();
 
 	const loadingLabel = useMemo(() => {
@@ -46,6 +48,29 @@ export default function SearchResults({}) {
 					{records.map((item) => (
 						<SearchItem key={item?.entityId} item={item} />
 					))}
+				</div>
+			)}
+
+			{false !== onUpdateURL && (
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						marginTop: '20px',
+						flexDirection: 'column',
+						gap: '1em',
+					}}
+				>
+					<div> ~ or ~ </div>
+					<Button
+						variant="secondary"
+						onClick={() => {
+							onUpdateURL();
+						}}
+					>
+						Update URL
+					</Button>
 				</div>
 			)}
 		</div>

@@ -32,6 +32,7 @@ const useWPEntitySearchContext = ({
 	hideChildren,
 	searchInput,
 	setSearchInput,
+	onUpdateURL,
 	onSelect,
 	clearOnSelect,
 	createNew,
@@ -50,6 +51,13 @@ const useWPEntitySearchContext = ({
 		setSearchInput('');
 		setSelectedId(null);
 		setRecords([]);
+	};
+
+	const _onUpdateURL = () => {
+		// check if onUpdateURL is a function
+		if (typeof onUpdateURL === 'function') {
+			onUpdateURL(searchString);
+		}
 	};
 
 	useEffect(() => {
@@ -128,6 +136,7 @@ const useWPEntitySearchContext = ({
 		onSelect,
 		onClear,
 		clearOnSelect,
+		onUpdateURL: typeof onUpdateURL === 'function' ? _onUpdateURL : false,
 		createNew,
 		showExcerpt,
 		showType,
@@ -150,6 +159,7 @@ function ProvideWPEntitySearch({
 	hideChildren,
 	searchInput,
 	setSearchInput,
+	onUpdateURL,
 	onSelect,
 	clearOnSelect,
 	createNew,
@@ -165,6 +175,7 @@ function ProvideWPEntitySearch({
 		hideChildren,
 		searchInput,
 		setSearchInput,
+		onUpdateURL,
 		onSelect,
 		clearOnSelect,
 		createNew,
