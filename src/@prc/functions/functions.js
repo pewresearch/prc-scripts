@@ -231,7 +231,6 @@ function arrayToCSV(objArray, metadata) {
 
 			`;
 	}
-
 	for (let i = 0; i < array.length; i += 1) {
 		let line = '';
 		// if a value has a comma in it, wrap it in quotes

@@ -19,14 +19,16 @@ use WP_REST_Request, WP_Error, WP_Query, WP_User_Query, WP_Term_Query;
 define( 'PRC_SCRIPTS_DIR_PATH', __DIR__ );
 
 class Scripts {
-	public static $script_slugs = array();
-	public static $rest_endpoints = array();
+	public static $script_slugs = [];
+	public static $style_slugs = [];
+	public static $rest_endpoints = [];
 
 	public function __construct( $init = false ) {
 		if ( true === $init ) {
 			add_action('init', array($this, 'init_component_rest_endpoints'));
 			add_action('wp_enqueue_scripts',    array($this, 'init_first_party_scripts'), 0);
 			add_action('wp_enqueue_scripts',    array($this, 'init_third_party_scripts'), 0);
+			add_action('wp_enqueue_scripts',    array($this, 'init_third_party_styles'), 0);
 			add_action('admin_enqueue_scripts', array($this, 'init_first_party_scripts'), 0);
 			add_action('admin_enqueue_scripts', array($this, 'init_third_party_scripts'), 0);
 		}
@@ -89,6 +91,36 @@ class Scripts {
 					if ('firebase' === $script_slug) {
 						$this->localize_firebase($script_slug);
 					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Register third party styles.
+	 * Fires early, on wp_enqueue_scripts.
+	 * @return void
+	 */
+	public function init_third_party_styles() {
+		$directories = glob( plugin_dir_path( __FILE__ )  . 'build/third-party/*', GLOB_ONLYDIR );
+		foreach ($directories as $dir) {
+			// get contents of index.asset.php file from $dir
+			$asset_file  = include( $dir . '/index.asset.php' );
+			$style_name = basename($dir);
+			$style_slug = $style_name;
+			$style_src  = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $style_name . '/style-index.css';
+
+			// Check if style-index.css file exists and register it if it does.
+			if ( file_exists( $dir . '/style-index.css' ) ) {
+				$style = wp_register_style(
+					$style_slug,
+					$style_src,
+					[],
+					$asset_file['version'],
+					'screen'
+				);
+				if ( ! is_wp_error( $style ) ) {
+					self::$style_slugs[] = $style_slug;
 				}
 			}
 		}

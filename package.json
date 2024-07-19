@@ -1,7 +1,7 @@
 {
 	"name": "@prc/scripts",
 	"devDependencies": {
-		"@wordpress/scripts": "^27.3.0"
+		"@wordpress/scripts": "^28.2.0"
 	},
 	"scripts": {
 		"build": "bash .scripts/build.sh",
