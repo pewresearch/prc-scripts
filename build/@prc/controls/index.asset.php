@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('comma-separated-values', 'react', 'react-dom', 'wp-components', 'wp-i18n', 'wp-polyfill'), 'version' => '3abeac5cdfad484304f9');
+<?php return array('dependencies' => array('comma-separated-values', 'prc-icons', 'react', 'react-dom', 'wp-components', 'wp-i18n', 'wp-polyfill'), 'version' => '1dfc5da9c0ef515fa514');

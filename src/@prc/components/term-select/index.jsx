@@ -9,14 +9,11 @@ import styled from '@emotion/styled';
  * WordPress Dependencies
  */
 import { FormTokenField, Spinner } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
 import { useEffect, useState, useMemo } from '@wordpress/element';
 import { useEntityRecords } from '@wordpress/core-data';
 import { useDebounce } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
 import { isEmpty } from 'lodash';
-import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
 
 const TermSelectControl = styled('div')`
 	& .components-spinner {
@@ -26,21 +23,21 @@ const TermSelectControl = styled('div')`
 	}
 `;
 
-function TermSelect({
-	className,
-	onChange,
-	taxonomy,
-	value,
-	maxTerms,
-}) {
+function TermSelect({ className, onChange, taxonomy, value, maxTerms, label }) {
+	const l = label !== undefined ? label : `Select a ${taxonomy} term`;
+
 	const [searchTerm, setSearchTerm] = useState('');
 	const debounceSearchTerm = useDebounce(setSearchTerm, 500);
 
-	const { records, isResolving, hasResolved } = useEntityRecords('taxonomy', taxonomy, {
-		per_page: 10,
-		context: 'view',
-		search: searchTerm,
-	});
+	const { records, isResolving, hasResolved } = useEntityRecords(
+		'taxonomy',
+		taxonomy,
+		{
+			per_page: 10,
+			context: 'view',
+			search: searchTerm,
+		}
+	);
 
 	const suggestions = useMemo(() => {
 		if (hasResolved && records) {
@@ -70,15 +67,22 @@ function TermSelect({
 					}
 					const termToMatch = e[e.length - 1];
 					const selectedTerm = records.find(
-						(record) => record.name === termToMatch,
+						(record) => record.name === termToMatch
 					);
 
 					if (selectedTerm) {
 						// Clean the selected term so it only contains the properties we need.
 						const filteredTerm = Object.keys(selectedTerm)
 							.filter((key) =>
-								['id', 'name', 'slug', 'taxonomy', 'parent', 'link'].includes(
-									key,
+								[
+									'id',
+									'name',
+									'slug',
+									'taxonomy',
+									'parent',
+									'link',
+								].includes(
+									key
 									// eslint-disable-next-line prettier/prettier
 								))
 							.reduce(
@@ -86,12 +90,12 @@ function TermSelect({
 									...obj,
 									[key]: selectedTerm[key],
 								}),
-								{},
+								{}
 							);
 						onChange(filteredTerm);
 					}
 				}}
-				label={`Select a ${taxonomy} term`}
+				label={l}
 				maxLength={maxTerms}
 				__experimentalShowHowTo={false}
 			/>

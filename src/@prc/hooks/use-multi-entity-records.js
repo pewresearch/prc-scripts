@@ -30,14 +30,11 @@ export default function useMultiEntityRecords(
 					)
 				)
 			);
-			console.log('fetchedRecords', fetchedRecords);
 			// remove any fetched records that are null
 			const filteredRecords = fetchedRecords.filter(
 				(records) => records !== null
 			);
-			console.log('filteredRecords', filteredRecords);
 			const mergedRecords = filteredRecords.flat();
-			console.log('mergedRecords', mergedRecords);
 			setAllRecords(mergedRecords);
 			setIsResolving(false);
 		};

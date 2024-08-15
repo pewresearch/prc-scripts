@@ -6,82 +6,6 @@ import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { getEntityRecord } from '@wordpress/core-data';
 
-// @TODO make our mailchimp api have an endpoint to return these values from the db. also build an interface to manage them.
-const mailChimpInterests = [
-	{
-		label: 'Weekly roundup of all new publications',
-		value: 'xyz',
-	},
-	{
-		label: 'Quarterly update from the president',
-		value: 'xyz',
-	},
-	{
-		label: '--',
-		value: false,
-	},
-	{
-		label: 'Global attitudes & trends (twice a month)',
-		value: 'xyz',
-	},
-	{
-		label: 'Internet, science & tech (monthly)',
-		value: 'xyz',
-	},
-	{
-		label: 'Daily briefing of media news',
-		value: 'xyz',
-	},
-	{
-		label: 'Race & ethnicity (monthly)',
-		value: 'xyz',
-	},
-	{
-		label: 'Religion & public life - Weekly newsletter',
-		value: 'xyz',
-	},
-	{
-		label: 'Religion & public life - Daily religion headlines',
-		value: 'xyz',
-	},
-	{
-		label: 'Social & demographic trends (monthly)',
-		value: 'xyz',
-	},
-	{
-		label: 'Methodological research (quarterly)',
-		value: 'xyz',
-	},
-	{
-		label: 'U.S. politics & policy (monthly)',
-		value: 'xyz',
-	},
-	{
-		label: '--',
-		value: false,
-	},
-	{
-		label: 'SELECT ALL',
-		value: 'select-all',
-	},
-	{
-		label: '--',
-		value: false,
-	},
-	{
-		label: 'Mini-course - U.S. Immigration',
-		value: 'xxx',
-	},
-	{
-		label: 'Mini-course - U.S. Census',
-		value: 'xxxx',
-	},
-	{
-		label: 'Mini-course - Muslims and Islam',
-		value: 'xxxxx',
-	},
-];
-
 function ifMatchSetAttribute(
 	needle,
 	haystack,
@@ -344,7 +268,6 @@ export {
 	getTermsAsTree,
 	ifMatchSetAttribute,
 	randomId,
-	mailChimpInterests,
 	tableToArray,
 	arrayToCSV,
 	wpRestApiTermsToTree,
