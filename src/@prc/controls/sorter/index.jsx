@@ -65,13 +65,12 @@ function Sorter({
 			onChange(newItems, oldIndex, newIndex);
 		} else if (typeof setAttributes === 'function') {
 			setAttributes({
-				[attribute]: newItems
-					.filter((i) => !i.disabled)
-					.map((i) => ({
-						label: i.label,
-						value: i.value,
-						isActive: i.isActive || false,
-					})),
+				[attribute]: newItems.map((i) => ({
+					label: i.label,
+					value: i.value,
+					isActive: i.isActive || false,
+					disabled: i.disabled || false,
+				})),
 			});
 		}
 	};
@@ -121,6 +120,7 @@ function Sorter({
 									<InputControl
 										name="label"
 										value={value.label}
+										disabled={value.disabled}
 										onChange={(val) => {
 											items[index].label = val;
 											const newItems = arrayMove(
@@ -141,6 +141,7 @@ function Sorter({
 									<InputControl
 										name="value"
 										value={value.value}
+										disabled={value.disabled}
 										onChange={(val) => {
 											items[index].value = val;
 											const newItems = arrayMove(
@@ -302,12 +303,10 @@ function Sorter({
 							onChange(newItems);
 						} else if (typeof setAttributes === 'function') {
 							setAttributes({
-								[attribute]: newItems
-									.filter((i) => !i.disabled)
-									.map((i) => ({
-										label: i.label,
-										value: i.value,
-									})),
+								[attribute]: newItems.map((i) => ({
+									label: i.label,
+									value: i.value,
+								})),
 							});
 						}
 						setInputValue('');

@@ -9,6 +9,7 @@ import {
 	tableToArray,
 	wpRestApiTermsToTree,
 	getPostByUrl,
+	getContrastingColorFromHex,
 } from './functions';
 import writeInterstitialMessage from './interstitialMessageGenerator';
 
@@ -31,5 +32,6 @@ loadScript('tableToArray', tableToArray);
 loadScript('wpRestApiTermsToTree', wpRestApiTermsToTree);
 loadScript('getPostByUrl', getPostByUrl);
 loadScript('writeInterstitialMessage', writeInterstitialMessage);
+loadScript('getContrastingColorFromHex', getContrastingColorFromHex);
 
 console.log('Loading @prc/functions...', window.prcFunctions);

@@ -261,6 +261,41 @@ async function getPostByUrl(url) {
 	}
 }
 
+function hexToRgb(hex) {
+	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	hex = hex.toString().replace(shorthandRegex, (m, r, g, b) => {
+		return r + r + g + g + b + b;
+	});
+
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	if (!result) {
+		return 'black';
+	}
+
+	const rgb = [
+		parseInt(result[1], 16),
+		parseInt(result[2], 16),
+		parseInt(result[3], 16),
+	];
+	return rgb;
+}
+
+function getContrastingColorFromHex(
+	color,
+	outputLight = '#ffffff',
+	outputDark = '#2a2a2a'
+) {
+	const rgb = hexToRgb(color);
+	// set determine color contrast per W3 guidelines: https://www.w3.org/TR/AERT/#color-contrast
+	// Color brightness = ((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000
+	// The range for color brightness difference is 125.
+	const brightness = Math.round(
+		(rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000
+	);
+	const fill = brightness > 125 ? outputDark : outputLight;
+	return fill;
+}
+
 export {
 	getTerms,
 	getTermsByLetter,
@@ -272,4 +307,5 @@ export {
 	arrayToCSV,
 	wpRestApiTermsToTree,
 	getPostByUrl,
+	getContrastingColorFromHex,
 };

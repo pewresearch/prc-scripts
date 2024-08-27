@@ -5,6 +5,7 @@ import {
 	getInnerBlocksContextAsQuery,
 	InnerBlocksAsSyncedContent,
 } from './innerblocks';
+import InspectorPopoutPanel from './inspector-popout-panel';
 import {
 	registerListStore,
 	ListStoreItem,
@@ -13,6 +14,7 @@ import {
 } from './list-store';
 import MarkedRangeControl from './marked-range-control';
 import MediaDropZone from './media-dropzone';
+import MediaImageSlot from './media-image-slot';
 import Placeholder from './placeholder';
 import Select from './select';
 import Slider from './slider';
@@ -42,12 +44,14 @@ loadScript('HeadingLevelToolbar', HeadingLevelToolbar);
 loadScript('InnerBlocksAsContextTemplate', InnerBlocksAsContextTemplate);
 loadScript('getInnerBlocksContextAsQuery', getInnerBlocksContextAsQuery);
 loadScript('InnerBlocksAsSyncedContent', InnerBlocksAsSyncedContent);
+loadScript('InspectorPopoutPanel', InspectorPopoutPanel);
 loadScript('registerListStore', registerListStore);
 loadScript('ListStoreItem', ListStoreItem);
 loadScript('listStoreActions', actions);
 loadScript('listStoreReducer', reducer);
 loadScript('MarkedRangeControl', MarkedRangeControl);
 loadScript('MediaDropZone', MediaDropZone);
+loadScript('MediaImageSlot', MediaImageSlot);
 loadScript('Placeholder', Placeholder);
 loadScript('Select', Select);
 loadScript('Slider', Slider);
