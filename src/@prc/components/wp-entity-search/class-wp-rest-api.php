@@ -53,6 +53,7 @@ class Rest_API_Endpoint {
 			$new_item['entityDate'] = $item->post_date;
 			$new_item['entityType'] = 'postType';
 			$new_item['entitySubType'] = $item->post_type;
+			$new_item['entitySlug'] = $item->post_name;
 			$new_item['entityId'] = $item->ID;
 			$new_item['entityUrl'] = get_permalink($item->ID);
 		} elseif (is_a($item, 'WP_Term')) {
@@ -61,6 +62,7 @@ class Rest_API_Endpoint {
 			$new_item['entityDate'] = null;
 			$new_item['entityType'] = 'taxonomy';
 			$new_item['entitySubType'] = $item->taxonomy;
+			$new_item['entitySlug'] = $item->slug;
 			$new_item['entityId'] = $item->term_id;
 			$new_item['entityUrl'] = get_term_link($item->term_id);
 		}
