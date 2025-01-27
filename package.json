@@ -1,7 +1,7 @@
 {
-	"name": "@prc/scripts",
+	"name": "@pewresearch/prc-platform-scripts",
 	"devDependencies": {
-		"@wordpress/scripts": "^28.2.0"
+		"@wordpress/scripts": "^30.3.0"
 	},
 	"scripts": {
 		"build": "bash .scripts/build.sh",

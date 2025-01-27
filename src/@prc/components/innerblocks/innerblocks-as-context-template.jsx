@@ -6,7 +6,13 @@ import md5 from 'md5';
 /**
  * WordPress Dependencies
  */
-import { memo, useMemo, useState, useEffect, Fragment } from 'react';
+import {
+	memo,
+	useMemo,
+	useState,
+	useEffect,
+	Fragment,
+} from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import {
 	BlockContextProvider,
@@ -51,6 +57,7 @@ function InnerBlocksAsContextTemplatePreview({
 		setActiveBlockContextId(blockContextId);
 	};
 
+	// Hide the preview when it is not the active block context.
 	const style = {
 		display: isHidden ? 'none' : undefined,
 	};
@@ -60,8 +67,8 @@ function InnerBlocksAsContextTemplatePreview({
 			{...blockPreviewProps}
 			tabIndex={0}
 			role="button"
-			onClick={handleOnClick}
-			onKeyPress={handleOnClick}
+			onClick={handleOnClick} // When clicking into a block preview this keeps the block active.
+			onKeyDown={handleOnClick} // Ensures any keyboard event will keep this block active.
 			style={style}
 		/>
 	);
@@ -145,39 +152,34 @@ export function InnerBlocksAsContextTemplate({
 	// This ensures that when it is displayed again, the cached rendering of the
 	// block preview is used, instead of having to re-render the preview from scratch.
 	return (
-		<Fragment>
-			{blockContexts &&
-				blockContexts.map((blockContext, index) => {
-					const contextId = md5(JSON.stringify(blockContext));
-					const isVisible =
-						contextId ===
-						(activeBlockContextId ||
-							md5(JSON.stringify(blockContexts[0])));
+		blockContexts &&
+		blockContexts.map((blockContext, index) => {
+			const contextId = md5(JSON.stringify(blockContext));
+			const isVisible =
+				contextId ===
+				(activeBlockContextId || md5(JSON.stringify(blockContexts[0])));
 
-					return (
-						<BlockContextProvider
-							key={`context-key--${index}`}
-							value={blockContext}
-						>
-							{activeBlockContextId === null || isVisible ? (
-								<InnerBlocksTemplateBlocks
-									{...{
-										allowedBlocks,
-										template,
-									}}
-								/>
-							) : null}
-							<MemoziedInnerBlocksTemplatePreview
-								blocks={blocks}
-								blockContextId={contextId}
-								setActiveBlockContextId={
-									setActiveBlockContextId
-								}
-								isHidden={isVisible}
-							/>
-						</BlockContextProvider>
-					);
-				})}
-		</Fragment>
+			return (
+				<BlockContextProvider
+					key={`context-key--${index}`}
+					value={blockContext}
+				>
+					{activeBlockContextId === null || isVisible ? (
+						<InnerBlocksTemplateBlocks
+							{...{
+								allowedBlocks,
+								template,
+							}}
+						/>
+					) : null}
+					<MemoziedInnerBlocksTemplatePreview
+						blocks={blocks}
+						blockContextId={contextId}
+						setActiveBlockContextId={setActiveBlockContextId}
+						isHidden={isVisible}
+					/>
+				</BlockContextProvider>
+			);
+		})
 	);
 }

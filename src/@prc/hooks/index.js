@@ -9,6 +9,7 @@ import useTaxonomy from './use-taxonomy';
 import useWindowSize from './use-window-size';
 import useAfterPreview from './use-after-preview';
 import useAfterPublish from './use-after-publish';
+import usePostIdsAsOptions from './use-postids-as-options';
 
 function loadScript(slug, script) {
 	if (!window.prcHooks[slug]) {
@@ -29,5 +30,6 @@ loadScript('useHasSelectedInnerBlock', useHasSelectedInnerBlock);
 loadScript('useMultiEntityRecords', useMultiEntityRecords);
 loadScript('useAfterPreview', useAfterPreview);
 loadScript('useAfterPublish', useAfterPublish);
+loadScript('usePostIdsAsOptions', usePostIdsAsOptions);
 
 console.log('Loading @prc/hooks...', window.prcHooks);

@@ -112,8 +112,6 @@ const useWPEntitySearchContext = ({
 
 	// Check if there are search records
 	const hasSearchRecords = useMemo(() => {
-		console.log('hasSearchRecords', records);
-		console.log(!isLoading && records && records.length > 0);
 		return (
 			!isLoading && records && records.length > 0 && searchString !== ''
 		);

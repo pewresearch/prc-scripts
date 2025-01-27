@@ -46,7 +46,7 @@ function MediaDropZone({
 	onUpdate = (attachment) => {
 		console.warn(
 			'Media DropZone Attachment, use onUpdate prop when using <MediaDropZone/>: ',
-			attachment,
+			attachment
 		);
 	},
 	onClear = false,
@@ -61,7 +61,7 @@ function MediaDropZone({
 }) {
 	const fallbackInstructions = __(
 		`Drop a ${singularLabel} here, or click to replace.`,
-		'prc-block-library',
+		'prc-block-library'
 	);
 	const l = null !== label ? label : `Set ${singularLabel}`;
 
@@ -102,8 +102,10 @@ function MediaDropZone({
 				if (has(m, ['media_details', 'sizes', fallbackMediaSize])) {
 					// use fallbackMediaSize when mediaSize is not available
 					mediaWidth = m.media_details.sizes[fallbackMediaSize].width;
-					mediaHeight = m.media_details.sizes[fallbackMediaSize].height;
-					mediaSourceUrl = m.media_details.sizes[fallbackMediaSize].source_url;
+					mediaHeight =
+						m.media_details.sizes[fallbackMediaSize].height;
+					mediaSourceUrl =
+						m.media_details.sizes[fallbackMediaSize].source_url;
 				} else {
 					// use full image size when mediaFallbackSize and mediaSize are not available
 					mediaWidth = m.media_details.width;
@@ -120,7 +122,7 @@ function MediaDropZone({
 				type: false !== m ? m?.media_type : false,
 			};
 		},
-		[id],
+		[id]
 	);
 
 	const onMediaUpdate = (m) => {
@@ -136,7 +138,7 @@ function MediaDropZone({
 			allowedTypes: allowedMediaTypes,
 			filesList,
 			onFileChange([file]) {
-				console.log("onFileChange", file);
+				console.log('onFileChange', file);
 				if (!file.id) {
 					setIsUploading(true);
 				} else {
@@ -150,7 +152,11 @@ function MediaDropZone({
 		});
 	};
 
-	const isUploaded = false !== id && false !== media && false !== src && false === isUploading;
+	const isUploaded =
+		false !== id &&
+		false !== media &&
+		false !== src &&
+		false === isUploading;
 
 	const displayClearButton = false !== type;
 
@@ -172,7 +178,10 @@ function MediaDropZone({
 							{isUploaded && (
 								<Fragment>
 									{!children && 'image' === type && (
-										<OpenButton type="button" onClick={onClick}>
+										<OpenButton
+											type="button"
+											onClick={onClick}
+										>
 											<img
 												alt={fallbackInstructions}
 												src={src}
@@ -182,12 +191,17 @@ function MediaDropZone({
 										</OpenButton>
 									)}
 									{!children && 'image' !== type && (
-										<Button variant="secondary" onClick={onClick}>
+										<Button
+											variant="secondary"
+											onClick={onClick}
+										>
 											{editButtonLabel}
 										</Button>
 									)}
 									{children && (
-										<OpenAction onClick={onClick}>{children}</OpenAction>
+										<OpenAction onClick={onClick}>
+											{children}
+										</OpenAction>
 									)}
 								</Fragment>
 							)}
@@ -207,7 +221,7 @@ function MediaDropZone({
 							)}
 							{!isUploaded && isUploading && (
 								<Button variant="secondary" isBusy>
-									{__(` Loading...`)}
+									{__( Loading…)}
 								</Button>
 							)}
 							{!isUploaded && !isUploading && (
