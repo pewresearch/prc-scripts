@@ -10,6 +10,7 @@ import useWindowSize from './use-window-size';
 import useAfterPreview from './use-after-preview';
 import useAfterPublish from './use-after-publish';
 import usePostIdsAsOptions from './use-postids-as-options';
+import useDeviceBoundAttribute from './use-device-bound-attribute';
 
 function loadScript(slug, script) {
 	if (!window.prcHooks[slug]) {
@@ -31,5 +32,6 @@ loadScript('useMultiEntityRecords', useMultiEntityRecords);
 loadScript('useAfterPreview', useAfterPreview);
 loadScript('useAfterPublish', useAfterPublish);
 loadScript('usePostIdsAsOptions', usePostIdsAsOptions);
+loadScript('useDeviceBoundAttribute', useDeviceBoundAttribute);
 
 console.log('Loading @prc/hooks...', window.prcHooks);
