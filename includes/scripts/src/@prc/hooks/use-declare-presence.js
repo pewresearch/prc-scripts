@@ -5,6 +5,11 @@ import { useEffect, useMemo, useRef } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
+ * Internal Dependencies
+ */
+import { isPresenceApiEnabled } from './presence-utils';
+
+/**
  * Default heartbeat interval (ms) for re-declaring presence.
  *
  * Presence entries TTL after 60 seconds (WP_PRESENCE_DEFAULT_TTL in presence-api),
@@ -104,7 +109,7 @@ export default function useDeclarePresence(room, data, options = {}) {
 	// Lifecycle: DELETE on room/enabled change or unmount.
 	// POST is handled by the heartbeat effect below; this one only owns cleanup.
 	useEffect(() => {
-		if (!room || !enabled) {
+		if (!room || !enabled || !isPresenceApiEnabled()) {
 			debugLog('lifecycle inert', { room, enabled });
 			return undefined;
 		}
@@ -124,7 +129,7 @@ export default function useDeclarePresence(room, data, options = {}) {
 
 	// Heartbeat: POST on mount, data change, and interval.
 	useEffect(() => {
-		if (!room || !enabled) {
+		if (!room || !enabled || !isPresenceApiEnabled()) {
 			return undefined;
 		}
 

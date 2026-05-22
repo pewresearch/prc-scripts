@@ -6,6 +6,11 @@ import { useSelect } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
+ * Internal Dependencies
+ */
+import { isPresenceApiEnabled } from './presence-utils';
+
+/**
  * Default interval (ms) for Presence API REST fetches.
  * Matches the default WordPress Heartbeat interval (15 s).
  */
@@ -64,6 +69,10 @@ export default function usePresenceUsers(room, options = {}) {
 	const fetchPresence = useCallback(async () => {
 		if (!room) {
 			debugLog('skip fetch: no room');
+			return;
+		}
+		if (!isPresenceApiEnabled()) {
+			debugLog('skip fetch: presence api disabled');
 			return;
 		}
 
@@ -166,7 +175,7 @@ export default function usePresenceUsers(room, options = {}) {
 	}, [room, currentUserId, includeSelf]);
 
 	useEffect(() => {
-		if (!room) {
+		if (!room || !isPresenceApiEnabled()) {
 			setUserIds([]);
 			dataByUserIdRef.current = {};
 			prevStateKey.current = '';

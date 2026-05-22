@@ -36,6 +36,23 @@ class Scripts {
 	 * window.prcPlatform.envType = 'production' | 'development' | 'local' | 'staging'
 	 * window.prcPlatform.version = '1.0.0'
 	 * window.prcPlatform.releaseName = 'Release Name'
+	 * window.prcPlatform.presenceApiEnabled = true | false
+	 *
+	 * `presenceApiEnabled` reflects `function_exists( 'wp_set_presence' )` and is
+	 * consumed by `@prc/hooks` (`usePresenceUsers`, `useDeclarePresence`) to
+	 * gracefully degrade when the optional, vendored `presence-api` plugin is not
+	 * loaded on the site. We detect the plugin from the outside rather than
+	 * patching it directly because `presence-api` is upstream-maintained and we
+	 * don't want to carry a local diff against it. Without this signal, those
+	 * hooks happily poll `/wp-presence/v1/presence` on a 15–30 second heartbeat
+	 * and trip on `rest_no_route` errors — producing render churn that has been
+	 * observed to cascade into React 185 ("maximum update depth exceeded") in
+	 * editor SlotFills downstream.
+	 *
+	 * **Temporary:** `presenceApiEnabled` is a short-term bridge. Plan to remove
+	 * it once Presence is wired more deeply into the platform (e.g. a single
+	 * canonical integration surface or core-backed presence) so consumers no
+	 * longer need a separate opt-in signal on `window.prcPlatform`.
 	 *
 	 * @hook wp_enqueue_scripts
 	 *
@@ -48,10 +65,11 @@ class Scripts {
 			'react', // We bind this to react which is effectively enqueued everywhere.
 			'prcPlatform',
 			array(
-				'siteUrl'     => get_site_url(),
-				'envType'     => wp_get_environment_type(),
-				'version'     => $version,
-				'releaseName' => $release_name,
+				'siteUrl'            => get_site_url(),
+				'envType'            => wp_get_environment_type(),
+				'version'            => $version,
+				'releaseName'        => $release_name,
+				'presenceApiEnabled' => function_exists( 'wp_set_presence' ),
 			)
 		);
 	}

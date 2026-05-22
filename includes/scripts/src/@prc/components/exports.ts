@@ -18,6 +18,14 @@ export { default as EntityPatternModal } from './entity-pattern-modal';
 // Heading Level Toolbar
 export { default as HeadingLevelToolbar } from './heading-level-toolbar';
 
+// Icon Picker
+export { default as IconPicker } from './icon-picker';
+export type {
+	IconPickerProps,
+	IconPickerValue,
+	IconPosition,
+} from './icon-picker';
+
 // InnerBlocks utilities
 export {
 	InnerBlocksAsContextTemplate,
