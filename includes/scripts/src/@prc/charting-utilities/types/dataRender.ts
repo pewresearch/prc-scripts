@@ -10,6 +10,11 @@ export type DataRender = {
 	yScale: 'linear' | 'time' | 'log' | 'sqrt';
 	mapScale: 'ordinal' | 'threshold' | 'quantile' | 'quantize' | 'linear';
 	mapScaleDomain: string[] | number[];
+	// Rendering style for geographic maps. 'choropleth' fills polygon shapes by value;
+	// 'bubble' draws scaleSqrt-sized circles at each feature's centroid with the
+	// polygon as decorative context. Only applies to map types in
+	// BUBBLE_MAP_CHART_TYPES (states/counties/CBSA/world — not block/hex).
+	mapStyle?: 'choropleth' | 'bubble';
 	xFormat?:
 		| 'YYYY-MM-DD'
 		| 'YYYY-MM'
@@ -35,6 +40,10 @@ export type DataRender = {
 		| 'zh-CN'
 		| 'zh-TW';
 	isHighlightedColor: string;
+	highlightColor: string;
+	deselectedColor: string;
+	deselectedOpacity: number;
+	highlightedCategories: string[];
 	// Group Breaks - for visually separating data by category
 	groupBreaksActive?: boolean;
 	groupBreaksCategory?: string;

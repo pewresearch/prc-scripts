@@ -16,6 +16,7 @@ export type Layout = {
 		| 'stacked-area'
 		| 'map-usa'
 		| 'map-usa-counties'
+		| 'map-usa-cbsa'
 		| 'map-usa-block'
 		| 'map-usa-hex'
 		| 'map-world'

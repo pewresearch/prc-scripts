@@ -37,4 +37,12 @@ export type Map = {
 	rotatePhi: number; // pitch
 	rotateGamma: number; // roll
 	customScale: number; // scale multiplier (1 = default fitSize)
+	// Bubble-mode styling — consumed when dataRender.mapStyle === 'bubble'.
+	bubble: {
+		minRadius: number;
+		maxRadius: number;
+		opacity: number;
+		stroke: string;
+		strokeWidth: number;
+	};
 };

@@ -10,7 +10,12 @@ export const getLegendProps = (config: Legend) => {
 			display: 'flex',
 			flexFlow: `${orientation} wrap`,
 		},
-		shape: markerStyle,
+		// 'none' and 'label' both suppress the swatch; ClickableLegend handles
+		// the actual hiding via context. Always pass a valid visx shape here.
+		shape:
+			markerStyle !== 'none' && markerStyle !== 'label'
+				? markerStyle
+				: 'rect',
 		shapeWidth: 9,
 		shapeHeight: 9,
 		direction: orientation,

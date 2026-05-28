@@ -69,6 +69,12 @@ export {
 	getGroupValue,
 	generateElementKey,
 } from './utilities/helpers';
+export {
+	resolveCategoryColor,
+	resolveCategoryOpacity,
+	withCategoryOpacity,
+	legendCategoryShapeStyle,
+} from './utilities/resolveCategoryColor';
 export { DataContext, DataProvider } from './utilities/DataContext';
 export { createTopologyLoader } from './utilities/loadTopology';
 export * from './utilities/colorPalettes';
