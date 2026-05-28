@@ -8,4 +8,4 @@ Entrypoint [1mindex[39m[22m 6.86 KiB = [1m[32mindex.js[39m[22m 6.7 KiB [
 orphan modules 14.2 KiB [1m[33m[orphan][39m[22m 13 modules
 runtime modules 937 bytes 4 modules
 [1m./exports.js + 13 modules[39m[22m 14.8 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 3112 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 3497 ms
