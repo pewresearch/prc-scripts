@@ -9,4 +9,4 @@ orphan modules 167 KiB [1m[33m[orphan][39m[22m 155 modules
 built modules 55.5 KiB [1m[33m[built][39m[22m
   [1m./index.js + 12 modules[39m[22m 34.2 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   [1m../../../../../../../node_modules/d3-regression/dist/d3-regression.js[39m[22m 21.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 7494 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 8194 ms
