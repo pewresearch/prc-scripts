@@ -2,6 +2,8 @@
  * WordPress Dependencies
  */
 import { useState, useCallback, useRef } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Input parameters for ability execution.
@@ -54,6 +56,85 @@ interface UseAISuggestReturn<T = AbilityOutput> {
 }
 
 /**
+ * Whether an error indicates the ability is simply absent from the client
+ * abilities store (a server-only ability registered in PHP) rather than a
+ * genuine execution failure. These are the errors `executeAbility` throws
+ * before it ever runs the ability, so they are safe to retry over REST.
+ *
+ * @param err The thrown error.
+ * @return True when the ability should be retried via the REST run endpoint.
+ */
+function isAbilityNotFoundError(err: unknown): boolean {
+	if (!err || typeof err !== 'object') {
+		return false;
+	}
+	const code = 'code' in err && typeof err.code === 'string' ? err.code : '';
+	const message =
+		'message' in err && typeof err.message === 'string' ? err.message : '';
+	return (
+		code === 'ability_not_found' ||
+		message.includes('Ability not found') ||
+		message.includes('missing callback')
+	);
+}
+
+/**
+ * Run a server-registered ability via the REST run endpoint, matching
+ * `@wordpress/core-abilities` HTTP method selection for readonly abilities.
+ *
+ * @param abilityName Registered ability name.
+ * @param input       Optional ability input.
+ * @return Ability output from the REST run endpoint.
+ */
+async function runAbilityViaRest(
+	abilityName: string,
+	input?: AbilityInput
+): Promise<AbilityOutput> {
+	const ability = await apiFetch<{
+		meta?: {
+			annotations?: {
+				readonly?: boolean;
+				destructive?: boolean;
+				idempotent?: boolean;
+			};
+		};
+	}>({
+		path: `/wp-abilities/v1/abilities/${abilityName}`,
+	});
+
+	let method: 'GET' | 'POST' | 'DELETE' = 'POST';
+	if (ability.meta?.annotations?.readonly) {
+		method = 'GET';
+	} else if (
+		ability.meta?.annotations?.destructive &&
+		ability.meta?.annotations?.idempotent
+	) {
+		method = 'DELETE';
+	}
+
+	let path = `/wp-abilities/v1/abilities/${abilityName}/run`;
+	const options: {
+		method: 'GET' | 'POST' | 'DELETE';
+		data?: { input: AbilityInput };
+	} = { method };
+
+	if (
+		(method === 'GET' || method === 'DELETE') &&
+		input !== null &&
+		input !== undefined
+	) {
+		path = addQueryArgs(path, { input });
+	} else if (method === 'POST' && input !== null && input !== undefined) {
+		options.data = { input };
+	}
+
+	return apiFetch<AbilityOutput>({
+		path,
+		...options,
+	});
+}
+
+/**
  * Hook that wraps the WordPress Abilities API with a standard
  * loading / error / result state machine.
  *
@@ -102,12 +183,41 @@ export default function useAISuggest<T = AbilityOutput>(
 			setResult(null);
 
 			try {
-				// We import the @wordpress/abilities script module dynamically
-				// use webpackIgnore to avoid bundling the script module or adding it to the dependency list
-				const { executeAbility } = await import(
-					/* webpackIgnore: true */ '@wordpress/abilities'
-				);
-				const raw = await executeAbility(abilityName, input);
+				// The @wordpress/abilities store has no REST resolver, so
+				// abilities registered only server-side (via wp_register_ability)
+				// are absent from the client store until @wordpress/core-abilities
+				// fetches and registers them. Triggering initialize() hydrates
+				// them. This is idempotent (the module caches its init promise).
+				// A failure here is non-fatal: the REST fallback below still runs
+				// the ability server-side.
+				try {
+					const coreAbilities = await import(
+						/* webpackIgnore: true */ '@wordpress/core-abilities'
+					);
+					await coreAbilities?.initialize?.();
+				} catch {
+					// Ignore: fall through to executeAbility / REST fallback.
+				}
+
+				let raw: AbilityOutput;
+				try {
+					// We import the @wordpress/abilities script module dynamically
+					// use webpackIgnore to avoid bundling the script module or adding it to the dependency list
+					const { executeAbility } = await import(
+						/* webpackIgnore: true */ '@wordpress/abilities'
+					);
+					raw = await executeAbility(abilityName, input);
+				} catch (executeErr) {
+					// Server-only abilities may still be missing from the client
+					// store. Mirror the canonical WP AI plugin: fall back to the
+					// REST run endpoint for "ability not found" class errors, and
+					// rethrow anything else (e.g. permission denied) to the outer
+					// catch.
+					if (!isAbilityNotFoundError(executeErr)) {
+						throw executeErr;
+					}
+					raw = await runAbilityViaRest(abilityName, input);
+				}
 
 				// Handle error strings returned inside the result object.
 				if (
