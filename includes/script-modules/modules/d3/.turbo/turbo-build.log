@@ -2,11 +2,11 @@
 > @prc/d3@1.0.0 build
 > wp-scripts build index.js --output-path=./build
 
-asset [1m[32m./module.min.js[39m[22m 121 KiB [1m[32m[emitted][39m[22m [javascript module] [1m[32m[minimized][39m[22m (name: module) 1 related asset
-asset [1m[32mimportmap-polyfill.min.js[39m[22m 29.9 KiB [1m[32m[emitted][39m[22m [from: ../../../../../../node_modules/es-module-shims/dist/es-module-shims.wasm.js] [1m[32m[copied][39m[22m [1m[32m[minimized][39m[22m
-asset [1m[32m./module.min.asset.php[39m[22m 104 bytes [1m[32m[emitted][39m[22m (name: module)
-Entrypoint [1mmodule[39m[22m 121 KiB (497 KiB) = [1m[32m./module.min.js[39m[22m 121 KiB [1m[32m./module.min.asset.php[39m[22m 104 bytes 1 auxiliary asset
-orphan modules 724 KiB [1m[33m[orphan][39m[22m 590 modules
+asset ./module.min.js 121 KiB [emitted] [javascript module] [minimized] (name: module) 1 related asset
+asset importmap-polyfill.min.js 29.9 KiB [emitted] [from: ../../../../../../node_modules/es-module-shims/dist/es-module-shims.wasm.js] [copied] [minimized]
+asset ./module.min.asset.php 104 bytes [emitted] (name: module)
+Entrypoint module 121 KiB (497 KiB) = ./module.min.js 121 KiB ./module.min.asset.php 104 bytes 1 auxiliary asset
+orphan modules 724 KiB [orphan] 590 modules
 runtime modules 396 bytes 2 modules
-[1m./src/index.js + 230 modules[39m[22m 285 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 15985 ms
+./src/index.js + 230 modules 285 KiB [built] [code generated]
+webpack 5.106.2 compiled successfully in 8957 ms
