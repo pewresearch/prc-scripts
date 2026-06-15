@@ -2,10 +2,10 @@
 > sqids@1.0.0 build
 > wp-scripts build
 
-asset index.js 8.62 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
-Entrypoint index 8.7 KiB = index.js 8.62 KiB index.asset.php 84 bytes
+asset [1m[32mindex.js[39m[22m 8.62 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
+asset [1m[32mindex.asset.php[39m[22m 84 bytes [1m[32m[emitted][39m[22m (name: index)
+Entrypoint [1mindex[39m[22m 8.7 KiB = [1m[32mindex.js[39m[22m 8.62 KiB [1m[32mindex.asset.php[39m[22m 84 bytes
 runtime modules 670 bytes 3 modules
-orphan modules 16.7 KiB [orphan] 1 module
-./index.js + 1 modules 16.8 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1452 ms
+orphan modules 16.7 KiB [1m[33m[orphan][39m[22m 1 module
+[1m./index.js + 1 modules[39m[22m 16.8 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 6956 ms

@@ -2,11 +2,11 @@
 > comma-separated-values@1.0.0 build
 > wp-scripts build
 
-asset index.js 5.53 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
-Entrypoint index 5.61 KiB = index.js 5.53 KiB index.asset.php 84 bytes
+asset [1m[32mindex.js[39m[22m 5.53 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
+asset [1m[32mindex.asset.php[39m[22m 84 bytes [1m[32m[emitted][39m[22m (name: index)
+Entrypoint [1mindex[39m[22m 5.61 KiB = [1m[32mindex.js[39m[22m 5.53 KiB [1m[32mindex.asset.php[39m[22m 84 bytes
 runtime modules 937 bytes 4 modules
 cacheable modules 13.2 KiB
-  ./index.js 89 bytes [built] [code generated]
-  ../../../../../node_modules/comma-separated-values/csv.js 13.1 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1831 ms
+  [1m./index.js[39m[22m 89 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+  [1m../../../../../node_modules/comma-separated-values/csv.js[39m[22m 13.1 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 7092 ms
