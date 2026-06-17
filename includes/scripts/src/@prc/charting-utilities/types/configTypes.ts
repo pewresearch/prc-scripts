@@ -1,4 +1,5 @@
 import { Animate } from './animate';
+import { Animation } from './animation';
 import { Bar } from './bar';
 import { Colors } from './colors';
 import { DataRender } from './dataRender';
@@ -32,6 +33,7 @@ import { Sankey } from './sankey';
 
 type BaseConfig = {
 	animate: Animate;
+	animation?: Animation;
 	bar: Bar;
 	colors: Colors;
 	dataRender: DataRender;
@@ -67,6 +69,7 @@ type BaseConfig = {
 export type {
 	BaseConfig,
 	Animate,
+	Animation,
 	Bar,
 	Colors,
 	DataRender,

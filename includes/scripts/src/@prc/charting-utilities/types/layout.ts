@@ -20,6 +20,7 @@ export type Layout = {
 		| 'map-usa-block'
 		| 'map-usa-hex'
 		| 'map-world'
+		| 'map-world-orthographic'
 		| 'map-europe'
 		| 'treemap'
 		| 'sankey'

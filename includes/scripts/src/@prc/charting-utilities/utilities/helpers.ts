@@ -240,6 +240,38 @@ export function getLabelFill({
 }
 
 /**
+ * Effective label cutoff for bar charts.
+ *
+ * Viewport merge sets `labels.labelCutoff` per device. On narrow layouts,
+ * falls back to `labelCutoffMobile` when it differs — preserves unedited
+ * legacy charts without a separate editor control.
+ *
+ * @param labels
+ * @param labels.labelCutoff
+ * @param labels.labelCutoffMobile
+ * @param containerWidth Measured chart container width.
+ * @param designWidth    Layout design width breakpoint.
+ */
+export function resolveLabelCutoff(
+	labels: { labelCutoff?: number; labelCutoffMobile?: number },
+	containerWidth: number | undefined,
+	designWidth: number
+): number {
+	const cutoff = labels.labelCutoff ?? 0;
+	const isNarrow = containerWidth != null && containerWidth < designWidth;
+
+	if (
+		isNarrow &&
+		labels.labelCutoffMobile != null &&
+		labels.labelCutoffMobile !== cutoff
+	) {
+		return labels.labelCutoffMobile;
+	}
+
+	return cutoff;
+}
+
+/**
  * @param      labelColor
  * @param      labelPositionBar
  * @param      barValue

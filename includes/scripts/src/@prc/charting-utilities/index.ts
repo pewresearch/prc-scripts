@@ -1,5 +1,6 @@
 // Types
 export * from './types/animate';
+export * from './types/animation';
 export * from './types/bar';
 export * from './types/colors';
 export * from './types/configTypes';
@@ -68,6 +69,7 @@ export {
 	getCustomTooltip,
 	getGroupValue,
 	generateElementKey,
+	resolveLabelCutoff,
 } from './utilities/helpers';
 export {
 	resolveCategoryColor,
@@ -77,6 +79,8 @@ export {
 } from './utilities/resolveCategoryColor';
 export { DataContext, DataProvider } from './utilities/DataContext';
 export { createTopologyLoader } from './utilities/loadTopology';
+export { MAP_REGION_PRESETS } from './utilities/mapRegionPresets';
+export type { MapRegionPreset } from './utilities/mapRegionPresets';
 export * from './utilities/colorPalettes';
 export {
 	REGRESSION_FNS,
@@ -119,3 +123,21 @@ export type {
 	GroupPositioning,
 	PieGroupPositioning,
 } from './hooks/data';
+export { useWorldCountryData } from './hooks/useWorldCountryData';
+export type {
+	UseWorldCountryDataArgs,
+	UseWorldCountryDataResult,
+} from './hooks/useWorldCountryData';
+export {
+	useStateData,
+	useStateGridData,
+	findStateDataRow,
+	fipsToStateAbbr,
+} from './hooks/useStateData';
+export type {
+	UseStateDataArgs,
+	UseStateDataResult,
+	UseStateGridDataArgs,
+	StateGridBin,
+	StateGridColumn,
+} from './hooks/useStateData';

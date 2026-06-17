@@ -197,9 +197,20 @@ const baseConfig: BaseConfig = {
 		animationWhitelist: [],
 		duration: 2000, //time in ms
 	},
+	// Additive PRC-17 config — consumed by the `animated/` primitives via
+	// `useAnimationConfig`. DISABLED by default (slice 3c): animation is
+	// opt-in per chart via the Inspector's Animation panel
+	// (`config.animation.enabled`). Reduced-motion users and the editor
+	// always render instantly regardless of this flag (handled in the
+	// hook). Authors retune `duration`/`easing`/`initial`/`update` through
+	// the same panel; callers can also flip it via `setConfig` (slice 4+).
+	animation: {
+		enabled: false,
+		duration: 400,
+	},
 	events: {},
 	tooltip: {
-		active: true,
+		active: false,
 		activeOnMobile: true,
 		headerActive: true,
 		headerValue: 'independentValue',
@@ -333,8 +344,8 @@ const baseConfig: BaseConfig = {
 		fontSize: 12,
 		fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
 		labelPositionBar: 'inside',
-		labelCutoff: 5,
-		labelCutoffMobile: 10,
+		labelCutoff: 0,
+		labelCutoffMobile: 0,
 		labelPositionDX: -25,
 		labelPositionDY: 0,
 		pieLabelRadius: 60,
@@ -477,6 +488,16 @@ const baseConfig: BaseConfig = {
 			opacity: 0.7,
 			stroke: '#ffffff',
 			strokeWidth: 1,
+		},
+		globe: {
+			sphereFill: 'light-dark(#eef3f6, #1b2a33)',
+			showGraticule: true,
+			graticuleStroke: 'light-dark(#cdd8de, #2f4250)',
+			autoSpin: false,
+			spinSpeed: 0.2,
+			dragToRotate: true,
+			showPlayPause: true,
+			playPausePosition: 'bottom-right',
 		},
 	},
 	custom: {

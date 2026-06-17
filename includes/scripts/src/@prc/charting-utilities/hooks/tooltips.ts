@@ -64,7 +64,7 @@ function styleTooltipString(formatString: string, color: string) {
 			key = key.replace('.toLowerCase()', '');
 		}
 		return isColor || isBold || isLowerCase
-			? `<span style="color: ${isColor ? color : '#2a2a2a'}; font-weight: ${
+			? `<span style="color: ${isColor ? color : 'inherit'}; font-weight: ${
 					isBold ? 'bold' : 'normal'
 				}; text-transform: ${
 					isLowerCase ? 'lowercase' : 'none'

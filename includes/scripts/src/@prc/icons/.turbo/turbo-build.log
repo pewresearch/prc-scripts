@@ -2,35 +2,34 @@
 > @prc/icons@1.0.0 build
 > node bin/build-index.js && wp-scripts build
 
-assets by chunk 492 KiB (name: index)
-  asset [1m[33mindex.js[39m[22m [1m[33m492 KiB[39m[22m [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m [1m[33m[big][39m[22m (name: index)
-  asset [1m[32mindex.asset.php[39m[22m 117 bytes [1m[32m[emitted][39m[22m (name: index)
-assets by path [1m[32m./*.css[39m[22m 288 bytes
-  asset [1m[32m./style-index-rtl.css[39m[22m 144 bytes [1m[32m[emitted][39m[22m (name: ./style-index) (id hint: style)
-  asset [1m[32m./style-index.css[39m[22m 144 bytes [1m[32m[emitted][39m[22m (name: ./style-index) (id hint: style)
-Entrypoint [1mindex[39m[22m [1m[33m[big][39m[22m 492 KiB = [1m[32m./style-index.css[39m[22m 144 bytes [1m[32m./style-index-rtl.css[39m[22m 144 bytes [1m[32mindex.js[39m[22m 492 KiB [1m[32mindex.asset.php[39m[22m 117 bytes
-orphan modules 495 KiB (javascript) 937 bytes (runtime) [1m[33m[orphan][39m[22m 12 modules
+assets by status 492 KiB [compared for emit]
+  asset index.js 492 KiB [compared for emit] [minimized] [big] (name: index)
+  asset index.asset.php 117 bytes [compared for emit] (name: index)
+assets by status 288 bytes [emitted]
+  asset ./style-index-rtl.css 144 bytes [emitted] (name: ./style-index) (id hint: style)
+  asset ./style-index.css 144 bytes [emitted] (name: ./style-index) (id hint: style)
+Entrypoint index [big] 492 KiB = ./style-index.css 144 bytes ./style-index-rtl.css 144 bytes index.js 492 KiB index.asset.php 117 bytes
+orphan modules 495 KiB (javascript) 937 bytes (runtime) [orphan] 12 modules
 runtime modules 3.06 KiB 5 modules
-built modules 492 KiB (javascript) 143 bytes (css/mini-extract) [1m[33m[built][39m[22m
-  [1m./src/index.js + 4 modules[39m[22m 492 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./src/style.scss[39m[22m 143 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+built modules 492 KiB (javascript) 143 bytes (css/mini-extract) [built]
+  ./src/index.js + 4 modules 492 KiB [not cacheable] [built] [code generated]
+  css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/style.scss 143 bytes [built] [code generated]
 
-[1m[33mWARNING[39m[22m in [1masset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
 This can impact web performance.
 Assets: 
-  index.js (492 KiB)[39m[22m
+  index.js (492 KiB)
 
-[1m[33mWARNING[39m[22m in [1mentrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
 Entrypoints:
   index (492 KiB)
       ./style-index.css
       ./style-index-rtl.css
       index.js
       index.asset.php
-[39m[22m
 
-[1m[33mWARNING[39m[22m in [1mwebpack performance recommendations: 
+WARNING in webpack performance recommendations: 
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
-For more info visit https://webpack.js.org/guides/code-splitting/[39m[22m
+For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with [1m[33m3 warnings[39m[22m in 2785 ms
+webpack 5.106.2 compiled with 3 warnings in 1011 ms

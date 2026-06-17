@@ -1,12 +1,12 @@
 {
 	"name": "@prc/charting-utilities",
-	"version": "3.9.0",
+	"version": "3.11.0",
 	"main": "index.js",
 	"types": "index.d.ts",
 	"description": "Shared utilities for PRC charting and data visualization components",
 	"scripts": {
-		"build": "wp-scripts build index.js --output-path=../../../build/@prc/charting-utilities",
-		"start": "wp-scripts start index.js --output-path=../../../build/@prc/charting-utilities",
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {

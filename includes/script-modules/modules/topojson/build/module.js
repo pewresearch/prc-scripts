@@ -21,20 +21,20 @@
 /******/ 
 /************************************************************************/
 
-;// ../../../../node_modules/topojson-client/src/reverse.js
+;// ../../../../../../node_modules/topojson-client/src/reverse.js
 Object.defineProperty(reverse, "name", { value: "default", configurable: true });
 /* harmony default export */ function reverse(array, n) {
   var t, j = array.length, i = j - n;
   while (i < --j) t = array[i], array[i++] = array[j], array[j] = t;
 }
 
-;// ../../../../node_modules/topojson-client/src/identity.js
+;// ../../../../../../node_modules/topojson-client/src/identity.js
 Object.defineProperty(identity, "name", { value: "default", configurable: true });
 /* harmony default export */ function identity(x) {
   return x;
 }
 
-;// ../../../../node_modules/topojson-client/src/transform.js
+;// ../../../../../../node_modules/topojson-client/src/transform.js
 Object.defineProperty(transform, "name", { value: "default", configurable: true });
 
 
@@ -56,13 +56,12 @@ Object.defineProperty(transform, "name", { value: "default", configurable: true 
   };
 }
 
-;// ../../../../node_modules/topojson-client/src/feature.js
+;// ../../../../../../node_modules/topojson-client/src/feature.js
 Object.defineProperty(feature, "name", { value: "default", configurable: true });
 
 
 
 /* harmony default export */ function feature(topology, o) {
-  if (typeof o === "string") o = topology.objects[o];
   return o.type === "GeometryCollection"
       ? {type: "FeatureCollection", features: o.geometries.map(function(o) { return feature_feature(topology, o); })}
       : feature_feature(topology, o);
@@ -129,7 +128,7 @@ function object(topology, o) {
   return geometry(o);
 }
 
-;// ../../../../node_modules/topojson-client/src/stitch.js
+;// ../../../../../../node_modules/topojson-client/src/stitch.js
 Object.defineProperty(stitch, "name", { value: "default", configurable: true });
 /* harmony default export */ function stitch(topology, arcs) {
   var stitchedArcs = {},
@@ -205,7 +204,7 @@ Object.defineProperty(stitch, "name", { value: "default", configurable: true });
   return fragments;
 }
 
-;// ../../../../node_modules/topojson-client/src/mesh.js
+;// ../../../../../../node_modules/topojson-client/src/mesh.js
 Object.defineProperty(mesh, "name", { value: "default", configurable: true });
 
 

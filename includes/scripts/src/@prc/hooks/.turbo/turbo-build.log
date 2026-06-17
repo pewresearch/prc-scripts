@@ -2,10 +2,10 @@
 > @prc/hooks@1.0.0 build
 > wp-scripts build
 
-asset [1m[32mindex.js[39m[22m 8.92 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
-asset [1m[32mindex.asset.php[39m[22m 184 bytes [1m[32m[emitted][39m[22m (name: index)
-Entrypoint [1mindex[39m[22m 9.09 KiB = [1m[32mindex.js[39m[22m 8.92 KiB [1m[32mindex.asset.php[39m[22m 184 bytes
-orphan modules 30.5 KiB [1m[33m[orphan][39m[22m 25 modules
+asset index.js 8.92 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 184 bytes [compared for emit] (name: index)
+Entrypoint index 9.09 KiB = index.js 8.92 KiB index.asset.php 184 bytes
+orphan modules 30.5 KiB [orphan] 25 modules
 runtime modules 937 bytes 4 modules
-[1m./exports.js + 25 modules[39m[22m 31.6 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 2384 ms
+./exports.js + 25 modules 31.6 KiB [not cacheable] [built] [code generated]
+webpack 5.106.2 compiled successfully in 932 ms

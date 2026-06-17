@@ -2,11 +2,9 @@
 > classnames@1.0.0 build
 > wp-scripts build
 
-asset [1m[32mindex.js[39m[22m 1.26 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
+asset [1m[32mindex.js[39m[22m 606 bytes [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
 asset [1m[32mindex.asset.php[39m[22m 84 bytes [1m[32m[emitted][39m[22m (name: index)
-Entrypoint [1mindex[39m[22m 1.35 KiB = [1m[32mindex.js[39m[22m 1.26 KiB [1m[32mindex.asset.php[39m[22m 84 bytes
-runtime modules 937 bytes 4 modules
-cacheable modules 1.59 KiB
-  [1m./index.js[39m[22m 102 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  [1m../../../../../node_modules/classnames/index.js[39m[22m 1.49 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 6368 ms
+Entrypoint [1mindex[39m[22m 690 bytes = [1m[32mindex.js[39m[22m 606 bytes [1m[32mindex.asset.php[39m[22m 84 bytes
+runtime modules 670 bytes 3 modules
+[1m./index.js[39m[22m 102 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 4565 ms
