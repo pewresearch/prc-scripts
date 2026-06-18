@@ -1,5 +1,5 @@
 {
-	"name": "enquire.js",
+	"name": "@prc/vendor-enquire",
 	"devDependencies": {
 		"@wordpress/scripts": "^31.4.0"
 	},

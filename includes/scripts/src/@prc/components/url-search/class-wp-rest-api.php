@@ -7,6 +7,7 @@
 
 namespace PRC\Platform\Scripts\Url_Search;
 
+use PRC\URL_Helper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -67,10 +68,9 @@ class Rest_API_Endpoint {
 		if ( empty( $url ) ) {
 			return new WP_Error( 'no-url-provided', __( 'No url provided', 'my_textdomain' ), array( 'status' => 400 ) );
 		}
-		$post_id = function_exists( 'wpcom_vip_url_to_postid' )
-			? \wpcom_vip_url_to_postid( $url )
-			: url_to_postid( $url );
-		if ( 0 === $post_id ) {
+		$url_helper = new URL_Helper( $url );
+		$post_id    = $url_helper->get_post_id();
+		if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
 			return new WP_Error( 'no-post-found', __( 'No post found', 'my_textdomain' ), array( 'status' => 404 ) );
 		}
 		return array(

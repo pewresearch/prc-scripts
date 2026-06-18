@@ -46,7 +46,7 @@ export default function SearchResults({}) {
 					}}
 				>
 					<VStack spacing="2">
-						{records.map((item) => (
+						{records.filter(Boolean).map((item) => (
 							<SearchItem key={item?.entityId} item={item} />
 						))}
 					</VStack>

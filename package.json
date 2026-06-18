@@ -1,6 +1,6 @@
 {
 	"name": "@prc/scripts",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Shared first-party (@prc/*) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.",
 	"scripts": {
 		"build": "echo '@prc/scripts is a meta-package; sub-packages built via turbo dependency graph'",
@@ -16,6 +16,11 @@
 		"@prc/functions": "*",
 		"@prc/hooks": "*",
 		"@prc/icons": "*",
+		"@prc/vendor-classnames": "*",
+		"@prc/vendor-comma-separated-values": "*",
+		"@prc/vendor-enquire": "*",
+		"@prc/vendor-jabber": "*",
+		"@prc/vendor-sqids": "*",
 		"@wordpress/icons": "^10.21.0"
 	}
 }

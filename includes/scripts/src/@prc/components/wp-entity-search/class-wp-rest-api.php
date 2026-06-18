@@ -64,10 +64,37 @@ class Rest_API_Endpoint {
 	}
 
 	/**
+	 * Resolve a canonical entity URL for REST responses.
+	 *
+	 * @param mixed $item WP_Post or WP_Term.
+	 * @return string
+	 */
+	protected function resolve_entity_url( $item ) {
+		if ( is_a( $item, 'WP_Post' ) ) {
+			$redirect = get_post_meta( $item->ID, '_redirect', true );
+			if ( is_string( $redirect ) && '' !== $redirect ) {
+				return $redirect;
+			}
+			$permalink = get_permalink( $item->ID );
+			return is_string( $permalink ) ? $permalink : '';
+		}
+
+		if ( is_a( $item, 'WP_Term' ) ) {
+			$term_link = get_term_link( $item );
+			if ( is_wp_error( $term_link ) || ! is_string( $term_link ) ) {
+				return '';
+			}
+			return $term_link;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Shape the item.
 	 *
 	 * @param mixed $item
-	 * @return array
+	 * @return object
 	 */
 	protected function shape_item( $item ) {
 		$new_item = array();
@@ -80,7 +107,7 @@ class Rest_API_Endpoint {
 			$new_item['entitySubType']       = $item->post_type;
 			$new_item['entitySlug']          = $item->post_name;
 			$new_item['entityId']            = $item->ID;
-			$new_item['entityUrl']           = get_permalink( $item->ID );
+			$new_item['entityUrl']           = $this->resolve_entity_url( $item );
 			$new_item['entityFeaturedImage'] = get_the_post_thumbnail_url( $item->ID, 'thumbnail' ) ?: null;
 		} elseif ( is_a( $item, 'WP_Term' ) ) {
 			$new_item['entityName']          = $item->name;
@@ -90,7 +117,7 @@ class Rest_API_Endpoint {
 			$new_item['entitySubType']       = $item->taxonomy;
 			$new_item['entitySlug']          = $item->slug;
 			$new_item['entityId']            = $item->term_id;
-			$new_item['entityUrl']           = get_term_link( $item->term_id );
+			$new_item['entityUrl']           = $this->resolve_entity_url( $item );
 			$new_item['entityFeaturedImage'] = null;
 		}
 		return (object) $new_item;
@@ -100,19 +127,43 @@ class Rest_API_Endpoint {
 	 * Get the ID from the URL.
 	 *
 	 * @param string $url
-	 * @return array
+	 * @param array  $entity_sub_type
+	 * @param array  $entity_status
+	 * @return object
 	 */
-	protected function get_id_from_url( $url ) {
+	protected function get_id_from_url( $url, array $entity_sub_type = array(), array $entity_status = array( 'publish' ) ) {
 		$url_helper = new URL_Helper( $url );
 		$post_id    = $url_helper->get_post_id();
-		$post_type  = get_post_type( $post_id );
-		if ( in_array( $post_type, array( 'dataset', 'staff' ) ) ) {
+		if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
+			return (object) array();
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post instanceof \WP_Post ) {
+			return (object) array();
+		}
+
+		if ( ! current_user_can( 'read_post', $post->ID ) ) {
+			return (object) array();
+		}
+
+		if ( ! empty( $entity_status ) && ! in_array( $post->post_status, $entity_status, true ) ) {
+			return (object) array();
+		}
+
+		$post_type = $post->post_type;
+		if ( in_array( $post_type, array( 'dataset', 'staff' ), true ) ) {
 			$term = \TDS\get_related_term( $post_id );
 			if ( $term ) {
 				return $this->shape_item( $term );
 			}
 		}
-		return $this->shape_item( get_post( $post_id ) );
+
+		if ( ! empty( $entity_sub_type ) && ! in_array( $post_type, $entity_sub_type, true ) ) {
+			return (object) array();
+		}
+
+		return $this->shape_item( $post );
 	}
 
 	/**
@@ -200,9 +251,11 @@ class Rest_API_Endpoint {
 		// determine if search_value is a url...
 		$is_url = filter_var( $search_value, FILTER_VALIDATE_URL );
 		if ( $is_url ) {
-			$entity_matches = $this->get_id_from_url( $search_value );
-			$entity_matches = get_post( $entity_matches );
-			$entity_matches = array( $entity_matches );
+			$matched = $this->get_id_from_url( $search_value, $entity_sub_type, $entity_status );
+			if ( ! empty( $matched->entityId ) ) {
+				return rest_ensure_response( array( $matched ) );
+			}
+			return rest_ensure_response( array() );
 		} elseif ( 'postType' === $entity_type ) {
 			$entity_matches = $this->search_posts_for_value( $search_value, $entity_sub_type, $entity_status );
 		} elseif ( 'taxonomy' === $entity_type ) {

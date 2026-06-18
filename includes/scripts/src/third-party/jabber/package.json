@@ -1,5 +1,5 @@
 {
-	"name": "jabber",
+	"name": "@prc/vendor-jabber",
 	"version": "1.0.0",
 	"scripts": {
 		"build": "wp-scripts build"

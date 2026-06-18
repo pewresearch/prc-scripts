@@ -18,6 +18,10 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { useWPEntitySearch } from '../context';
 
 export default function SearchItem({ item }) {
+	if (!item || 'object' !== typeof item) {
+		return null;
+	}
+
 	const {
 		selectedId,
 		setSelectedId,
@@ -134,19 +138,21 @@ export default function SearchItem({ item }) {
 									{decodeEntities(entityDescription)}
 								</div>
 							)}
-							{showUrl && (
-								<ExternalLink
-									href={entityUrl}
-									target="_blank"
-									style={{
-										fontSize: '0.8em',
-										fontStyle: 'italic',
-										lineHeight: '1.5em',
-									}}
-								>
-									{entityUrl}
-								</ExternalLink>
-							)}
+							{showUrl &&
+								'string' === typeof entityUrl &&
+								'' !== entityUrl && (
+									<ExternalLink
+										href={entityUrl}
+										target="_blank"
+										style={{
+											fontSize: '0.8em',
+											fontStyle: 'italic',
+											lineHeight: '1.5em',
+										}}
+									>
+										{entityUrl}
+									</ExternalLink>
+								)}
 						</VStack>
 					</HStack>
 				</CardBody>
