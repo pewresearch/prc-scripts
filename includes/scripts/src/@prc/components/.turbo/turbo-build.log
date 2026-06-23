@@ -1,45 +1,45 @@
 
-> @prc/components@1.0.1 build
+> @prc/components@1.0.0 build
 > wp-scripts build
 
-assets by path [1m[32m*.css[39m[22m 2.9 KiB
-  asset [1m[32mindex-rtl.css[39m[22m 1.45 KiB [1m[32m[emitted][39m[22m (name: index)
-  asset [1m[32mindex.css[39m[22m 1.45 KiB [1m[32m[emitted][39m[22m (name: index)
-asset [1m[33mindex.js[39m[22m [1m[33m325 KiB[39m[22m [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m [1m[33m[big][39m[22m (name: index)
-asset [1m[32mindex.asset.php[39m[22m 380 bytes [1m[32m[emitted][39m[22m (name: index)
-Entrypoint [1mindex[39m[22m [1m[33m[big][39m[22m 328 KiB = [1m[32mindex.css[39m[22m 1.45 KiB [1m[32mindex.js[39m[22m 325 KiB [1m[32mindex-rtl.css[39m[22m 1.45 KiB [1m[32mindex.asset.php[39m[22m 380 bytes
-orphan modules 1.16 MiB (javascript) 1.83 KiB (runtime) [1m[33m[orphan][39m[22m 962 modules
+assets by status 326 KiB [emitted]
+  asset index.js 325 KiB [emitted] [minimized] [big] (name: index)
+  asset index.asset.php 380 bytes [emitted] [compared for emit] (name: index)
+assets by path *.css 2.9 KiB
+  asset index-rtl.css 1.45 KiB [compared for emit] (name: index)
+  asset index.css 1.45 KiB [compared for emit] (name: index)
+Entrypoint index [big] 328 KiB = index.css 1.45 KiB index.js 325 KiB index-rtl.css 1.45 KiB index.asset.php 380 bytes
+orphan modules 1.16 MiB (javascript) 1.83 KiB (runtime) [orphan] 962 modules
 runtime modules 937 bytes 4 modules
-built modules 916 KiB (javascript) 1.45 KiB (css/mini-extract) [1m[33m[built][39m[22m
+built modules 916 KiB (javascript) 1.45 KiB (css/mini-extract) [built]
   javascript modules 916 KiB
-    modules by path [1m../../../../../../../node_modules/prop-types/[39m[22m 2.6 KiB
-      [1m../../../../../../../node_modules/prop-types/index.js[39m[22m 710 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-      [1m../../../../../../../node_modules/prop-types/factoryWithThrowingShims.js[39m[22m 1.6 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-      [1m../../../../../../../node_modules/prop-types/lib/ReactPropTypesSecret.js[39m[22m 314 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    [1m./exports.ts + 532 modules[39m[22m 832 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    [1m../../../../../../../node_modules/can-use-dom/index.js[39m[22m 139 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    [1m../../../../../../../node_modules/picturefill/dist/picturefill.js[39m[22m 43.6 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    [1m../../../../../../../node_modules/@codeamp/block-components/dist/index.js[39m[22m 37.5 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+    modules by path ../../../../../../../node_modules/prop-types/ 2.6 KiB
+      ../../../../../../../node_modules/prop-types/index.js 710 bytes [built] [code generated]
+      ../../../../../../../node_modules/prop-types/factoryWithThrowingShims.js 1.6 KiB [built] [code generated]
+      ../../../../../../../node_modules/prop-types/lib/ReactPropTypesSecret.js 314 bytes [built] [code generated]
+    ./exports.ts + 532 modules 832 KiB [not cacheable] [built] [code generated]
+    ../../../../../../../node_modules/can-use-dom/index.js 139 bytes [built] [code generated]
+    ../../../../../../../node_modules/picturefill/dist/picturefill.js 43.6 KiB [built] [code generated]
+    ../../../../../../../node_modules/@codeamp/block-components/dist/index.js 37.5 KiB [built] [code generated]
   css modules 1.45 KiB
-    css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./icon-picker/styles.scss[39m[22m 558 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./ai/styles.scss[39m[22m 927 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+    css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./icon-picker/styles.scss 558 bytes [built] [code generated]
+    css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./ai/styles.scss 927 bytes [built] [code generated]
 
-[1m[33mWARNING[39m[22m in [1masset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
 This can impact web performance.
 Assets: 
-  index.js (325 KiB)[39m[22m
+  index.js (325 KiB)
 
-[1m[33mWARNING[39m[22m in [1mentrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
 Entrypoints:
   index (328 KiB)
       index.css
       index.js
       index-rtl.css
       index.asset.php
-[39m[22m
 
-[1m[33mWARNING[39m[22m in [1mwebpack performance recommendations: 
+WARNING in webpack performance recommendations: 
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
-For more info visit https://webpack.js.org/guides/code-splitting/[39m[22m
+For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with [1m[33m3 warnings[39m[22m in 24793 ms
+webpack 5.106.2 compiled with 3 warnings in 4119 ms

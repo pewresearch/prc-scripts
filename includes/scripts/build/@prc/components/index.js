@@ -1721,7 +1721,7 @@
 	background-color: #000;
 	border-radius: 100px;
 	opacity: 0.8;
-`;function Py({children:e,url:n}){const r=(0,t.useMemo)(()=>n||("undefined"!=typeof window?window.location.hostname:""),[n]);return(0,u.jsxs)(gy,{children:[(0,u.jsxs)(xy,{children:[(0,u.jsx)("div",{children:"9:41"}),(0,u.jsxs)(vy,{children:[(0,u.jsx)(by,{}),(0,u.jsx)(wy,{}),(0,u.jsx)(jy,{})]})]}),(0,u.jsx)(Sy,{children:(0,u.jsx)(ky,{children:(0,u.jsx)(Ay,{children:r})})}),(0,u.jsx)(Ty,{children:e}),(0,u.jsx)(Cy,{children:(0,u.jsx)(_y,{})})]})}const Ey=Ye.div`
+`;function Py({children:e,url:n,showUrlBar:r=!0}){const i=(0,t.useMemo)(()=>n||("undefined"!=typeof window?window.location.hostname:""),[n]);return(0,u.jsxs)(gy,{children:[(0,u.jsxs)(xy,{children:[(0,u.jsx)("div",{children:"9:41"}),(0,u.jsxs)(vy,{children:[(0,u.jsx)(by,{}),(0,u.jsx)(wy,{}),(0,u.jsx)(jy,{})]})]}),r&&(0,u.jsx)(Sy,{children:(0,u.jsx)(ky,{children:(0,u.jsx)(Ay,{children:i})})}),(0,u.jsx)(Ty,{children:e}),(0,u.jsx)(Cy,{children:(0,u.jsx)(_y,{})})]})}const Ey=Ye.div`
 	display: flex;
 	flex-direction: column;
 	background-color: #fff;

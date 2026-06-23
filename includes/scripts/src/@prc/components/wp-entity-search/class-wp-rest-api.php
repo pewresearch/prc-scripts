@@ -126,12 +126,13 @@ class Rest_API_Endpoint {
 	/**
 	 * Get the ID from the URL.
 	 *
+	 * Pasted URLs identify an exact post; post type is not filtered here (unlike keyword search).
+	 *
 	 * @param string $url
-	 * @param array  $entity_sub_type
 	 * @param array  $entity_status
 	 * @return object
 	 */
-	protected function get_id_from_url( $url, array $entity_sub_type = array(), array $entity_status = array( 'publish' ) ) {
+	protected function get_id_from_url( $url, array $entity_status = array( 'publish' ) ) {
 		$url_helper = new URL_Helper( $url );
 		$post_id    = $url_helper->get_post_id();
 		if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
@@ -157,10 +158,6 @@ class Rest_API_Endpoint {
 			if ( $term ) {
 				return $this->shape_item( $term );
 			}
-		}
-
-		if ( ! empty( $entity_sub_type ) && ! in_array( $post_type, $entity_sub_type, true ) ) {
-			return (object) array();
 		}
 
 		return $this->shape_item( $post );
@@ -251,7 +248,7 @@ class Rest_API_Endpoint {
 		// determine if search_value is a url...
 		$is_url = filter_var( $search_value, FILTER_VALIDATE_URL );
 		if ( $is_url ) {
-			$matched = $this->get_id_from_url( $search_value, $entity_sub_type, $entity_status );
+			$matched = $this->get_id_from_url( $search_value, $entity_status );
 			if ( ! empty( $matched->entityId ) ) {
 				return rest_ensure_response( array( $matched ) );
 			}
