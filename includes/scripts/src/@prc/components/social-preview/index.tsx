@@ -89,6 +89,7 @@ export type {
 	SocialNetwork,
 	SocialPreviewWrapperProps,
 	InstagramPreviewProps,
+	ThreadsPreviewProps,
 } from './types';
 
 export { EditableText } from './editable-text';

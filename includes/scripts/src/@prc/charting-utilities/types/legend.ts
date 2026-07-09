@@ -3,14 +3,21 @@ export type LegendItemCustomization = {
 	text?: string;
 
 	/**
-	 * Pixels from the left edge of the chart container.
-	 * Only meaningful when the enclosing `Legend.variation === 'detached'`.
+	 * Coordinate frame for offsetX/offsetY when `Legend.variation` is `'detached'`.
+	 * - `'chart'` (default): full chart area including padding and axes.
+	 * - `'inner'`: inner data plotting area only (matches annotation positioning).
+	 */
+	positioningContext?: 'chart' | 'inner';
+
+	/**
+	 * Horizontal offset in layout pixels, relative to `positioningContext`.
+	 * Meaningful when `Legend.variation` is `'detached'` or `'direct'` (on-line series labels).
 	 */
 	offsetX?: number;
 
 	/**
-	 * Pixels from the top edge of the chart container.
-	 * Only meaningful when the enclosing `Legend.variation === 'detached'`.
+	 * Vertical offset in layout pixels, relative to `positioningContext`.
+	 * Meaningful when `Legend.variation` is `'detached'` or `'direct'` (on-line series labels).
 	 */
 	offsetY?: number;
 
@@ -31,6 +38,15 @@ export type LegendItemCustomization = {
 
 	/** Max width for text wrapping (px; 0 = no limit). */
 	maxWidth?: number;
+
+	/** Unitless line-height multiplier for wrapped legend text (e.g. 1.4). */
+	lineHeight?: number;
+
+	/** Horizontal text alignment for multi-line legend labels. */
+	textAlign?: 'left' | 'center' | 'right';
+
+	/** Letter spacing for legend label text (px). */
+	letterSpacing?: number;
 
 	/** Adds a contrasting paint-server outline behind the label text. */
 	textOutline?: boolean;
@@ -73,6 +89,8 @@ export type Legend = {
 	fill: string;
 	fontSize: number;
 	fontWeight: string;
+	/** Legend label font family (inherits chart theme typography when unset). */
+	fontFamily?: string;
 	margin: {
 		top: number;
 		right: number;
@@ -123,6 +141,9 @@ export type Legend = {
 	 *   own `customLabels[k].offsetX` / `customLabels[k].offsetY`. The legend-level
 	 *   `offsetX` / `offsetY` are inert in this mode. Per-item drag is handled by
 	 *   `wpEditorFunctions.legendItems.onItemDrag*`
+	 * - `'direct'` (line charts only): suppresses the legend block and renders one
+	 *   series-colored label on each line. Per-item text/style and drag offsets use
+	 *   `customLabels[k]`; declutter separates overlapping labels.
 	 */
-	variation: 'grouped' | 'detached';
+	variation: 'grouped' | 'detached' | 'direct';
 };

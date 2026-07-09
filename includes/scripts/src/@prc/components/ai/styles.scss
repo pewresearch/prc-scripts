@@ -83,3 +83,23 @@
 .prc-ai-suggestions-list__item--selected {
 	background-color: #f0f7ff;
 }
+
+/* ----- Number Check Badge ----- */
+
+.prc-ai-number-check {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: text-bottom;
+
+	svg {
+		fill: currentColor;
+	}
+}
+
+.prc-ai-number-check--valid {
+	color: var(--wp-admin-theme-color, #3858e9);
+}
+
+.prc-ai-number-check--flagged {
+	color: #b26200;
+}

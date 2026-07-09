@@ -17,3 +17,11 @@ export { getPostByUrl } from './post';
 export { hexToRgb, getContrastingColorFromHex } from './color';
 export { default as writeInterstitialMessage } from './interstitialMessageGenerator';
 export { getBlockGapSupportValue, findBlock } from './block-utils';
+export { defineBindingSource } from './bindings/define-binding-source';
+export {
+	EDIT_CONTEXT_QUERY,
+	POLL_INTERVAL_MS,
+	entityRecordArgs,
+	presenceRoom,
+	formatPresenceNoticeMessage,
+} from './synced-entity';

@@ -13,5 +13,8 @@ export { default as useMultiEntityRecords } from './use-multi-entity-records';
 export { default as usePostIdsAsOptions } from './use-postids-as-options';
 export { default as usePresenceUsers } from './use-presence-users';
 export { default as useDeclarePresence } from './use-declare-presence';
+export { default as useEntityPresence } from './use-entity-presence';
+export { default as useSyncedEntityRefresh } from './use-synced-entity-refresh';
+export { default as useSyncedEntityPreviewEdit } from './use-synced-entity-preview-edit';
 export { default as useTaxonomy } from './use-taxonomy';
 export { default as useWindowSize } from './use-window-size';

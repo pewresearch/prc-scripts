@@ -40,11 +40,32 @@ export * from './types/drawings';
 export * from './types/treemap';
 export * from './types/sankey';
 
-// Utilities
-export { useSize } from './utilities/useSize';
-export { useDarkMode } from './utilities/useDarkMode';
-export { useLocalStorage } from './utilities/useLocalStorage';
-export { useMedia } from './utilities/useMedia';
+// React hooks
+export {
+	useSize,
+	useDarkMode,
+	useLocalStorage,
+	useMedia,
+	useRegressionLine,
+	useRegressionLines,
+	useWorldCountryData,
+	useStateData,
+	useStateGridData,
+	findStateDataRow,
+	fipsToStateAbbr,
+} from './hooks';
+export type {
+	UseWorldCountryDataArgs,
+	UseWorldCountryDataResult,
+	UseStateDataArgs,
+	UseStateDataResult,
+	UseStateGridDataArgs,
+	StateGridBin,
+	StateGridColumn,
+} from './hooks';
+
+// Pure utilities
+export { DEFAULT_FONT_FAMILY } from './utilities/defaultFontFamily';
 export { default as baseConfig } from './utilities/baseConfig';
 export {
 	randomDataPoints,
@@ -56,7 +77,9 @@ export {
 	abbreviateNumber,
 	labelFill,
 	contrastLabelFillForLightDark,
+	LABEL_OUTLINE_COLOR,
 	getLabelFill,
+	getLabelOutlineStroke,
 	getBarLabelFill,
 	newDateByFormat,
 	checkContrast,
@@ -70,6 +93,7 @@ export {
 	getGroupValue,
 	generateElementKey,
 	resolveLabelCutoff,
+	resolveTextOutlineMode,
 } from './utilities/helpers';
 export {
 	resolveCategoryColor,
@@ -88,12 +112,45 @@ export {
 	computeRegressionStats,
 } from './utilities/regression';
 export type { RegressionPoint, RegressionStats } from './utilities/regression';
-export {
-	useRegressionLine,
-	useRegressionLines,
-} from './utilities/useRegressionLine';
 
-// Hooks
+// Label layout engine (framework-agnostic)
+export {
+	computeLabelDeclutter,
+	forceRectCollide,
+	buildLineChartLabelId,
+	buildLineChartLabelInputs,
+	getLineLabelContent,
+	buildOnLineSeriesLabelId,
+	buildOnLineSeriesLabels,
+	getDirectLabelOffsetFromCustom,
+	getDirectLabelScaleFactors,
+	getSeriesYAtPixelX,
+	hasAuthorDirectLabelOverride,
+	buildAllDotPlotLabelInputs,
+	buildDotPlotLabelId,
+	buildScatterLabelId,
+	buildScatterLabelInputs,
+	buildChartLabelId,
+	getLabelMaxWidth,
+	hasAuthorLabelOverride,
+	getStackedSeriesDependentValue,
+	computeLeaderLineEndpoints,
+	rectEdgeTowardPoint,
+	createLeaderLineStore,
+	measureLabelBBox,
+	measureTextWidth,
+	wordWrap,
+} from './labelLayout';
+export type {
+	OnLineSeriesDeclutterInput,
+	DotPlotGroupPosition,
+	LeaderLineRegistration,
+	LeaderLineStore,
+	LabelBBox,
+	MeasureLabelBBoxOptions,
+} from './labelLayout';
+
+// Compute (headless prop + data builders)
 export {
 	getSharedProps,
 	getAria,
@@ -117,27 +174,9 @@ export {
 	getGroupPositioningHorizontal,
 	getGroupPositioningVertical,
 	getGroupPositioningPie,
-} from './hooks';
+} from './compute';
 export type {
 	GroupedData,
 	GroupPositioning,
 	PieGroupPositioning,
-} from './hooks/data';
-export { useWorldCountryData } from './hooks/useWorldCountryData';
-export type {
-	UseWorldCountryDataArgs,
-	UseWorldCountryDataResult,
-} from './hooks/useWorldCountryData';
-export {
-	useStateData,
-	useStateGridData,
-	findStateDataRow,
-	fipsToStateAbbr,
-} from './hooks/useStateData';
-export type {
-	UseStateDataArgs,
-	UseStateDataResult,
-	UseStateGridDataArgs,
-	StateGridBin,
-	StateGridColumn,
-} from './hooks/useStateData';
+} from './compute/data';

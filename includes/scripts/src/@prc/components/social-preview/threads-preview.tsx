@@ -5,13 +5,21 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 
 /**
+ * WordPress Dependencies
+ */
+import { RichText } from '@wordpress/block-editor';
+
+/**
  * Internal Dependencies
  */
-import type { SocialPreviewProps } from './types';
+import type { ThreadsPreviewProps } from './types';
+import CharacterCounterRing from '../character-counter/ring';
+import AINumberCheckBadge from '../ai/ai-number-check-badge';
 
 const PreviewContainer = styled.div`
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Helvetica, Arial, sans-serif;
+	font-family:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+		sans-serif;
 	margin-bottom: 1rem;
 `;
 
@@ -97,7 +105,12 @@ export function ThreadsPreview({
 	image,
 	children,
 	showLabel = true,
-}: SocialPreviewProps): JSX.Element {
+	isEditable = false,
+	isSelected = false,
+	charLimit,
+	editableCallbacks,
+	numberCheck,
+}: ThreadsPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
 			return new URL(url).hostname.replace('www.', '');
@@ -107,11 +120,13 @@ export function ThreadsPreview({
 	}, [url]);
 
 	const truncatedTitle =
-		title.length > 60 ? `${title.slice(0, 57)}...` : title;
+		!isEditable && title.length > 60 ? `${title.slice(0, 57)}...` : title;
 	const truncatedDescription =
 		description.length > 100
 			? `${description.slice(0, 97)}...`
 			: description;
+	const onContentChange = editableCallbacks?.onContentChange;
+	const showEditableText = isEditable && onContentChange;
 
 	return (
 		<PreviewContainer>
@@ -123,7 +138,40 @@ export function ThreadsPreview({
 					</ImageContainer>
 				)}
 				<Content>
-					<Title>{truncatedTitle}</Title>
+					<Title>
+						{showEditableText ? (
+							<RichText
+								tagName="span"
+								value={title}
+								onChange={onContentChange}
+								allowedFormats={[]}
+								placeholder="Write your post..."
+							/>
+						) : (
+							truncatedTitle
+						)}
+					</Title>
+					{showEditableText &&
+						charLimit !== undefined &&
+						isSelected && (
+							<div
+								style={{
+									marginBottom: 8,
+									display: 'flex',
+									justifyContent: 'flex-end',
+									alignItems: 'center',
+									gap: 6,
+								}}
+							>
+								<AINumberCheckBadge
+									numberCheck={numberCheck ?? undefined}
+								/>
+								<CharacterCounterRing
+									current={title.length}
+									limit={charLimit}
+								/>
+							</div>
+						)}
 					<Description>{truncatedDescription}</Description>
 					<Domain>{domain}</Domain>
 				</Content>

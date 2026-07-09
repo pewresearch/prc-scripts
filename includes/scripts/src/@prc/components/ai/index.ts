@@ -18,3 +18,4 @@ export { default as AILoadingIndicator } from './ai-loading-indicator';
 export { default as AISuggestModal } from './ai-suggest-modal';
 export { default as AISuggestionPreview } from './ai-suggestion-preview';
 export { default as AISuggestionsList } from './ai-suggestions-list';
+export { default as AINumberCheckBadge } from './ai-number-check-badge';

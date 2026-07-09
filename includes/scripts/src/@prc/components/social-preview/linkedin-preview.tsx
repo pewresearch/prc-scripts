@@ -5,15 +5,23 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 
 /**
+ * WordPress Dependencies
+ */
+import { RichText } from '@wordpress/block-editor';
+
+/**
  * Internal Dependencies
  */
+import CharacterCounterRing from '../character-counter/ring';
+import AINumberCheckBadge from '../ai/ai-number-check-badge';
 import type { LinkedInPreviewProps } from './types';
 
 const PreviewContainer = styled.div`
-	font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
-		Roboto, 'Helvetica Neue', 'Fira Sans', Ubuntu, Oxygen, 'Oxygen Sans',
-		Cantarell, 'Droid Sans', 'Apple Color Emoji', 'Segoe UI Emoji',
-		'Segoe UI Symbol', 'Lucida Grande', Helvetica, Arial, sans-serif;
+	font-family:
+		-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', 'Fira Sans', Ubuntu, Oxygen, 'Oxygen Sans', Cantarell,
+		'Droid Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+		'Lucida Grande', Helvetica, Arial, sans-serif;
 	margin-bottom: 1rem;
 `;
 
@@ -299,7 +307,16 @@ export function LinkedInPreview({
 	comments = 0,
 	reposts = 0,
 	showLabel = true,
+	isEditable = false,
+	isSelected = false,
+	charLimit,
+	editableCallbacks,
+	numberCheck,
 }: LinkedInPreviewProps): JSX.Element {
+	const displayText = postText ?? '';
+	const onContentChange = editableCallbacks?.onContentChange;
+	const showEditableText = isEditable && onContentChange;
+
 	const domain = React.useMemo(() => {
 		try {
 			return new URL(url).hostname.replace('www.', '');
@@ -350,10 +367,44 @@ export function LinkedInPreview({
 				</ProfileHeader>
 
 				<PostContent>
-					{postText}
-					{postText && '\n\n'}
-					Full analysis: <PostLink href={url}>{displayUrl}</PostLink>
+					{showEditableText ? (
+						<RichText
+							tagName="span"
+							value={displayText}
+							onChange={onContentChange}
+							allowedFormats={[]}
+							placeholder="Write your post..."
+						/>
+					) : (
+						displayText
+					)}
+					{displayText && url && '\n\n'}
+					{url && (
+						<>
+							Full analysis:{' '}
+							<PostLink href={url}>{displayUrl}</PostLink>
+						</>
+					)}
 				</PostContent>
+				{showEditableText && charLimit !== undefined && isSelected && (
+					<div
+						style={{
+							padding: '0 16px 12px',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center',
+							gap: 6,
+						}}
+					>
+						<AINumberCheckBadge
+							numberCheck={numberCheck ?? undefined}
+						/>
+						<CharacterCounterRing
+							current={displayText.length}
+							limit={charLimit}
+						/>
+					</div>
+				)}
 
 				<LinkCard>
 					{(image || children) && (

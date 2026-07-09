@@ -13,4 +13,4 @@ cacheable modules 8.53 KiB
   ../../../../../node_modules/enquire.js/src/MediaQuery.js 2.93 KiB [built] [code generated]
   ../../../../../node_modules/enquire.js/src/Util.js 966 bytes [built] [code generated]
   ../../../../../node_modules/enquire.js/src/QueryHandler.js 1.91 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1354 ms
+webpack 5.106.2 compiled successfully in 1845 ms

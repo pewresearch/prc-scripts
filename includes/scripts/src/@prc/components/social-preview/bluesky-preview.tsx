@@ -5,13 +5,21 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 
 /**
+ * WordPress Dependencies
+ */
+import { RichText } from '@wordpress/block-editor';
+
+/**
  * Internal Dependencies
  */
 import type { BlueskyPreviewProps } from './types';
+import CharacterCounterRing from '../character-counter/ring';
+import AINumberCheckBadge from '../ai/ai-number-check-badge';
 
 const PreviewContainer = styled.div`
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Helvetica, Arial, sans-serif;
+	font-family:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+		sans-serif;
 	margin-bottom: 1rem;
 `;
 
@@ -268,6 +276,11 @@ export function BlueskyPreview({
 	reposts = 0,
 	replies = 0,
 	showLabel = true,
+	isEditable = false,
+	isSelected = false,
+	charLimit,
+	editableCallbacks,
+	numberCheck,
 }: BlueskyPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
@@ -287,6 +300,8 @@ export function BlueskyPreview({
 
 	// Use postText if provided, otherwise fall back to description for post content
 	const displayPostText = postText || description;
+	const onContentChange = editableCallbacks?.onContentChange;
+	const showEditableText = isEditable && onContentChange;
 
 	// Format the handle (add @ if not present)
 	const formattedHandle = handle.startsWith('@') ? handle : `@${handle}`;
@@ -324,7 +339,38 @@ export function BlueskyPreview({
 					</HeaderContent>
 				</ProfileHeader>
 
-				<PostText>{displayPostText}</PostText>
+				<PostText>
+					{showEditableText ? (
+						<RichText
+							tagName="span"
+							value={displayPostText}
+							onChange={onContentChange}
+							allowedFormats={[]}
+							placeholder="Write your post..."
+						/>
+					) : (
+						displayPostText
+					)}
+				</PostText>
+				{showEditableText && charLimit !== undefined && isSelected && (
+					<div
+						style={{
+							marginBottom: 12,
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center',
+							gap: 6,
+						}}
+					>
+						<AINumberCheckBadge
+							numberCheck={numberCheck ?? undefined}
+						/>
+						<CharacterCounterRing
+							current={displayPostText.length}
+							limit={charLimit}
+						/>
+					</div>
+				)}
 
 				<LinkCard>
 					{(image || children) && (

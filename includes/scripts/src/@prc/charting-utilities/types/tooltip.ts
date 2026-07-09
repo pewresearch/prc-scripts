@@ -2,7 +2,6 @@ import { dateFormat } from './dateFormat';
 
 export type Tooltip = {
 	active: boolean;
-	activeOnMobile: boolean;
 	headerActive: boolean;
 	headerValue: 'independentValue' | 'categoryValue';
 	format: string | null;

@@ -1,4 +1,10 @@
 import { BaseConfig } from '../types/configTypes';
+import { DEFAULT_FONT_FAMILY } from './defaultFontFamily';
+import {
+	NEUTRAL_DESELECTED_COLOR,
+	NEUTRAL_HIGHLIGHT_COLOR,
+	NEUTRAL_SERIES_COLORS,
+} from './shippedNeutralDefaults';
 
 const baseConfig: BaseConfig = {
 	layout: {
@@ -6,7 +12,6 @@ const baseConfig: BaseConfig = {
 		parentClass: undefined,
 		type: 'bar',
 		orientation: 'vertical',
-		theme: 'light',
 		width: 640,
 		height: 400,
 		padding: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -20,10 +25,10 @@ const baseConfig: BaseConfig = {
 		subtitle: '',
 		note: '',
 		source: '',
-		tag: 'PEW RESEARCH CENTER',
+		tag: '',
 		alt: '',
 	},
-	colors: ['#436983', '#bf3927', '#756a7e', '#ea9e2c', '#bc7b2b', '#eeece4'],
+	colors: [...NEUTRAL_SERIES_COLORS],
 	plotBands: {
 		active: false,
 		allowDrag: false,
@@ -59,7 +64,7 @@ const baseConfig: BaseConfig = {
 			textAnchor: 'middle',
 			verticalAnchor: 'start',
 			fill: '#2a2a2a',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			maxWidth: 50,
 		},
 		axisLabel: {
@@ -71,7 +76,7 @@ const baseConfig: BaseConfig = {
 			dy: 0,
 			textAnchor: 'end',
 			verticalAnchor: 'middle',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			maxWidth: 200,
 		},
 		axis: {
@@ -116,7 +121,7 @@ const baseConfig: BaseConfig = {
 			dy: 0,
 			textAnchor: 'end',
 			verticalAnchor: 'middle',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			maxWidth: 50,
 		},
 		axisLabel: {
@@ -128,7 +133,7 @@ const baseConfig: BaseConfig = {
 			dy: 0,
 			textAnchor: 'end',
 			verticalAnchor: 'middle',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			maxWidth: 50,
 		},
 		ticks: {
@@ -160,9 +165,9 @@ const baseConfig: BaseConfig = {
 		xFormat: null,
 		yFormat: null,
 		numberFormat: 'en-US',
-		isHighlightedColor: '#ECDBAC',
-		highlightColor: '#ECDBAC',
-		deselectedColor: '#EEECE4',
+		isHighlightedColor: NEUTRAL_HIGHLIGHT_COLOR,
+		highlightColor: NEUTRAL_HIGHLIGHT_COLOR,
+		deselectedColor: NEUTRAL_DESELECTED_COLOR,
 		deselectedOpacity: 1,
 		highlightedCategories: [],
 		mapScale: 'threshold',
@@ -211,7 +216,6 @@ const baseConfig: BaseConfig = {
 	events: {},
 	tooltip: {
 		active: false,
-		activeOnMobile: true,
 		headerActive: true,
 		headerValue: 'independentValue',
 		format: '{{row}}: {{value}}',
@@ -238,7 +242,7 @@ const baseConfig: BaseConfig = {
 			width: 'auto',
 			height: 'auto',
 			fontSize: '13px',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			background: 'white',
 			border: '1px solid #CBCBCB',
 			padding: '10px',
@@ -259,6 +263,7 @@ const baseConfig: BaseConfig = {
 		borderStroke: 'black',
 		fill: 'white',
 		fontWeight: 'normal',
+		fontFamily: DEFAULT_FONT_FAMILY,
 		categories: [],
 		labelDelimiter: 'to',
 		labelLower: 'Less than ',
@@ -342,10 +347,9 @@ const baseConfig: BaseConfig = {
 		color: 'inherit',
 		fontWeight: 200,
 		fontSize: 12,
-		fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+		fontFamily: DEFAULT_FONT_FAMILY,
 		labelPositionBar: 'inside',
 		labelCutoff: 0,
-		labelCutoffMobile: 0,
 		labelPositionDX: -25,
 		labelPositionDY: 0,
 		pieLabelRadius: 60,
@@ -358,6 +362,10 @@ const baseConfig: BaseConfig = {
 		labelUnitPosition: 'end',
 		textAnchor: 'middle',
 		customLabelFormat: null, // function({datum}) { return datum; },
+		autoDeclutter: false,
+		declutterPadding: 4,
+		declutterLeaderLines: false,
+		textOutline: false,
 	},
 	shapes: {
 		customStyles: {},
@@ -414,7 +422,7 @@ const baseConfig: BaseConfig = {
 			headerFontStyle: 'normal',
 			headerFontFamily: '',
 			fontSize: '10px',
-			fontFamily: "'franklin-gothic-urw', Verdana, Geneva, sans-serif",
+			fontFamily: DEFAULT_FONT_FAMILY,
 			headerFontSize: '12px',
 			marginLeft: 10,
 			width: 30,
@@ -508,7 +516,6 @@ const baseConfig: BaseConfig = {
 	},
 	annotations: {
 		active: false,
-		activeOnMobile: false,
 		items: [],
 	},
 	drawings: {

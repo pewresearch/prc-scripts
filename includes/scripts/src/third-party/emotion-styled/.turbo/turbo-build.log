@@ -1,0 +1,11 @@
+
+> @prc/vendor-emotion-styled@1.0.0 build
+> wp-scripts build
+
+asset index.js 20.7 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 91 bytes [compared for emit] (name: index)
+Entrypoint index 20.8 KiB = index.js 20.7 KiB index.asset.php 91 bytes
+orphan modules 82 KiB [orphan] 28 modules
+runtime modules 670 bytes 3 modules
+./index.js + 20 modules 62.3 KiB [not cacheable] [built] [code generated]
+webpack 5.106.2 compiled successfully in 2466 ms

@@ -9,4 +9,4 @@ runtime modules 937 bytes 4 modules
 cacheable modules 1.59 KiB
   ./index.js 102 bytes [built] [code generated]
   ../../../../../node_modules/classnames/index.js 1.49 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1334 ms
+webpack 5.106.2 compiled successfully in 1813 ms

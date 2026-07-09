@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getRegressionFn } from './regression';
+import { getRegressionFn } from '../utilities/regression';
 import type { RegressionLine } from '../types/regressionLine';
 
 /**
@@ -43,7 +43,12 @@ export function useRegressionLine(
  * @return regressionDataByCategory — map of group value → [x, y][] tuples.
  */
 export function useRegressionLines(
-	voronoiData: Array<{ x: any; y: any; category: string; colorGroup?: string }>,
+	voronoiData: Array<{
+		x: any;
+		y: any;
+		category: string;
+		colorGroup?: string;
+	}>,
 	regressionConfig: RegressionLine,
 	groupByKey: 'category' | 'colorGroup' = 'category'
 ): { regressionDataByCategory: Record<string, [number, number][]> } {
@@ -56,17 +61,27 @@ export function useRegressionLines(
 		const groups = [
 			...new Set(
 				voronoiData
-					.map((d) => (groupByKey === 'colorGroup' ? d.colorGroup : d.category))
-					.filter((v): v is string => v !== undefined && v !== null && v !== '')
+					.map((d) =>
+						groupByKey === 'colorGroup' ? d.colorGroup : d.category
+					)
+					.filter(
+						(v): v is string =>
+							v !== undefined && v !== null && v !== ''
+					)
 			),
 		];
 		const result: Record<string, [number, number][]> = {};
 		for (const group of groups) {
 			const groupPoints = voronoiData.filter((d) =>
-				groupByKey === 'colorGroup' ? d.colorGroup === group : d.category === group
+				groupByKey === 'colorGroup'
+					? d.colorGroup === group
+					: d.category === group
 			);
 			if (groupPoints.length >= 2) {
-				result[group] = regressionFn(groupPoints) as unknown as [number, number][];
+				result[group] = regressionFn(groupPoints) as unknown as [
+					number,
+					number,
+				][];
 			}
 		}
 		return result;

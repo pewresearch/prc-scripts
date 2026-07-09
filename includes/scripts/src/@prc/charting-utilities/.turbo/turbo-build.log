@@ -1,13 +1,13 @@
 
-> @prc/charting-utilities@3.11.0 build
+> @prc/charting-utilities@3.13.0 build
 > wp-scripts build
 
-asset index.js 63.4 KiB [compared for emit] [minimized] (name: index)
-asset index.asset.php 91 bytes [compared for emit] (name: index)
-Entrypoint index 63.5 KiB = index.js 63.4 KiB index.asset.php 91 bytes
-orphan modules 183 KiB [orphan] 161 modules
+asset index.js 89 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 115 bytes [compared for emit] (name: index)
+Entrypoint index 89.2 KiB = index.js 89 KiB index.asset.php 115 bytes
+orphan modules 267 KiB [orphan] 232 modules
 runtime modules 670 bytes 3 modules
-built modules 153 KiB [built]
-  ./index.js + 47 modules 132 KiB [not cacheable] [built] [code generated]
+built modules 219 KiB [built]
+  ./index.js + 100 modules 198 KiB [not cacheable] [built] [code generated]
   ../../../../../../../node_modules/d3-regression/dist/d3-regression.js 21.4 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 4101 ms
+webpack 5.106.2 compiled successfully in 4392 ms

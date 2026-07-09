@@ -100,6 +100,13 @@ export {
 // Styled Component Context
 export { default as StyledComponentContext } from './styled-component-context';
 
+// Synced Entity Blocks
+export { default as SyncedEntityIcon } from './synced-entity-icon';
+export { default as SyncedEntityIsolationControls } from './synced-entity-isolation-controls';
+export { default as SyncedEntityPlaceholder } from './synced-entity-placeholder';
+export { default as SyncedEntityCreateModal } from './synced-entity-create-modal';
+export { default as SyncedEntityEdit } from './synced-entity-edit';
+
 // Taxonomy Select
 export { default as TaxonomySelect } from './taxonomy-select';
 
@@ -124,6 +131,7 @@ export {
 	AISuggestModal,
 	AISuggestionPreview,
 	AISuggestionsList,
+	AINumberCheckBadge,
 } from './ai';
 
 // Editable Text
@@ -140,3 +148,38 @@ export { MobileSafariChrome, DesktopSafariChrome } from './browser-chrome';
 // Character Counter
 export { default as CharacterCounter } from './character-counter';
 export type { CharacterCounterProps } from './character-counter';
+export { default as CharacterCounterRing } from './character-counter/ring';
+export type { CharacterCounterRingProps } from './character-counter/ring';
+
+// Settings Page (WP Admin)
+export {
+	SettingsAccordion,
+	SettingsSubSection,
+	SettingsPage,
+	SettingsFieldsSection,
+	ConnectionBadge,
+	SettingsSectionFooter,
+	createSettingsStore,
+	createSettingsClient,
+	createPartialSaveClient,
+	useSettingsDraft,
+	mountSettingsPage,
+} from './settings-page';
+export type {
+	SettingsApiResponse,
+	SettingsStoreState,
+	SettingsFieldConfig,
+	SettingsFieldOption,
+	SettingsFieldType,
+	SettingsAccordionProps,
+	SettingsSubSectionProps,
+	SettingsSectionConfig,
+	SettingsPageProps,
+	SettingsFieldsSectionProps,
+	ConnectionBadgeProps,
+	SettingsSectionFooterProps,
+	CreateSettingsStoreConfig,
+	CreateSettingsClientConfig,
+	CreatePartialSaveClientConfig,
+	SaveSettingsOptions,
+} from './settings-page';

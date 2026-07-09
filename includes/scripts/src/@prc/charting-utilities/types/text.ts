@@ -18,7 +18,6 @@ type TextAnnotation = {
 	borderRadius?: number;
 	opacity?: number;
 	maxWidth?: number;
-	activeOnMobile?: boolean;
 	positioningContext?: 'chart' | 'inner'; // 'chart' = full chart area including padding, 'inner' = data area only
 	textOutline?: boolean; // opt-in: renders a contrasting stroke behind the fill for readability on complex backgrounds
 	onDrag?: (id: string, newX: number, newY: number) => void;
@@ -28,7 +27,6 @@ type TextAnnotation = {
 
 type AnnotationsConfig = {
 	active: boolean;
-	activeOnMobile: boolean;
 	items: TextAnnotation[];
 };
 

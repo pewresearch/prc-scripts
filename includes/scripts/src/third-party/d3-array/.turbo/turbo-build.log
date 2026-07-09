@@ -1,0 +1,11 @@
+
+> @prc/vendor-d3-array@1.0.0 build
+> wp-scripts build
+
+asset index.js 17.1 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
+Entrypoint index 17.2 KiB = index.js 17.1 KiB index.asset.php 84 bytes
+orphan modules 42.1 KiB [orphan] 62 modules
+runtime modules 670 bytes 3 modules
+./index.js + 62 modules 42.1 KiB [built] [code generated]
+webpack 5.106.2 compiled successfully in 2471 ms

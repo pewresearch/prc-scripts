@@ -175,17 +175,11 @@ const getTooltipFormat = (
 };
 
 const getTooltipVisible = (
-	layout: Layout,
-	chartWidth: number,
+	_layout: Layout,
+	_chartWidth: number,
 	tooltip: Tooltip
 ) => {
-	if (!tooltip.active) return false;
-	const hasBreakpoint =
-		!isNaN(layout.mobileBreakpoint) || layout.mobileBreakpoint > 0;
-	if (hasBreakpoint && chartWidth < layout.mobileBreakpoint) {
-		return tooltip.activeOnMobile;
-	}
-	return true;
+	return tooltip.active;
 };
 
 const getTooltipMapDeemphasisProps = (

@@ -113,7 +113,11 @@ const HomeIndicator = styled.div`
 	opacity: 0.8;
 `;
 
-export default function MobileSafariChrome({ children, url }) {
+export default function MobileSafariChrome({
+	children,
+	url,
+	showUrlBar = true,
+}) {
 	const displayUrl = useMemo(() => {
 		if (url) {
 			return url;
@@ -131,11 +135,13 @@ export default function MobileSafariChrome({ children, url }) {
 					<IconBattery />
 				</Icons>
 			</StatusBar>
-			<UrlBarContainer>
-				<UrlBar>
-					<UrlText>{displayUrl}</UrlText>
-				</UrlBar>
-			</UrlBarContainer>
+			{showUrlBar && (
+				<UrlBarContainer>
+					<UrlBar>
+						<UrlText>{displayUrl}</UrlText>
+					</UrlBar>
+				</UrlBarContainer>
+			)}
 			<Content>{children}</Content>
 			<BottomSafeArea>
 				<HomeIndicator />

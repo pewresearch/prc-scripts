@@ -5,9 +5,16 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 
 /**
+ * WordPress Dependencies
+ */
+import { RichText } from '@wordpress/block-editor';
+
+/**
  * Internal Dependencies
  */
 import type { FacebookPreviewProps } from './types';
+import CharacterCounterRing from '../character-counter/ring';
+import AINumberCheckBadge from '../ai/ai-number-check-badge';
 
 const PreviewContainer = styled.div`
 	font-family: Helvetica, Arial, sans-serif;
@@ -262,13 +269,20 @@ export function FacebookPreview({
 	comments = 0,
 	shares = 0,
 	showLabel = true,
+	isEditable = false,
+	isSelected = false,
+	charLimit,
+	editableCallbacks,
+	numberCheck,
 }: FacebookPreviewProps): JSX.Element {
 	// Use postText if provided, otherwise use description
 	const displayText = postText || description;
+	const onContentChange = editableCallbacks?.onContentChange;
+	const showEditableText = isEditable && onContentChange;
 
 	// Truncate text and show "See more" if needed
 	const maxLength = 200;
-	const shouldTruncate = displayText.length > maxLength;
+	const shouldTruncate = !showEditableText && displayText.length > maxLength;
 	const truncatedText = shouldTruncate
 		? displayText.slice(0, maxLength)
 		: displayText;
@@ -333,9 +347,40 @@ export function FacebookPreview({
 				</ProfileHeader>
 
 				<PostContent>
-					<PostText>{truncatedText}</PostText>
+					<PostText>
+						{showEditableText ? (
+							<RichText
+								tagName="span"
+								value={displayText}
+								onChange={onContentChange}
+								allowedFormats={[]}
+								placeholder="Write your post..."
+							/>
+						) : (
+							truncatedText
+						)}
+					</PostText>
 					{shouldTruncate && <SeeMore>... See more</SeeMore>}
 				</PostContent>
+				{showEditableText && charLimit !== undefined && isSelected && (
+					<div
+						style={{
+							padding: '0 16px 12px',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center',
+							gap: 6,
+						}}
+					>
+						<AINumberCheckBadge
+							numberCheck={numberCheck ?? undefined}
+						/>
+						<CharacterCounterRing
+							current={displayText.length}
+							limit={charLimit}
+						/>
+					</div>
+				)}
 
 				{(image || children) && (
 					<ImageContainer>

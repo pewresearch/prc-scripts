@@ -177,7 +177,7 @@ const formatTicks = (
  * in prc-chart-builder, so this function only needs to handle the
  * empty/falsy case.
  */
-const getColor = (color: string, _theme: string) => {
+const getColor = (color: string) => {
 	if (!color) {
 		return 'transparent';
 	}
@@ -187,7 +187,6 @@ const getColor = (color: string, _theme: string) => {
 const getAxisProps = (
 	config: independentAxis | dependentAxis,
 	scale: AxisScale<AxisScaleOutput>,
-	theme: 'light' | 'dark',
 	inputDateFormat?: string | null,
 	ticksComponent?: (props: any) => React.ReactElement
 ) => {
@@ -210,9 +209,9 @@ const getAxisProps = (
 		scale,
 		hideAxisLine: !config.active,
 		hideTicks: !config.active,
-		stroke: getColor(axis.stroke, theme),
+		stroke: getColor(axis.stroke),
 		strokeWidth: axis.strokeWidth,
-		tickStroke: getColor(axis.stroke, theme),
+		tickStroke: getColor(axis.stroke),
 		tickLength: ticks.size,
 		hideZero: !config.showZero,
 		label: config.label ? decodeHtmlEntities(config.label) : '',
@@ -223,7 +222,7 @@ const getAxisProps = (
 				? (parsedTickValues as Date[] | undefined)
 				: (parsedTickValues as number[] | undefined),
 		labelProps: {
-			fill: getColor(axisLabel.fill, theme),
+			fill: getColor(axisLabel.fill),
 			fontSize: axisLabel.fontSize,
 			textAnchor: axisLabel.textAnchor,
 			dy: axisLabel.dy,
@@ -248,7 +247,7 @@ const getAxisProps = (
 			const custom =
 				typeof entry === 'object' && entry !== null ? entry : {};
 			return {
-				fill: custom.fill ?? getColor(tickLabels.fill, theme),
+				fill: custom.fill ?? getColor(tickLabels.fill),
 				fontSize: custom.fontSize ?? tickLabels.fontSize,
 				fontWeight: custom.fontWeight ?? undefined,
 				fontStyle: custom.fontStyle ?? undefined,

@@ -167,6 +167,56 @@ const UI_BLACK = 'light-dark(#000000, #f0f0f0)';
 const UI_WHITE = 'light-dark(#ffffff, #1a1a1a)';
 
 /**
+ * Uniform halo color for label text outlines. Matches the chart background
+ * (white in light mode, near-black in dark mode) so every label gets the same
+ * "moat" regardless of its own text color — avoids the jarring mix of black
+ * and white halos you get when the outline is derived per-label from the fill.
+ */
+export const LABEL_OUTLINE_COLOR = UI_WHITE;
+
+const BAR_LIKE_CHART_TYPES = new Set([
+	'bar',
+	'stacked-bar',
+	'diverging-bar',
+	'exploded-bar',
+	'pie',
+	'treemap',
+]);
+
+/**
+ * Resolve the effective text-outline mode for a chart.
+ * @param labels    Label config (may omit `textOutlineMode`).
+ * @param chartType Layout chart type when available.
+ */
+function resolveTextOutlineMode(
+	labels: { textOutlineMode?: 'background' | 'contrast' },
+	chartType?: string
+): 'background' | 'contrast' {
+	if (labels.textOutlineMode) {
+		return labels.textOutlineMode;
+	}
+	if (chartType && BAR_LIKE_CHART_TYPES.has(chartType)) {
+		return 'contrast';
+	}
+	return 'background';
+}
+
+/**
+ * Stroke color for a label text outline halo.
+ * @param textFill Resolved label fill color.
+ * @param mode     Outline color strategy.
+ */
+function getLabelOutlineStroke(
+	textFill: string,
+	mode: 'background' | 'contrast' = 'background'
+): string {
+	if (mode === 'contrast') {
+		return contrastLabelFillForLightDark(textFill || '#000000');
+	}
+	return LABEL_OUTLINE_COLOR;
+}
+
+/**
  * Resolve a labels.color semantic token to a concrete light-dark() CSS color.
  *
  * This is the single source of truth for label fill resolution across all
@@ -242,33 +292,18 @@ export function getLabelFill({
 /**
  * Effective label cutoff for bar charts.
  *
- * Viewport merge sets `labels.labelCutoff` per device. On narrow layouts,
- * falls back to `labelCutoffMobile` when it differs — preserves unedited
- * legacy charts without a separate editor control.
+ * Viewport merge sets `labels.labelCutoff` per device before config reaches
+ * the charting library.
  *
  * @param labels
  * @param labels.labelCutoff
- * @param labels.labelCutoffMobile
- * @param containerWidth Measured chart container width.
- * @param designWidth    Layout design width breakpoint.
  */
 export function resolveLabelCutoff(
-	labels: { labelCutoff?: number; labelCutoffMobile?: number },
-	containerWidth: number | undefined,
-	designWidth: number
+	labels: { labelCutoff?: number },
+	_containerWidth?: number | undefined,
+	_designWidth?: number
 ): number {
-	const cutoff = labels.labelCutoff ?? 0;
-	const isNarrow = containerWidth != null && containerWidth < designWidth;
-
-	if (
-		isNarrow &&
-		labels.labelCutoffMobile != null &&
-		labels.labelCutoffMobile !== cutoff
-	) {
-		return labels.labelCutoffMobile;
-	}
-
-	return cutoff;
+	return labels.labelCutoff ?? 0;
 }
 
 /**
@@ -276,7 +311,6 @@ export function resolveLabelCutoff(
  * @param      labelPositionBar
  * @param      barValue
  * @param      labelCutoff
- * @param      theme
  * @param      barColor
  * @param      categoryColor
  * @deprecated Use getLabelFill() instead.
@@ -287,7 +321,6 @@ function getBarLabelFill(
 	labelPositionBar: string,
 	barValue: number,
 	labelCutoff: number,
-	theme: string,
 	barColor: string,
 	categoryColor: string
 ): string {
@@ -527,8 +560,10 @@ export {
 	getCustomLabelText,
 	getCustomTooltip,
 	getGroupValue,
+	getLabelOutlineStroke,
 	isLabelVisible,
 	labelFill,
 	newDateByFormat,
+	resolveTextOutlineMode,
 	scaleAxisNumTicks,
 };

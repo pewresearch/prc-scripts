@@ -5,13 +5,21 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 
 /**
+ * WordPress Dependencies
+ */
+import { RichText } from '@wordpress/block-editor';
+
+/**
  * Internal Dependencies
  */
 import type { TwitterPreviewProps } from './types';
+import CharacterCounterRing from '../character-counter/ring';
+import AINumberCheckBadge from '../ai/ai-number-check-badge';
 
 const PreviewContainer = styled.div`
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Helvetica, Arial, sans-serif;
+	font-family:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+		sans-serif;
 	margin-bottom: 1rem;
 `;
 
@@ -241,6 +249,11 @@ export function TwitterPreview({
 	likes = 0,
 	replies = 0,
 	showLabel = true,
+	isEditable = false,
+	isSelected = false,
+	charLimit,
+	editableCallbacks,
+	numberCheck,
 }: TwitterPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
@@ -255,6 +268,8 @@ export function TwitterPreview({
 
 	// Use tweetText if provided, otherwise fall back to description for tweet content
 	const displayTweetText = tweetText || description;
+	const onContentChange = editableCallbacks?.onContentChange;
+	const showEditableText = isEditable && onContentChange;
 
 	// Format the handle (add @ if not present)
 	const formattedHandle = username.startsWith('@')
@@ -297,7 +312,38 @@ export function TwitterPreview({
 					<MoreButton aria-label="More">···</MoreButton>
 				</ProfileHeader>
 
-				<TweetText>{displayTweetText}</TweetText>
+				<TweetText>
+					{showEditableText ? (
+						<RichText
+							tagName="span"
+							value={displayTweetText}
+							onChange={onContentChange}
+							allowedFormats={[]}
+							placeholder="Write your post..."
+						/>
+					) : (
+						displayTweetText
+					)}
+				</TweetText>
+				{showEditableText && charLimit !== undefined && isSelected && (
+					<div
+						style={{
+							marginBottom: 12,
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center',
+							gap: 6,
+						}}
+					>
+						<AINumberCheckBadge
+							numberCheck={numberCheck ?? undefined}
+						/>
+						<CharacterCounterRing
+							current={displayTweetText.length}
+							limit={charLimit}
+						/>
+					</div>
+				)}
 
 				<LinkCard>
 					{(image || children) && (
