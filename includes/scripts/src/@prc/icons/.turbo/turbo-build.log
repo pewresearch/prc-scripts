@@ -1,5 +1,5 @@
 
-> @prc/icons@1.0.1 build
+> @prc/icons@1.0.0 build
 > node bin/build-index.js && wp-scripts build
 
 assets by status 492 KiB [compared for emit]
@@ -32,4 +32,4 @@ WARNING in webpack performance recommendations:
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
 For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with 3 warnings in 1756 ms
+webpack 5.106.2 compiled with 3 warnings in 2456 ms
