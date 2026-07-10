@@ -64,9 +64,15 @@ namespace PRC\Platform\Icons {
 			'solid',
 			'regular',
 			'light',
+			'thin',
 			'duotone',
 			'brands',
 			'sharp',
+			'sharp-solid',
+			'sharp-regular',
+			'sharp-light',
+			'sharp-thin',
+			'sharp-duotone-solid',
 			'custom-icons',
 		);
 		$shortcuts           = array(
