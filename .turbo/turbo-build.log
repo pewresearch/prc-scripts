@@ -1,5 +1,5 @@
 
-> @prc/scripts@1.0.1 build
+> @prc/scripts@1.1.0 build
 > echo '@prc/scripts is a meta-package; sub-packages built via turbo dependency graph'
 
 @prc/scripts is a meta-package; sub-packages built via turbo dependency graph

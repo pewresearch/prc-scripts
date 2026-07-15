@@ -16,6 +16,43 @@ type AbilityInput = Record<string, unknown> | undefined;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AbilityOutput = Record<string, any>;
 
+declare global {
+	interface Window {
+		prcPlatform?: {
+			siteUrl?: string;
+			envType?: string;
+			version?: string;
+			releaseName?: string;
+			presenceApiEnabled?: string | boolean;
+			/** Current multisite blog ID from Scripts::localize_platform_info(). */
+			siteId?: number | string;
+		};
+	}
+}
+
+/**
+ * Merge the current editor blog id as `site_id` unless the caller already set
+ * `site_id` or legacy `blog_id`. Always returns an object so site-scoped
+ * abilities receive a target even when `fetch()` is called with no args.
+ *
+ * @param input Optional ability input from the caller.
+ * @return Input with site_id injected when appropriate.
+ */
+function withCurrentSiteId(input?: AbilityInput): AbilityInput {
+	const siteId = Number(window.prcPlatform?.siteId);
+	const base: Record<string, unknown> =
+		input && typeof input === 'object' ? { ...input } : {};
+	if (
+		Number.isFinite(siteId) &&
+		siteId > 0 &&
+		base.site_id === undefined &&
+		base.blog_id === undefined
+	) {
+		base.site_id = siteId;
+	}
+	return base;
+}
+
 /**
  * Options for the useAISuggest hook.
  */
@@ -182,6 +219,8 @@ export default function useAISuggest<T = AbilityOutput>(
 			setError(null);
 			setResult(null);
 
+			const abilityInput = withCurrentSiteId(input);
+
 			try {
 				// The @wordpress/abilities store has no REST resolver, so
 				// abilities registered only server-side (via wp_register_ability)
@@ -206,7 +245,7 @@ export default function useAISuggest<T = AbilityOutput>(
 					const { executeAbility } = await import(
 						/* webpackIgnore: true */ '@wordpress/abilities'
 					);
-					raw = await executeAbility(abilityName, input);
+					raw = await executeAbility(abilityName, abilityInput);
 				} catch (executeErr) {
 					// Server-only abilities may still be missing from the client
 					// store. Mirror the canonical WP AI plugin: fall back to the
@@ -216,7 +255,7 @@ export default function useAISuggest<T = AbilityOutput>(
 					if (!isAbilityNotFoundError(executeErr)) {
 						throw executeErr;
 					}
-					raw = await runAbilityViaRest(abilityName, input);
+					raw = await runAbilityViaRest(abilityName, abilityInput);
 				}
 
 				// Handle error strings returned inside the result object.

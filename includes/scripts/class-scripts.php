@@ -37,6 +37,12 @@ class Scripts {
 	 * window.prcPlatform.version = '1.0.0'
 	 * window.prcPlatform.releaseName = 'Release Name'
 	 * window.prcPlatform.presenceApiEnabled = true | false
+	 * window.prcPlatform.siteId = 20 // current multisite blog ID
+	 *
+	 * `siteId` is the current blog ID (`get_current_blog_id()`). Editor AI
+	 * flows inject it as `site_id` via `useAISuggest` so site-scoped abilities
+	 * run against the blog the editor is on (not only the content-site default).
+	 * Explicit `site_id` / `blog_id` in ability input still wins.
 	 *
 	 * `presenceApiEnabled` reflects `function_exists( 'wp_set_presence' )` and is
 	 * consumed by `@prc/hooks` (`usePresenceUsers`, `useDeclarePresence`) to
@@ -70,6 +76,7 @@ class Scripts {
 				'version'            => $version,
 				'releaseName'        => $release_name,
 				'presenceApiEnabled' => function_exists( 'wp_set_presence' ),
+				'siteId'             => get_current_blog_id(),
 			)
 		);
 	}
