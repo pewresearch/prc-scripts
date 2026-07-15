@@ -2,10 +2,10 @@
 > @prc/hooks@1.0.0 build
 > wp-scripts build
 
-asset index.js 12.4 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 247 bytes [emitted] (name: index)
+asset index.js 12.4 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 247 bytes [compared for emit] (name: index)
 Entrypoint index 12.7 KiB = index.js 12.4 KiB index.asset.php 247 bytes
 orphan modules 39.1 KiB [orphan] 32 modules
 runtime modules 937 bytes 4 modules
 ./exports.js + 32 modules 40.5 KiB [not cacheable] [built] [code generated]
-webpack 5.106.2 compiled successfully in 1002 ms
+webpack 5.106.2 compiled successfully in 1379 ms
