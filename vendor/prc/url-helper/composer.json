@@ -1,0 +1,50 @@
+{
+  "name": "prc/url-helper",
+  "version": "1.0.0",
+  "description": "Resolve any WordPress URL (preview link, wp-admin edit link, canonical post URL) to the corresponding post ID.",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Seth Rubenstein",
+      "email": "srubenstein@pewresearch.org",
+      "homepage": "https://pewresearch.org",
+      "role": "Maintainer"
+    }
+  ],
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^1.1",
+    "wp-phpunit/wp-phpunit": "^6.4"
+  },
+  "autoload": {
+    "files": [
+      "url-helper.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PRC\\URL_Helper\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:unit": "phpunit --testsuite unit",
+    "test:integration": "phpunit --testsuite integration"
+  },
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "8.4.0"
+    }
+  },
+  "minimum-stability": "stable",
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.x-dev"
+    }
+  }
+}
