@@ -68,7 +68,6 @@ export default function SyncedEntityIsolationControls({
 				<PanelBody title={panelTitle}>
 					{extraInspectorContent}
 					<TextControl
-						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={entityTitleLabel}
 						value={entityTitle}

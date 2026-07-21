@@ -17,21 +17,14 @@ const useAfterPublish = () => {
 			(isPublishing || isAutosavingPost) &&
 			!isPostPublishInProgress.current
 		) {
-			console.log('start publish', isPostPublishInProgress.current);
 			setIsPostPublished(false);
 			setIsPublishing(true);
 			isPostPublishInProgress.current = true;
 		}
-		console.log(
-			'check publish',
-			isPublishing,
-			isPostPublishInProgress.current
-		);
 		if (
 			!(isPublishing || isAutosavingPost) &&
 			isPostPublishInProgress.current
 		) {
-			console.log('end publish', isPostPublishInProgress.current);
 			setIsPostPublished(true);
 			setIsPublishing(false);
 			isPostPublishInProgress.current = false;

@@ -111,12 +111,7 @@ export default function SyncedEntityCreateModal({
 	return (
 		<>
 			{!hideTrigger && (
-				<Button
-					variant="primary"
-					onClick={onOpen}
-					icon={plus}
-					__next40pxDefaultSize
-				>
+				<Button variant="primary" onClick={onOpen} icon={plus}>
 					{triggerLabel || createButtonLabel}
 				</Button>
 			)}
@@ -132,7 +127,6 @@ export default function SyncedEntityCreateModal({
 					)}
 
 					<TextControl
-						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={textControlLabel}
 						value={entityTitle}

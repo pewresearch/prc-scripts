@@ -24,6 +24,9 @@ module.exports = {
 	output: {
 		...defaultConfig.output,
 		path: __dirname + '/../../../build/third-party/d3',
-		library: { name: 'd3', type: 'window' },
+		// Entry exports `default` (the UMD-populated d3 API). Without
+		// `export: 'default'`, webpack would assign `{ default: d3 }` / `{}` to
+		// window.d3 and wipe the UMD namespace consumers rely on.
+		library: { name: 'd3', type: 'window', export: 'default' },
 	},
 };

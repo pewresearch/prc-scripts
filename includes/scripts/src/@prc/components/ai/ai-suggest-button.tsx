@@ -94,7 +94,6 @@ export default function AISuggestButton({
 						: undefined
 				}
 				label={label}
-				__next40pxDefaultSize={!fullWidth}
 			>
 				{text}
 			</Button>

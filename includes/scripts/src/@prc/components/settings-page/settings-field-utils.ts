@@ -43,6 +43,39 @@ export function getValueByPath(
 	}, object);
 }
 
+/**
+ * Whether `path` exists on `object` (even when the leaf value is undefined).
+ * Used to ignore sparse DataForm patches that omit unchanged nested siblings.
+ *
+ * @param object
+ * @param path
+ */
+export function hasPath(
+	object: Record<string, unknown>,
+	path: string
+): boolean {
+	const keys = path.split('.');
+	let current: unknown = object;
+
+	for (const key of keys) {
+		if (
+			current === null ||
+			current === undefined ||
+			typeof current !== 'object'
+		) {
+			return false;
+		}
+
+		if (!Object.prototype.hasOwnProperty.call(current, key)) {
+			return false;
+		}
+
+		current = (current as Record<string, unknown>)[key];
+	}
+
+	return true;
+}
+
 export function setValueByPath<T extends Record<string, unknown>>(
 	object: T,
 	path: string,
@@ -160,6 +193,12 @@ export function findChangedFieldId(
 	fieldIds: string[]
 ): string | null {
 	for (const fieldId of fieldIds) {
+		// DataForm boolean/select controls pass sparse setValue() patches that
+		// only include the changed nested path. Missing siblings are not changes.
+		if (!hasPath(nextValues, fieldId)) {
+			continue;
+		}
+
 		if (
 			getValueByPath(previousValues, fieldId) !==
 			getValueByPath(nextValues, fieldId)

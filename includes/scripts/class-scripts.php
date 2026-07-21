@@ -131,6 +131,11 @@ class Scripts {
 	 * Register third party scripts.
 	 * Fires early, on wp_enqueue_scripts.
 	 *
+	 * Skips handles that another plugin already registered (e.g. prc-legacy-content
+	 * registers `d3` as D3 v3.5 for classic interactives). Overwriting that handle
+	 * with the modern third-party build left free-global consumers either unbound
+	 * or pointed at a wiped `window.d3 = {}` export.
+	 *
 	 * @return void
 	 */
 	public function init_third_party_scripts() {
@@ -142,7 +147,7 @@ class Scripts {
 			$script_src  = plugin_dir_url( __FILE__ ) . 'build/third-party/' . $script_name . '/index.js';
 
 			// Check if index.js file exists and register it if it does.
-			if ( file_exists( $dir . '/index.js' ) ) {
+			if ( file_exists( $dir . '/index.js' ) && ! wp_script_is( $script_slug, 'registered' ) ) {
 				wp_register_script(
 					$script_slug,
 					$script_src,

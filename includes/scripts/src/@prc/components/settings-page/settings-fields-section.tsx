@@ -40,6 +40,45 @@ function isImmediateSaveField(field: SettingsFieldConfig): boolean {
 	);
 }
 
+function reconcilePendingValues(
+	currentPending: Record<string, unknown>,
+	debouncedFieldIds: string[],
+	storedFormData: Record<string, unknown>,
+	prevStoredFormData: Record<string, unknown>,
+	debounceTimers: Record<string, ReturnType<typeof setTimeout>>
+): Record<string, unknown> {
+	const nextPending = { ...currentPending };
+	let changed = false;
+
+	for (const fieldId of debouncedFieldIds) {
+		if (nextPending[fieldId] === undefined) {
+			continue;
+		}
+
+		const storedValue = getValueByPath(storedFormData, fieldId);
+
+		if (storedValue === nextPending[fieldId]) {
+			delete nextPending[fieldId];
+			changed = true;
+			continue;
+		}
+
+		// Store changed underneath a local draft (e.g. Generate key).
+		// Cancel the pending debounce so it cannot overwrite the newer value.
+		const prevStoredValue = getValueByPath(prevStoredFormData, fieldId);
+		if (storedValue !== prevStoredValue) {
+			if (debounceTimers[fieldId]) {
+				clearTimeout(debounceTimers[fieldId]);
+				delete debounceTimers[fieldId];
+			}
+			delete nextPending[fieldId];
+			changed = true;
+		}
+	}
+
+	return changed ? nextPending : currentPending;
+}
+
 function IntroRender({ intro }: { intro: ReactNode }) {
 	return <div className="prc-settings__section-intro">{intro}</div>;
 }
@@ -111,25 +150,21 @@ export default function SettingsFieldsSection({
 		[storedFormData, pendingValues]
 	);
 	formDataRef.current = formData;
+	const prevStoredFormDataRef = useRef(storedFormData);
 
 	useEffect(() => {
-		setPendingValues((currentPending) => {
-			const nextPending = { ...currentPending };
-			let changed = false;
+		const prevStoredFormData = prevStoredFormDataRef.current;
+		prevStoredFormDataRef.current = storedFormData;
 
-			for (const fieldId of debouncedFieldIds) {
-				if (
-					nextPending[fieldId] !== undefined &&
-					getValueByPath(storedFormData, fieldId) ===
-						nextPending[fieldId]
-				) {
-					delete nextPending[fieldId];
-					changed = true;
-				}
-			}
-
-			return changed ? nextPending : currentPending;
-		});
+		setPendingValues((currentPending) =>
+			reconcilePendingValues(
+				currentPending,
+				debouncedFieldIds,
+				storedFormData,
+				prevStoredFormData,
+				debounceTimersRef.current
+			)
+		);
 	}, [debouncedFieldIds, storedFormData]);
 
 	const persistField = useCallback(

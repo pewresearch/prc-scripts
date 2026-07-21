@@ -10,7 +10,25 @@ PHP namespaces (`PRC\Platform\Scripts`, `PRC\Platform\Script_Modules`) are uncha
 
 - `includes/scripts/` — first-party `@prc/*` and third-party JavaScript / CSS source + build artifacts.
 - `includes/script-modules/` — `@prc/d3` and `@prc/topojson` script modules.
+- `includes/scripts/src/third-party/d3/` and `d3-v7/` — UMD bundles exposed as `window.d3` and `window.d3v7` for webpack externals.
 - `includes/class-bootstrap.php` — wires the moved classes into the new plugin's `Loader`.
+
+## Third-party D3 globals
+
+Legacy chart and interactive bundles externalize D3 to script handles built from the UMD `d3/dist/d3.js` entry (not `d3/src`, which breaks under npm workspaces). Each webpack build must export the **populated UMD global** as the library default:
+
+| Build output | Global | Typical consumer import |
+|--------------|--------|-------------------------|
+| `build/third-party/d3/` | `window.d3` | `d3` external in older interactives |
+| `build/third-party/d3-v7/` | `window.d3v7` | `import * as d3 from 'd3v7'` |
+
+A bare `export * from 'd3'` against the UMD file produced an empty module object and overwrote `window.d3` / `window.d3v7` with `{}`, breaking `d3.select` at runtime. The entry files re-export `globalThis.d3` after importing the UMD bundle (see comments in `includes/scripts/src/third-party/d3/index.js`).
+
+Rebuild both vendors after changing D3 versions:
+
+```bash
+npx turbo build --filter=@prc/scripts
+```
 
 ## Load order
 
