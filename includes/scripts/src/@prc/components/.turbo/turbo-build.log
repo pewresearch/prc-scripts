@@ -1,5 +1,5 @@
 
-> @prc/components@1.1.1 build
+> @prc/components@1.1.0 build
 > wp-scripts build
 
 assets by status 500 KiB [compared for emit]
@@ -45,4 +45,4 @@ WARNING in webpack performance recommendations:
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
 For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with 3 warnings in 15160 ms
+webpack 5.106.2 compiled with 3 warnings in 7487 ms

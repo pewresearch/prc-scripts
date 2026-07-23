@@ -2,11 +2,11 @@
 > @prc/vendor-classnames@1.0.0 build
 > wp-scripts build
 
-asset index.js 1.26 KiB [compared for emit] [minimized] (name: index)
-asset index.asset.php 84 bytes [compared for emit] (name: index)
+asset index.js 1.26 KiB [emitted] [minimized] (name: index)
+asset index.asset.php 84 bytes [emitted] (name: index)
 Entrypoint index 1.35 KiB = index.js 1.26 KiB index.asset.php 84 bytes
 runtime modules 937 bytes 4 modules
 cacheable modules 1.59 KiB
   ./index.js 102 bytes [built] [code generated]
   ../../../../../node_modules/classnames/index.js 1.49 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1120 ms
+webpack 5.106.2 compiled successfully in 1182 ms
