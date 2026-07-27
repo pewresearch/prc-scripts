@@ -2,11 +2,11 @@
 > @prc/d3@1.0.0 build
 > wp-scripts build index.js --output-path=./build
 
-asset ./module.min.js 121 KiB [emitted] [javascript module] [minimized] (name: module) 1 related asset
-asset importmap-polyfill.min.js 29.9 KiB [emitted] [from: ../../../../../../node_modules/es-module-shims/dist/es-module-shims.wasm.js] [copied] [minimized]
-asset ./module.min.asset.php 104 bytes [emitted] (name: module)
+asset ./module.min.js 121 KiB [compared for emit] [javascript module] [minimized] (name: module) 1 related asset
+asset importmap-polyfill.min.js 29.9 KiB [compared for emit] [from: ../../../../../../node_modules/es-module-shims/dist/es-module-shims.wasm.js] [copied] [minimized]
+asset ./module.min.asset.php 104 bytes [compared for emit] (name: module)
 Entrypoint module 121 KiB (497 KiB) = ./module.min.js 121 KiB ./module.min.asset.php 104 bytes 1 auxiliary asset
 orphan modules 724 KiB [orphan] 590 modules
 runtime modules 396 bytes 2 modules
 ./src/index.js + 230 modules 285 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 5347 ms
+webpack 5.106.2 compiled successfully in 11422 ms

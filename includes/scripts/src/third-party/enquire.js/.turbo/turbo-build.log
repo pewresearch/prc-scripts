@@ -2,8 +2,8 @@
 > @prc/vendor-enquire@1.0.0 build
 > wp-scripts build
 
-asset index.js 2.69 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
+asset index.js 2.69 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
 Entrypoint index 2.78 KiB = index.js 2.69 KiB index.asset.php 84 bytes
 runtime modules 937 bytes 4 modules
 cacheable modules 8.53 KiB
@@ -13,4 +13,4 @@ cacheable modules 8.53 KiB
   ../../../../../node_modules/enquire.js/src/MediaQuery.js 2.93 KiB [built] [code generated]
   ../../../../../node_modules/enquire.js/src/Util.js 966 bytes [built] [code generated]
   ../../../../../node_modules/enquire.js/src/QueryHandler.js 1.91 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1119 ms
+webpack 5.106.2 compiled successfully in 2407 ms
