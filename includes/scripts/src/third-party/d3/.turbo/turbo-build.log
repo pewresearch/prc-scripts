@@ -2,8 +2,8 @@
 > @prc/vendor-d3@1.0.0 build
 > wp-scripts build
 
-asset index.js 273 KiB [emitted] [minimized] [big] (name: index)
-asset index.asset.php 84 bytes [emitted] [compared for emit] (name: index)
+asset index.js 273 KiB [compared for emit] [minimized] [big] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
 Entrypoint index [big] 273 KiB = index.js 273 KiB index.asset.php 84 bytes
 runtime modules 396 bytes 2 modules
 orphan modules 573 KiB [orphan] 1 module
@@ -24,4 +24,4 @@ WARNING in webpack performance recommendations:
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
 For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with 3 warnings in 3699 ms
+webpack 5.106.2 compiled with 3 warnings in 9165 ms

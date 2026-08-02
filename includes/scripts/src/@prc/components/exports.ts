@@ -53,6 +53,13 @@ export { default as MailchimpSegmentList } from './mailchimp-segment-list';
 // Mailchimp Segment Select
 export { default as MailchimpSegmentSelect } from './mailchimp-segment-select';
 
+// Mailchimp data hooks (same REST as prc-email-builder)
+export {
+	useMailchimpAudiences,
+	useMailchimpSegments,
+	getMailchimpRestNamespace,
+} from './mailchimp/use-mailchimp-data';
+
 // Marked Range Control
 export { default as MarkedRangeControl } from './marked-range-control';
 

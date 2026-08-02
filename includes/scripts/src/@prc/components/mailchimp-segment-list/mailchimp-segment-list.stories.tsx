@@ -1,5 +1,5 @@
 /**
- * Loads segments from /prc-api/v3/mailchimp/get-segments (fixture-backed).
+ * Loads audiences + segments from prc-email-builder REST (fixture-backed).
  */
 import { useState } from 'react';
 
@@ -17,14 +17,17 @@ export default meta;
 type Story = StoryObj<typeof MailchimpSegmentList>;
 
 function SegmentListDemo() {
-	const [selected, setSelected] = useState<string[]>(['int-weekly-roundup']);
+	const [audienceId, setAudienceId] = useState('aud-main');
+	const [selected, setSelected] = useState<string[]>(['101']);
 	return (
 		<div style={{ maxWidth: 360 }}>
 			<MailchimpSegmentList
-				interests={selected}
+				audienceId={audienceId}
+				onAudienceChange={setAudienceId}
+				segmentIds={selected}
 				onUpdate={(next: string[]) => setSelected(next)}
 			/>
-			<pre>{JSON.stringify(selected, null, 2)}</pre>
+			<pre>{JSON.stringify({ audienceId, selected }, null, 2)}</pre>
 		</div>
 	);
 }

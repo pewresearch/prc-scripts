@@ -1,23 +1,47 @@
 /**
- * External Dependencies
+ * Audience + saved-segment picker (email-builder cascade).
+ *
+ * Loads audiences/segments from prc-email-builder REST.
+ * Also supports the legacy interest-ID picker (value/onChange/apiKey/renderAs)
+ * used by deprecated mailchimp-form blocks.
  */
 
 /**
  * WordPress Dependencies
  */
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	SelectControl,
 	Spinner,
+	Notice,
 	ToolbarDropdownMenu,
 	ToolbarButton,
-	ToolbarGroup,
 } from '@wordpress/components';
-import { useEffect, useState, useMemo } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { tag } from '@wordpress/icons';
 
-export default function MailchimpSegmentSelect({
+/**
+ * Internal Dependencies
+ */
+import {
+	useMailchimpAudiences,
+	useMailchimpSegments,
+} from '../mailchimp/use-mailchimp-data';
+
+/**
+ * Legacy interest-ID picker for deprecated mailchimp-form blocks.
+ *
+ * @param {Object}   props
+ * @param {string}   [props.label]
+ * @param {string}   [props.className]
+ * @param {string}   [props.value]
+ * @param {Function} props.onChange
+ * @param {string}   [props.apiKey]
+ * @param {string}   [props.renderAs]
+ */
+function LegacyMailchimpInterestSelect({
 	label = 'Select a MailChimp Segment',
 	className,
 	value,
@@ -124,4 +148,164 @@ export default function MailchimpSegmentSelect({
 			)}
 		</div>
 	);
+}
+
+/**
+ * Audience + saved-segment cascade picker.
+ *
+ * @param {Object}   props
+ * @param {string}   [props.className]
+ * @param {string}   [props.audienceLabel]
+ * @param {string}   [props.segmentLabel]
+ * @param {string}   [props.audienceId]
+ * @param {string}   [props.segmentId]
+ * @param {Function} props.onAudienceChange
+ * @param {Function} props.onSegmentChange
+ * @param {boolean}  [props.disabled]
+ */
+function AudienceSegmentSelect({
+	className,
+	audienceLabel = __('Mailchimp audience', 'prc-scripts'),
+	segmentLabel = __('Segment (optional)', 'prc-scripts'),
+	audienceId = '',
+	segmentId = '',
+	onAudienceChange,
+	onSegmentChange,
+	disabled = false,
+}) {
+	const {
+		audiences,
+		loading: audiencesLoading,
+		error: audiencesError,
+	} = useMailchimpAudiences();
+	const {
+		segments,
+		loading: segmentsLoading,
+		error: segmentsError,
+	} = useMailchimpSegments(audienceId);
+
+	const audienceOptions = useMemo(
+		() => [
+			{
+				value: '',
+				label: __('— Select audience —', 'prc-scripts'),
+			},
+			...audiences.map((a) => ({
+				value: String(a.id),
+				label: a.name,
+			})),
+		],
+		[audiences]
+	);
+
+	const segmentOptions = useMemo(() => {
+		const options = [
+			{
+				value: '',
+				label: __('Entire audience', 'prc-scripts'),
+			},
+			...segments.map((s) => ({
+				value: String(s.id),
+				label: `${s.name} (${Number(s.member_count || 0).toLocaleString()})`,
+			})),
+		];
+
+		const normalizedSegmentId = String(segmentId ?? '');
+		if (
+			normalizedSegmentId &&
+			!options.some((option) => option.value === normalizedSegmentId)
+		) {
+			options.push({
+				value: normalizedSegmentId,
+				label: sprintf(
+					/* translators: %s: Mailchimp saved segment ID */
+					__('Saved segment (%s)', 'prc-scripts'),
+					normalizedSegmentId
+				),
+			});
+		}
+
+		return options;
+	}, [segments, segmentId]);
+
+	const handleAudienceChange = (nextAudienceId) => {
+		// Parents should clear segmentId when audience changes (avoids stale
+		// multi-setConfig races). This component only reports the audience.
+		onAudienceChange?.(nextAudienceId);
+	};
+
+	return (
+		<div className={className}>
+			{audiencesError && (
+				<Notice status="error" isDismissible={false}>
+					{audiencesError}
+				</Notice>
+			)}
+			{audiencesLoading ? (
+				<Spinner />
+			) : (
+				<SelectControl
+					label={audienceLabel}
+					value={String(audienceId ?? '')}
+					options={audienceOptions}
+					onChange={handleAudienceChange}
+					disabled={disabled}
+					__nextHasNoMarginBottom
+				/>
+			)}
+			{audienceId && (
+				<>
+					{segmentsError && (
+						<Notice status="warning" isDismissible={false}>
+							{segmentsError}
+						</Notice>
+					)}
+					{segmentsLoading ? (
+						<Spinner />
+					) : (
+						<SelectControl
+							label={segmentLabel}
+							value={String(segmentId ?? '')}
+							options={segmentOptions}
+							onChange={(next) => onSegmentChange?.(next)}
+							disabled={disabled}
+							help={__(
+								'Optional. Restrict signup targeting to a saved segment of the audience.',
+								'prc-scripts'
+							)}
+							__nextHasNoMarginBottom
+						/>
+					)}
+				</>
+			)}
+		</div>
+	);
+}
+
+/**
+ * @param {Object}   props
+ * @param {string}   [props.className]
+ * @param {string}   [props.audienceLabel]
+ * @param {string}   [props.segmentLabel]
+ * @param {string}   [props.audienceId]
+ * @param {string}   [props.segmentId]
+ * @param {Function} [props.onAudienceChange]
+ * @param {Function} [props.onSegmentChange]
+ * @param {boolean}  [props.disabled]
+ * @param {string}   [props.label]            Legacy interest picker label.
+ * @param {string}   [props.value]            Legacy interest ID.
+ * @param {Function} [props.onChange]         Legacy interest onChange.
+ * @param {string}   [props.apiKey]           Legacy get-segments api_key.
+ * @param {string}   [props.renderAs]         Legacy 'select' | 'toolbar-dropdown'.
+ */
+export default function MailchimpSegmentSelect(props) {
+	// Deprecated mailchimp-form blocks still use value/onChange/apiKey/renderAs.
+	if (
+		typeof props.onChange === 'function' &&
+		typeof props.onAudienceChange !== 'function'
+	) {
+		return <LegacyMailchimpInterestSelect {...props} />;
+	}
+
+	return <AudienceSegmentSelect {...props} />;
 }

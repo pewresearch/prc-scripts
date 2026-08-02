@@ -9,4 +9,4 @@ Entrypoint module 121 KiB (497 KiB) = ./module.min.js 121 KiB ./module.min.asset
 orphan modules 724 KiB [orphan] 590 modules
 runtime modules 396 bytes 2 modules
 ./src/index.js + 230 modules 285 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 11422 ms
+webpack 5.106.2 compiled successfully in 3097 ms
