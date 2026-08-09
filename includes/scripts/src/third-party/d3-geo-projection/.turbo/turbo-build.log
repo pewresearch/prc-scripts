@@ -2,10 +2,10 @@
 > @prc/vendor-d3-geo-projection@1.0.0 build
 > wp-scripts build
 
-asset index.js 89 KiB [compared for emit] [minimized] (name: index)
-asset index.asset.php 84 bytes [compared for emit] (name: index)
+asset index.js 89 KiB [emitted] [minimized] (name: index)
+asset index.asset.php 84 bytes [emitted] (name: index)
 Entrypoint index 89.1 KiB = index.js 89 KiB index.asset.php 84 bytes
 orphan modules 289 KiB [orphan] 229 modules
 runtime modules 670 bytes 3 modules
 ./index.js + 145 modules 214 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 4849 ms
+webpack 5.106.2 compiled successfully in 4357 ms
