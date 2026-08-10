@@ -2,11 +2,11 @@
 > @prc/vendor-jabber@1.0.0 build
 > wp-scripts build
 
-asset index.js 1.74 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
+asset index.js 1.74 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
 Entrypoint index 1.82 KiB = index.js 1.74 KiB index.asset.php 84 bytes
 runtime modules 670 bytes 3 modules
 cacheable modules 3.37 KiB
   ./index.js 33 bytes [built] [code generated]
   ../../../../../node_modules/jabber/build/index.js 3.33 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1241 ms
+webpack 5.106.2 compiled successfully in 702 ms

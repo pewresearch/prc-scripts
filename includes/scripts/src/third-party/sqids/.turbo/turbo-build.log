@@ -2,10 +2,10 @@
 > @prc/vendor-sqids@1.0.0 build
 > wp-scripts build
 
-asset index.js 8.62 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
+asset index.js 8.62 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
 Entrypoint index 8.7 KiB = index.js 8.62 KiB index.asset.php 84 bytes
 runtime modules 670 bytes 3 modules
 orphan modules 16.7 KiB [orphan] 1 module
 ./index.js + 1 modules 16.8 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 969 ms
+webpack 5.106.2 compiled successfully in 780 ms

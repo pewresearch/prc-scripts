@@ -2,10 +2,10 @@
 > datatables@1.13.8 build
 > wp-scripts build
 
-assets by chunk 102 KiB (name: index)
-  asset index.js 102 KiB [emitted] [minimized] (name: index)
-  asset index.asset.php 92 bytes [emitted] (name: index)
-assets by path ./*.css 35 KiB
+assets by status 102 KiB [compared for emit]
+  asset index.js 102 KiB [compared for emit] [minimized] (name: index)
+  asset index.asset.php 92 bytes [compared for emit] (name: index)
+assets by status 35 KiB [emitted]
   asset ./style-index-rtl.css 17.5 KiB [emitted] (name: ./style-index) (id hint: style)
   asset ./style-index.css 17.5 KiB [emitted] (name: ./style-index) (id hint: style)
 Entrypoint index 137 KiB = ./style-index.css 17.5 KiB ./style-index-rtl.css 17.5 KiB index.js 102 KiB index.asset.php 92 bytes
@@ -14,4 +14,4 @@ runtime modules 3.06 KiB 5 modules
 built modules 469 KiB (javascript) 17.5 KiB (css/mini-extract) [built]
   ./index.js + 5 modules 469 KiB [not cacheable] [built] [code generated]
   css ../../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./style.scss 17.5 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 5870 ms
+webpack 5.106.2 compiled successfully in 4629 ms

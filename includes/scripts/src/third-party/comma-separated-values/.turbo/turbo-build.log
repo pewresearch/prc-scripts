@@ -2,11 +2,11 @@
 > @prc/vendor-comma-separated-values@1.0.0 build
 > wp-scripts build
 
-asset index.js 5.53 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 84 bytes [emitted] (name: index)
+asset index.js 5.53 KiB [compared for emit] [minimized] (name: index)
+asset index.asset.php 84 bytes [compared for emit] (name: index)
 Entrypoint index 5.61 KiB = index.js 5.53 KiB index.asset.php 84 bytes
 runtime modules 937 bytes 4 modules
 cacheable modules 13.2 KiB
   ./index.js 89 bytes [built] [code generated]
   ../../../../../../../node_modules/comma-separated-values/csv.js 13.1 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 1496 ms
+webpack 5.106.2 compiled successfully in 871 ms

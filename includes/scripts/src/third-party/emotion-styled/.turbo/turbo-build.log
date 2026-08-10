@@ -3,9 +3,9 @@
 > wp-scripts build
 
 asset index.js 20.7 KiB [emitted] [minimized] (name: index)
-asset index.asset.php 91 bytes [emitted] (name: index)
+asset index.asset.php 91 bytes [emitted] [compared for emit] (name: index)
 Entrypoint index 20.8 KiB = index.js 20.7 KiB index.asset.php 91 bytes
 orphan modules 82 KiB [orphan] 28 modules
 runtime modules 670 bytes 3 modules
 ./index.js + 20 modules 62.3 KiB [not cacheable] [built] [code generated]
-webpack 5.106.2 compiled successfully in 2210 ms
+webpack 5.106.2 compiled successfully in 1101 ms
