@@ -61,7 +61,7 @@ Consumers import `from '@prc/charting-utilities'` (the package `index.ts` named 
 
 - `prc-chart-builder/tests/unit/resolve-category-color.test.js` → `utilities/resolveCategoryColor`
 - `prc-charting-library/src/lib/maps/world/create-optimized-regional-topologies.js` → `utilities/mapRegionPresets.ts` (this path also shifts under the library reorg's `lib/maps/` → `data/maps/` rename — coordinate)
-- Docs only (no breakage, repoint opportunistically): `prc-chart-builder/docs/*` reference `hooks/tooltips.ts`, `utilities/resolveCategoryColor.ts`, etc.
+- Docs only (no breakage, repoint opportunistically): `docs/plugins/prc-chart-builder/*` reference `hooks/tooltips.ts`, `utilities/resolveCategoryColor.ts`, etc.
 
 Both real deep-imports target `utilities/`, which Ticket B largely leaves in place — so the cleanup's blast radius is small.
 

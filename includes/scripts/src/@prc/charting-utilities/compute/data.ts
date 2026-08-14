@@ -3,6 +3,7 @@ import type { FlatData } from '../types/flatData';
 import type { DataRender } from '../types/dataRender';
 import type { Pie } from '../types/pie';
 import { ascending, descending } from 'd3-array';
+import { scaleBand } from '@visx/scale';
 
 const getFlattenedData = (data: any) => {
 	return data
@@ -127,6 +128,19 @@ type GroupPositioning = {
 	width: number;
 	breakWidth: number;
 };
+
+const createGroupBandScale = (
+	domain: string[],
+	range: [number, number],
+	padding: number
+) =>
+	scaleBand<string>({
+		domain,
+		range,
+		paddingInner: padding,
+		// D3 divisor becomes n so bandwidth is independent of group size
+		paddingOuter: padding / 2,
+	});
 
 /**
  * Calculate group positioning for horizontal charts
@@ -340,6 +354,7 @@ const getGroupPositioningPie = (
 export {
 	getFlattenedData,
 	getGroupedData,
+	createGroupBandScale,
 	getGroupPositioningHorizontal,
 	getGroupPositioningVertical,
 	getGroupPositioningPie,

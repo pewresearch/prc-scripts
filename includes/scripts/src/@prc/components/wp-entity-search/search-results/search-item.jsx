@@ -18,10 +18,6 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { useWPEntitySearch } from '../context';
 
 export default function SearchItem({ item }) {
-	if (!item || 'object' !== typeof item) {
-		return null;
-	}
-
 	const {
 		selectedId,
 		setSelectedId,
@@ -39,11 +35,10 @@ export default function SearchItem({ item }) {
 		entityName,
 		entityDate,
 		entityDescription,
-		entityType,
 		entitySubType,
 		entityUrl,
 		entityFeaturedImage,
-	} = item;
+	} = item && 'object' === typeof item ? item : {};
 
 	const isActive = useMemo(() => {
 		return (
@@ -53,11 +48,10 @@ export default function SearchItem({ item }) {
 		);
 	}, [selectedId, entityId]);
 
-	const handleClick = () => {
-		console.log('--------------------------------');
-		console.log('item', item);
-		console.log('handleClick', entityId);
-		console.log('--------------------------------');
+	const handleSelect = () => {
+		if (!item || entityId === null || entityId === undefined) {
+			return;
+		}
 		setSelectedId(entityId);
 		if (clearOnSelect) {
 			onClear();
@@ -67,15 +61,19 @@ export default function SearchItem({ item }) {
 		}
 	};
 
+	if (!item || 'object' !== typeof item) {
+		return null;
+	}
+
 	return (
 		<div
 			role="button"
 			tabIndex="0"
-			onClick={handleClick}
+			onClick={handleSelect}
 			onKeyDown={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
-					handleClick();
+					handleSelect();
 				}
 			}}
 			style={{ cursor: 'pointer' }}
@@ -144,6 +142,13 @@ export default function SearchItem({ item }) {
 									<ExternalLink
 										href={entityUrl}
 										target="_blank"
+										onClick={(event) => {
+											// Nested link inside role=button: keep
+											// selection working, do not navigate away.
+											event.preventDefault();
+											event.stopPropagation();
+											handleSelect();
+										}}
 										style={{
 											fontSize: '0.8em',
 											fontStyle: 'italic',

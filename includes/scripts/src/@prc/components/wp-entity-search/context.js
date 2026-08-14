@@ -64,29 +64,55 @@ const useWPEntitySearchContext = ({
 		}
 	};
 
+	// Consumers often pass inline arrays (`entityStatus={['publish']}`). Those
+	// get a new reference on every parent render (e.g. after onSelect →
+	// setAttributes), which would re-fire this effect and look like an endless
+	// "searching" loop. Stabilize by value before depending on them.
+	const entitySubTypeKey = useMemo(
+		() =>
+			Array.isArray(entitySubType)
+				? entitySubType.join(',')
+				: String(entitySubType ?? ''),
+		[entitySubType]
+	);
+	const entityStatusKey = useMemo(
+		() =>
+			Array.isArray(entityStatus)
+				? entityStatus.join(',')
+				: String(entityStatus ?? ''),
+		[entityStatus]
+	);
+
 	useEffect(() => {
 		if (!searchString) {
 			setIsLoading(false);
-		} else if (searchString && entityType && entitySubType) {
-			setIsLoading(true);
-			apiFetch({
-				path: addQueryArgs(REST_ENDPOINT, {
-					entity_type: entityType,
-					entity_sub_type: entitySubType,
-					search: searchString,
-					entity_status: entityStatus,
-				}),
-				method: 'GET',
-			})
-				.then((response) => {
-					setRecords(response);
-					setIsLoading(false);
-				})
-				.catch(() => {
-					setIsLoading(false);
-				});
+			return;
 		}
-	}, [searchString, entityType, entitySubType, entityStatus]);
+		if (!entityType || !entitySubTypeKey) {
+			return;
+		}
+
+		const subTypes = entitySubTypeKey.split(',').filter(Boolean);
+		const statuses = entityStatusKey.split(',').filter(Boolean);
+
+		setIsLoading(true);
+		apiFetch({
+			path: addQueryArgs(REST_ENDPOINT, {
+				entity_type: entityType,
+				entity_sub_type: subTypes,
+				search: searchString,
+				entity_status: statuses,
+			}),
+			method: 'GET',
+		})
+			.then((response) => {
+				setRecords(response);
+				setIsLoading(false);
+			})
+			.catch(() => {
+				setIsLoading(false);
+			});
+	}, [searchString, entityType, entitySubTypeKey, entityStatusKey]);
 
 	// Selection / onSelect is invoked from SearchItem onClick with the row `item` so parents always
 	// receive the entity (avoids records.find strict equality failures and timing gaps).

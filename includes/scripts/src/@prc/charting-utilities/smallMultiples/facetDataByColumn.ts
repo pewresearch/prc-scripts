@@ -1,0 +1,52 @@
+import type { FlatData } from '../types/flatData';
+import { enrichFacetRow, isFacetMetaKey } from './enrichFacetRow';
+
+export type SmallMultiplesPanel = {
+	key: string;
+	rows: FlatData[];
+};
+
+/** Keys that are not series columns when deriving panel categories. */
+const RESERVED_KEYS = new Set([
+	'x',
+	'y',
+	'y1',
+	'y2',
+	'y3',
+	'y4',
+	'category',
+	'x__label',
+	'y__label',
+	'label',
+	'tooltip',
+	'isHighlighted',
+]);
+
+export function deriveCategories(data: FlatData[]): string[] {
+	const first = data[0];
+	if (!first || typeof first !== 'object') {
+		return [];
+	}
+	return Object.keys(first).filter((key) => !RESERVED_KEYS.has(key) && !isFacetMetaKey(key));
+}
+
+/**
+ * Facet wide-format chart rows into one panel series per data column.
+ * Each panel key is a column header; each panel row carries `{ x, y }`, the
+ * series value under its category key, and tooltip/label metadata bags.
+ */
+export function facetDataByColumn(
+	data: FlatData[] | null | undefined,
+	categories?: string[] | null
+): SmallMultiplesPanel[] {
+	if (!Array.isArray(data) || data.length === 0) {
+		return [];
+	}
+
+	const keys = Array.isArray(categories) && categories.length > 0 ? categories : deriveCategories(data);
+
+	return keys.map((key) => ({
+		key,
+		rows: data.map((row) => enrichFacetRow(row, key)),
+	}));
+}

@@ -13,7 +13,13 @@ import {
 	getTooltipHeaderFormat,
 	getTooltipVisible,
 	getTooltipMapDeemphasisProps,
+	tooltipFormatPoint,
 } from './tooltips';
+import { resolveNodeShapeColors } from './nodes';
+import {
+	buildBeeswarmGroupCenters,
+	computeBeeswarmForce,
+} from './beeswarmForce';
 import { getVoronoiProps } from './voronoi';
 import type { FlatData } from '../types/flatData';
 import type { TableData } from '../types/tableData';
@@ -23,10 +29,13 @@ import { getTextVisible } from './text';
 import {
 	getFlattenedData,
 	getGroupedData,
+	createGroupBandScale,
 	getGroupPositioningHorizontal,
 	getGroupPositioningVertical,
 	getGroupPositioningPie,
 } from './data';
+import { linearBarSpan, linearBarBaseline } from './linearBarSpan';
+import { domainCrossesZero } from './domainCrossesZero';
 
 type SharedProps = {
 	config: BaseConfig;
@@ -132,8 +141,16 @@ export {
 	getVoronoiProps,
 	getFlattenedData,
 	getGroupedData,
+	createGroupBandScale,
+	linearBarSpan,
+	linearBarBaseline,
+	domainCrossesZero,
 	getGroupPositioningHorizontal,
 	getGroupPositioningVertical,
 	getGroupPositioningPie,
 	getTooltipMapDeemphasisProps,
+	tooltipFormatPoint,
+	resolveNodeShapeColors,
+	buildBeeswarmGroupCenters,
+	computeBeeswarmForce,
 };

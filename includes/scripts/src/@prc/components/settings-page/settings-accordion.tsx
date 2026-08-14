@@ -100,7 +100,7 @@ export default function SettingsAccordion({
 			description,
 			layout: {
 				type: 'card' as const,
-				withHeader: true,
+				withHeader: true as const,
 				isCollapsible: true,
 				isOpened: defaultOpen,
 				...(badge

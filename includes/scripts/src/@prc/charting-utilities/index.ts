@@ -26,6 +26,7 @@ export * from './types/map';
 export * from './types/metadata';
 export * from './types/netValues';
 export * from './types/nodes';
+export * from './types/beeSwarm';
 export * from './types/pie';
 export * from './types/plotBands';
 export * from './types/shapes';
@@ -34,11 +35,14 @@ export * from './types/stack';
 export * from './types/tableData';
 export * from './types/text';
 export * from './types/tooltip';
+export * from './types/unifiedTooltip';
 export * from './types/voronoi';
 export * from './types/windowSize';
 export * from './types/drawings';
 export * from './types/treemap';
 export * from './types/sankey';
+export * from './types/waffle';
+export * from './types/heatMapTable';
 
 // React hooks
 export {
@@ -73,6 +77,8 @@ export {
 	randomDataTime,
 	randomDataPointsCountries,
 } from './utilities/randomData';
+export { dodge } from './utilities/dodge';
+export type { DodgeCircle, DodgeOptions } from './utilities/dodge';
 export {
 	abbreviateNumber,
 	labelFill,
@@ -87,6 +93,7 @@ export {
 	decodeHtmlEntities,
 	getCustomLabel,
 	getCustomLabelText,
+	hasCategoryValue,
 	isLabelVisible,
 	getCustomLabelStyle,
 	getCustomTooltip,
@@ -95,12 +102,21 @@ export {
 	resolveLabelCutoff,
 	resolveTextOutlineMode,
 } from './utilities/helpers';
+export { shouldShowLinePoint } from './utilities/shouldShowLinePoint';
 export {
 	resolveCategoryColor,
 	resolveCategoryOpacity,
 	withCategoryOpacity,
 	legendCategoryShapeStyle,
 } from './utilities/resolveCategoryColor';
+export { resolveScaleNice } from './utilities/resolveScaleNice';
+export {
+	hasExplicitAxisDomain,
+	isAutoAxisDomain,
+} from './utilities/isAutoAxisDomain';
+export { getLinearValueDataExtent } from './utilities/getLinearValueDataExtent';
+export { resolveLinearScaleDomain } from './utilities/resolveLinearScaleDomain';
+export { resolveTimeScaleDomain } from './utilities/resolveTimeScaleDomain';
 export { DataContext, DataProvider } from './utilities/DataContext';
 export { createTopologyLoader } from './utilities/loadTopology';
 export { MAP_REGION_PRESETS } from './utilities/mapRegionPresets';
@@ -112,13 +128,116 @@ export {
 	computeRegressionStats,
 } from './utilities/regression';
 export type { RegressionPoint, RegressionStats } from './utilities/regression';
+export {
+	getMaxAbsColumnValue,
+	getMinPositiveColumnValue,
+	createPointRadiusScale,
+	resolvePointRadius,
+} from './utilities/getPointRadiusScale';
+export {
+	formatMinDisplayValue,
+	selectFormattedNumber,
+} from './utilities/formatMinDisplayValue';
+export type { MinDisplayValueConfig } from './utilities/formatMinDisplayValue';
+
+// Small multiples (framework-agnostic)
+export {
+	enrichFacetRow,
+	isFacetMetaKey,
+	facetDataByColumn,
+	deriveCategories,
+	facetDataByGroup,
+	computeSharedDomain,
+	computePanelRects,
+	computeGridHeight,
+	resolveEffectiveColumns,
+	resolvePanelRect,
+	planPanelAxes,
+	computeColumnBarRects,
+	resolveBandDomain,
+	computeHorizontalBarRects,
+	computeBarPanelHeight,
+	resolveSliceDomain,
+	resolveShapePaint,
+	generateSegmentKey,
+	resolveSegmentPaint,
+	resolveGhostStroke,
+} from './smallMultiples';
+export {
+	computeWaffleCells,
+	allocateWaffleCellCounts,
+	resolveWaffleMax,
+	computeWaffleLayout,
+	resolveWaffleCellSize,
+	fitWaffleCellSize,
+	getWaffleCategoryInputs,
+	computeWafflePanelRatios,
+} from './waffle';
+export type {
+	WaffleDisplayMode,
+	WaffleCategoryInput,
+	WaffleCategoryMeta,
+	WaffleCell,
+	ComputeWaffleCellsArgs,
+	ComputeWaffleCellsResult,
+	ComputeWaffleLayoutArgs,
+	WaffleLayout,
+	WafflePanelValue,
+	ResolveWaffleCellSizeArgs,
+} from './waffle';
+export {
+	computeHeatMapTableCells,
+	computeHeatMapTableLayout,
+	createValueColorScale,
+	resolveSolidColor,
+} from './heatMapTable';
+export type {
+	HeatMapTableCell,
+	ComputeHeatMapTableCellsArgs,
+	ComputeHeatMapTableCellsResult,
+	ComputeHeatMapTableLayoutArgs,
+	HeatMapTableLayout,
+	CreateValueColorScaleArgs,
+	ValueColorScale,
+	ValueColorScaleMode,
+} from './heatMapTable';
+export type {
+	SmallMultiplesPanel,
+	SmallMultiplesGroupPanel,
+	SmallMultiplesSeries,
+	SharedDomainOptions,
+	PanelRect,
+	ComputePanelRectsArgs,
+	ComputePanelRectsResult,
+	ComputeGridHeightArgs,
+	ResolveEffectiveColumnsArgs,
+	PanelLike,
+	AxisTreatment,
+	SmallMultiplesAxisTreatment,
+	PanelOrientation,
+	PlanPanelAxesArgs,
+	PanelAxisPlan,
+	ColumnBarRect,
+	ComputeColumnBarRectsArgs,
+	HorizontalBarRect,
+	ComputeHorizontalBarRectsArgs,
+	ComputeBarPanelHeightArgs,
+	ShapePaint,
+	ShapePaintDefaults,
+	SegmentPaint,
+	SegmentPaintDefaults,
+	ResolveGhostStrokeArgs,
+	ResolvedGhostPaint,
+} from './smallMultiples';
 
 // Label layout engine (framework-agnostic)
 export {
 	computeLabelDeclutter,
 	forceRectCollide,
+	FIRST_LAST_OUTSIDE_BASE_DX,
 	buildLineChartLabelId,
 	buildLineChartLabelInputs,
+	getFirstLastLabelPlacement,
 	getLineLabelContent,
 	buildOnLineSeriesLabelId,
 	buildOnLineSeriesLabels,
@@ -140,6 +259,7 @@ export {
 	measureLabelBBox,
 	measureTextWidth,
 	wordWrap,
+	resolveVerticalStacks,
 } from './labelLayout';
 export type {
 	OnLineSeriesDeclutterInput,
@@ -148,7 +268,12 @@ export type {
 	LeaderLineStore,
 	LabelBBox,
 	MeasureLabelBBoxOptions,
+	ResolveVerticalStacksOptions,
+	StackItem,
 } from './labelLayout';
+
+// Unified tooltip (per-x column model)
+export * from './unifiedTooltip';
 
 // Compute (headless prop + data builders)
 export {
@@ -167,13 +292,21 @@ export {
 	getTooltipHeaderFormat,
 	getTooltipVisible,
 	getTooltipMapDeemphasisProps,
+	tooltipFormatPoint,
 	getTextVisible,
 	getVoronoiProps,
 	getFlattenedData,
 	getGroupedData,
+	createGroupBandScale,
+	linearBarSpan,
+	linearBarBaseline,
+	domainCrossesZero,
 	getGroupPositioningHorizontal,
 	getGroupPositioningVertical,
 	getGroupPositioningPie,
+	resolveNodeShapeColors,
+	buildBeeswarmGroupCenters,
+	computeBeeswarmForce,
 } from './compute';
 export type {
 	GroupedData,

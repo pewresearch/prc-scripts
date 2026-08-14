@@ -15,6 +15,9 @@ import {
 import SearchResults from './search-results';
 import { ProvideWPEntitySearch } from './context';
 
+const DEFAULT_ENTITY_STATUS = ['publish'];
+const NOOP = () => {};
+
 /**
  * A component to search for a post or stub by url or title
  * using the WordPress REST API and entities store.
@@ -25,13 +28,13 @@ import { ProvideWPEntitySearch } from './context';
 export default function WPEntitySearch({
 	placeholder = 'Climate Change', // placeholder for the search input
 	searchValue = '', // pre-populate the search input
-	onSelect = () => {},
-	onKeyEnter = () => {},
-	onKeyESC = () => {},
+	onSelect = NOOP,
+	onKeyEnter = NOOP,
+	onKeyESC = NOOP,
 	entityId,
 	entityType = 'postType', // taxonomy, user
 	entitySubType = 'post', // ['post', 'page', 'staff'] || ['category', 'tag'] || 'user'
-	entityStatus = ['publish'],
+	entityStatus = DEFAULT_ENTITY_STATUS,
 	perPage = 10,
 	hideChildren = true,
 	onUpdateURL = false,
@@ -54,9 +57,7 @@ export default function WPEntitySearch({
 	}, [searchSize]);
 
 	return (
-		<TabbableContainer
-			onNavigate={(index, elm) => console.log('onNavigate:', elm)}
-		>
+		<TabbableContainer>
 			<KeyboardShortcuts
 				shortcuts={{
 					esc: () => {

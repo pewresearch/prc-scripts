@@ -3,6 +3,7 @@ import type { Labels } from '../types/labels';
 import {
 	getCustomLabel,
 	getCustomLabelText,
+	hasCategoryValue,
 	isLabelVisible,
 } from '../utilities/helpers';
 import { getLabelFormat } from '../compute/labels';
@@ -13,6 +14,9 @@ import {
 	hasAuthorLabelOverride,
 } from './helpers';
 import type { DeclutterLabelInput } from '../types/labels';
+
+/** Horizontal base offset (px) for `firstLastLabelLayout: 'outside'`. */
+export const FIRST_LAST_OUTSIDE_BASE_DX = 5;
 
 export function getLineLabelContent(
 	d: FlatData,
@@ -42,6 +46,60 @@ export function getLineLabelContent(
 	return { content, defaultLabel };
 }
 
+/**
+ * Resolve default dx/dy and textAnchor for a line-family point label.
+ *
+ * `default` uses base (0, 0). `outside` uses (-5, 0) for the first point and
+ * (5, 0) for the last, with matching text anchors. A series with fewer than two
+ * points has no first/last pair, so it keeps the base placement.
+ * `labelPositionDX` / `labelPositionDY` always layer on top of that base.
+ */
+export function getFirstLastLabelPlacement({
+	pointIndex,
+	pointCount,
+	labels,
+	fallbackTextAnchor,
+}: {
+	pointIndex: number;
+	pointCount: number;
+	labels: Labels;
+	fallbackTextAnchor?: DeclutterLabelInput['textAnchor'];
+}): {
+	defaultDx: number;
+	defaultDy: number;
+	textAnchor: NonNullable<DeclutterLabelInput['textAnchor']>;
+} {
+	const dx = labels.labelPositionDX ?? 0;
+	const dy = labels.labelPositionDY ?? 0;
+	const textAnchor =
+		fallbackTextAnchor ?? labels.textAnchor ?? ('middle' as const);
+
+	if (labels.firstLastLabelLayout !== 'outside' || pointCount < 2) {
+		return { defaultDx: dx, defaultDy: dy, textAnchor };
+	}
+
+	const isFirst = pointIndex === 0;
+	const isLast = pointIndex === pointCount - 1;
+
+	if (isFirst) {
+		return {
+			defaultDx: -FIRST_LAST_OUTSIDE_BASE_DX + dx,
+			defaultDy: dy,
+			textAnchor: 'end',
+		};
+	}
+
+	if (isLast) {
+		return {
+			defaultDx: FIRST_LAST_OUTSIDE_BASE_DX + dx,
+			defaultDy: dy,
+			textAnchor: 'start',
+		};
+	}
+
+	return { defaultDx: dx, defaultDy: dy, textAnchor };
+}
+
 export function buildLineChartLabelInputs({
 	categories,
 	flattenedData,
@@ -62,8 +120,8 @@ export function buildLineChartLabelInputs({
 	const inputs: DeclutterLabelInput[] = [];
 
 	categories.forEach((category, categoryIndex) => {
-		const filteredData = flattenedData.filter(
-			(d: FlatData) => d[category] || d[category] !== ''
+		const filteredData = flattenedData.filter((d: FlatData) =>
+			hasCategoryValue(d, category)
 		);
 
 		filteredData.forEach((d, pointIndex) => {
@@ -82,6 +140,15 @@ export function buildLineChartLabelInputs({
 				return;
 			}
 
+			const placement = getFirstLastLabelPlacement({
+				pointIndex,
+				pointCount: filteredData.length,
+				labels,
+				fallbackTextAnchor:
+					(labelProps.textAnchor as DeclutterLabelInput['textAnchor']) ??
+					labels.textAnchor,
+			});
+
 			const id = buildChartLabelId([
 				'line',
 				categoryIndex,
@@ -91,6 +158,7 @@ export function buildLineChartLabelInputs({
 			]);
 			inputs.push({
 				id,
+				category,
 				x: independentScale(getIndependentValue(d)),
 				y: dependentScale(d[category]),
 				text: content,
@@ -98,14 +166,12 @@ export function buildLineChartLabelInputs({
 				fontFamily: labels.fontFamily,
 				fontWeight: labels.fontWeight,
 				maxWidth: getLabelMaxWidth(d, category),
-				textAnchor:
-					(labelProps.textAnchor as DeclutterLabelInput['textAnchor']) ??
-					labels.textAnchor,
+				textAnchor: placement.textAnchor,
 				dominantBaseline:
 					(labelProps.dominantBaseline as DeclutterLabelInput['dominantBaseline']) ??
 					'middle',
-				defaultDx: labels.labelPositionDX,
-				defaultDy: labels.labelPositionDY,
+				defaultDx: placement.defaultDx,
+				defaultDy: placement.defaultDy,
 				locked: hasAuthorLabelOverride(d, category),
 			});
 		});

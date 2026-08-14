@@ -2,6 +2,7 @@
 import type { FlatData } from '../types/flatData';
 import type { Legend, LegendItemCustomization } from '../types/legend';
 
+import { measureTextWidth } from './measureLabel';
 import type { DeclutterLabelInput } from '../types/labels';
 
 export interface OnLineSeriesDeclutterInput extends DeclutterLabelInput {
@@ -132,6 +133,129 @@ export function buildOnLineSeriesLabelId(
 	return `direct-series::${categoryIndex}::${category}`;
 }
 
+const ANCHOR_SAMPLE_COUNT = 33;
+/** Horizontal breathing room between two neighbouring direct labels. */
+const ANCHOR_GAP = 8;
+
+export interface PlacedAnchor {
+	x: number;
+	y: number;
+	halfWidth: number;
+	minClearance: number;
+}
+
+/**
+ * Smallest vertical gap between this series and any other at pixel `x`.
+ */
+function getAnchorClearance(
+	points: SeriesPixelPoint[],
+	otherSeries: SeriesPixelPoint[][],
+	x: number
+): number {
+	if (otherSeries.length === 0) {
+		return Number.POSITIVE_INFINITY;
+	}
+
+	const y = getSeriesYAtPixelX(points, x);
+	return otherSeries.reduce(
+		(min, other) =>
+			Math.min(min, Math.abs(y - getSeriesYAtPixelX(other, x))),
+		Number.POSITIVE_INFINITY
+	);
+}
+
+function collidesWithPlaced(
+	x: number,
+	y: number,
+	halfWidth: number,
+	minClearance: number,
+	placed: PlacedAnchor[]
+): boolean {
+	return placed.some(
+		(anchor) =>
+			Math.abs(x - anchor.x) <
+				halfWidth + anchor.halfWidth + ANCHOR_GAP &&
+			Math.abs(y - anchor.y) < Math.max(minClearance, anchor.minClearance)
+	);
+}
+
+/**
+ * Choose where along a line to sit its name.
+ *
+ * Anchoring every series at the plot midpoint stacks all the names in one
+ * column, so lines that merely converge mid-chart look hopelessly crowded and
+ * the declutter pass drops labels that had room elsewhere. Sliding a label
+ * along its own line instead keeps it readable and keeps it on its series.
+ *
+ * Movement is a last resort: a label holds the midpoint unless it would collide
+ * with one already placed, then travels the shortest distance that clears it.
+ * When nothing clears, it stays put and the declutter and omission passes take
+ * over.
+ */
+export function pickSeriesAnchorX({
+	points,
+	otherSeries,
+	placed,
+	innerWidth,
+	halfWidth,
+	minClearance,
+}: {
+	points: SeriesPixelPoint[];
+	otherSeries: SeriesPixelPoint[][];
+	placed: PlacedAnchor[];
+	innerWidth: number;
+	halfWidth: number;
+	minClearance: number;
+}): number {
+	const midpoint = innerWidth / 2;
+	if (innerWidth <= 0) {
+		return midpoint;
+	}
+
+	const margin = Math.min(halfWidth, midpoint);
+	const span = Math.max(0, innerWidth - margin * 2);
+
+	const candidates = [midpoint];
+	for (let i = 0; i < ANCHOR_SAMPLE_COUNT; i++) {
+		candidates.push(margin + (span * i) / (ANCHOR_SAMPLE_COUNT - 1));
+	}
+
+	let bestX: number | undefined;
+	let bestDistance = Number.POSITIVE_INFINITY;
+	let bestClearance = Number.NEGATIVE_INFINITY;
+
+	for (const x of candidates) {
+		const y = getSeriesYAtPixelX(points, x);
+		if (collidesWithPlaced(x, y, halfWidth, minClearance, placed)) {
+			continue;
+		}
+
+		// Only move to somewhere the series itself is legible. A line that never
+		// separates from its neighbours cannot be rescued by sliding its name
+		// along it — that just scatters unreadable names across the plot — so
+		// leave it centred and let the omission pass drop it.
+		const clearance = getAnchorClearance(points, otherSeries, x);
+		if (clearance < minClearance) {
+			continue;
+		}
+
+		const distance = Math.abs(x - midpoint);
+		if (distance > bestDistance) {
+			continue;
+		}
+
+		// Among equally close options, sit where the neighbouring lines are
+		// furthest away so the name is easiest to trace back to its series.
+		if (distance < bestDistance || clearance > bestClearance) {
+			bestX = x;
+			bestDistance = distance;
+			bestClearance = clearance;
+		}
+	}
+
+	return bestX ?? midpoint;
+}
+
 export function buildOnLineSeriesLabels({
 	categories,
 	flattenedData,
@@ -143,6 +267,7 @@ export function buildOnLineSeriesLabels({
 	padding,
 	getSeriesDependentValue,
 	scales = { scaleX: 1, scaleY: 1 },
+	crowdRadius = 0,
 }: {
 	categories: string[];
 	flattenedData: FlatData[];
@@ -159,61 +284,123 @@ export function buildOnLineSeriesLabels({
 		categoryIndex: number
 	) => number;
 	scales?: { scaleX?: number; scaleY?: number };
+	/**
+	 * Minimum vertical separation, in pixels, at which two names read as
+	 * belonging to different lines. Must match the declutter pass's `omitWithin`:
+	 * a name allowed to hold the midpoint on this measure has to survive the
+	 * crowd sweep too, or it is deleted rather than moved.
+	 *
+	 * Zero — the default — leaves every name at the midpoint, so charts an editor
+	 * positions by hand keep the layout they were tuned against.
+	 */
+	crowdRadius?: number;
 }): OnLineSeriesDeclutterInput[] {
-	const anchorPx = innerWidth / 2;
+	const midpointPx = innerWidth / 2;
 	const customLabels = legend.customLabels ?? {};
 	const inputs: OnLineSeriesDeclutterInput[] = [];
 
-	categories.forEach((category, categoryIndex) => {
-		const filteredData = flattenedData.filter(
-			(d: FlatData) =>
-				d[category] !== '' &&
-				d[category] !== undefined &&
-				d[category] !== null
-		);
-		if (filteredData.length === 0) {
-			return;
+	const series = categories
+		.map((category, categoryIndex) => {
+			const filteredData = flattenedData.filter(
+				(d: FlatData) =>
+					d[category] !== '' &&
+					d[category] !== undefined &&
+					d[category] !== null
+			);
+			if (filteredData.length === 0) {
+				return null;
+			}
+
+			const points: SeriesPixelPoint[] = filteredData.map((d) => {
+				const dependentValue = getSeriesDependentValue
+					? getSeriesDependentValue(d, category, categoryIndex)
+					: d[category];
+				return {
+					px: independentScale(getIndependentValue(d)),
+					py: dependentScale(dependentValue),
+				};
+			});
+
+			const customEntry = customLabels[category];
+			const text = customEntry?.text ?? category;
+			const fontSize = customEntry?.fontSize ?? legend.fontSize;
+			const fontWeight = customEntry?.fontWeight ?? legend.fontWeight;
+
+			return {
+				category,
+				categoryIndex,
+				points,
+				customEntry,
+				text,
+				fontSize,
+				fontWeight,
+				halfWidth:
+					measureTextWidth(
+						text,
+						fontSize,
+						customEntry?.fontFamily,
+						fontWeight
+					) / 2,
+			};
+		})
+		.filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+
+	const placed: PlacedAnchor[] = [];
+
+	for (const entry of series) {
+		const locked = hasAuthorDirectLabelOverride(entry.customEntry);
+		// Author offsets are stored relative to the anchor, so moving it would
+		// drag hand-placed labels off their chosen spot.
+		const anchorX =
+			locked || crowdRadius <= 0
+				? midpointPx
+				: pickSeriesAnchorX({
+						points: entry.points,
+						otherSeries: series
+							.filter((other) => other !== entry)
+							.map((other) => other.points),
+						placed,
+						innerWidth,
+						halfWidth: entry.halfWidth,
+						minClearance: crowdRadius,
+					});
+		const anchorY = getSeriesYAtPixelX(entry.points, anchorX);
+
+		if (!locked) {
+			placed.push({
+				x: anchorX,
+				y: anchorY,
+				halfWidth: entry.halfWidth,
+				minClearance: crowdRadius,
+			});
 		}
 
-		const seriesPoints: SeriesPixelPoint[] = filteredData.map((d) => {
-			const dependentValue = getSeriesDependentValue
-				? getSeriesDependentValue(d, category, categoryIndex)
-				: d[category];
-			return {
-				px: independentScale(getIndependentValue(d)),
-				py: dependentScale(dependentValue),
-			};
-		});
-
-		const anchorX = anchorPx;
-		const anchorY = getSeriesYAtPixelX(seriesPoints, anchorPx);
-		const customEntry = customLabels[category];
 		const authorOffset = getDirectLabelOffsetFromCustom(
-			customEntry,
+			entry.customEntry,
 			anchorX,
 			anchorY,
 			padding,
 			scales
 		);
-		const rawText = customEntry?.text ?? category;
 
 		inputs.push({
-			category,
-			id: buildOnLineSeriesLabelId(category, categoryIndex),
+			category: entry.category,
+			id: buildOnLineSeriesLabelId(entry.category, entry.categoryIndex),
 			x: anchorX,
 			y: anchorY,
-			text: rawText,
-			fontSize: customEntry?.fontSize ?? legend.fontSize,
-			fontFamily: customEntry?.fontFamily,
-			fontWeight: customEntry?.fontWeight ?? legend.fontWeight,
-			maxWidth: customEntry?.maxWidth ?? 0,
+			text: entry.text,
+			fontSize: entry.fontSize,
+			fontFamily: entry.customEntry?.fontFamily,
+			fontWeight: entry.fontWeight,
+			maxWidth: entry.customEntry?.maxWidth ?? 0,
 			textAnchor: 'middle',
 			dominantBaseline: 'middle',
 			defaultDx: authorOffset.dx,
 			defaultDy: authorOffset.dy,
-			locked: hasAuthorDirectLabelOverride(customEntry),
+			locked,
+			omittable: true,
 		});
-	});
+	}
 
 	return inputs;
 }

@@ -28,6 +28,9 @@ interface AISuggestionPreviewProps {
 
 	/** Header text above the preview. Defaults to "AI Suggestions". */
 	headerLabel?: string;
+
+	/** Optional content rendered below the action buttons (e.g. regenerate options). */
+	afterActions?: React.ReactNode;
 }
 
 /**
@@ -45,6 +48,7 @@ interface AISuggestionPreviewProps {
  * @param root0.dismissLabel
  * @param root0.regenerateLabel
  * @param root0.headerLabel
+ * @param root0.afterActions
  */
 export default function AISuggestionPreview({
 	children,
@@ -55,6 +59,7 @@ export default function AISuggestionPreview({
 	dismissLabel,
 	regenerateLabel,
 	headerLabel,
+	afterActions,
 }: AISuggestionPreviewProps) {
 	return (
 		<VStack spacing="3" className="prc-ai-preview">
@@ -82,6 +87,7 @@ export default function AISuggestionPreview({
 					</Button>
 				)}
 			</div>
+			{afterActions}
 		</VStack>
 	);
 }

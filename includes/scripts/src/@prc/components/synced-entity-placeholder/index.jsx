@@ -66,7 +66,8 @@ export default function SyncedEntityPlaceholder({
 					)}
 					{isNew && (
 						<>
-							{renderSearch()}
+							{typeof renderSearch === 'function' &&
+								renderSearch()}
 							{false === disableCreation && (
 								<div style={{ marginTop: '1em' }}>
 									<Button
@@ -77,12 +78,14 @@ export default function SyncedEntityPlaceholder({
 									</Button>
 								</div>
 							)}
-							{renderCreateModal({
-								isOpen: isCreateOpen,
-								onOpen: handleOpenCreate,
-								onClose: handleCloseCreate,
-								afterCreate: handleAfterCreate,
-							})}
+							{typeof renderCreateModal === 'function'
+								? renderCreateModal({
+										isOpen: isCreateOpen,
+										onOpen: handleOpenCreate,
+										onClose: handleCloseCreate,
+										afterCreate: handleAfterCreate,
+									})
+								: null}
 						</>
 					)}
 				</div>

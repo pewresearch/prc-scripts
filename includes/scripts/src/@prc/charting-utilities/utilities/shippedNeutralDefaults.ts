@@ -1,7 +1,7 @@
 /**
  * Generic shipped palette + accent defaults (PRC-528 slice 10).
  *
- * PRC-specific values live in prc-legacy-theme.json and the per-site theme option.
+ * PRC-specific values live in chart-theme.json and the per-site theme option.
  * These pink → purple swatches are deliberately unlike PRC production colors so
  * unseeded / no-theme installs are visually obvious during testing.
  */

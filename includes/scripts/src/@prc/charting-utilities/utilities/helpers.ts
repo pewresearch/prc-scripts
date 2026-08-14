@@ -425,6 +425,27 @@ const getCustomLabelText = (
 };
 
 /**
+ * Whether a data point carries a plottable value for a category.
+ *
+ * Series rarely share the same set of x values — a source that reports nothing
+ * for a category in a given year omits the key rather than writing a zero — so
+ * every per-series render pass filters the flattened rows through this first.
+ * Zero is a real value and is kept; null, undefined and the empty string are
+ * gaps and must be dropped, or the scales turn them into NaN coordinates.
+ *
+ * @param dataPoint The data point object
+ * @param key       The category key
+ * @return Whether the point can be plotted for this category
+ */
+const hasCategoryValue = (
+	dataPoint: Record<string, any>,
+	key: string
+): boolean => {
+	const value = dataPoint?.[key];
+	return value !== null && value !== undefined && value !== '';
+};
+
+/**
  * Check if a label should be visible for a data point/category.
  * Returns true by default if no visibility override is set.
  *
@@ -561,6 +582,7 @@ export {
 	getCustomTooltip,
 	getGroupValue,
 	getLabelOutlineStroke,
+	hasCategoryValue,
 	isLabelVisible,
 	labelFill,
 	newDateByFormat,

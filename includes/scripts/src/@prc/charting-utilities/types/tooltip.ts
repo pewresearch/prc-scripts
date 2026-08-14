@@ -2,14 +2,32 @@ import { dateFormat } from './dateFormat';
 
 export type Tooltip = {
 	active: boolean;
+	/**
+	 * `point` resolves one data point per hover. `unified` reports every series
+	 * plotted at the hovered x. Optional so tooltip literals that do not spread
+	 * `baseConfig.tooltip` still type-check.
+	 */
+	mode?: 'point' | 'unified';
 	headerActive: boolean;
 	headerValue: 'independentValue' | 'categoryValue';
 	format: string | null;
+	/**
+	 * Rich HTML tooltip body. When non-null, takes precedence over `format`.
+	 * Null keeps the legacy mustache `format` path for existing charts.
+	 * Stored as a string on the nested `tooltip` object attribute so HTML can
+	 * persist in the block comment JSON (same pattern as `customTooltips` bodies).
+	 */
+	template: string | null;
 	offsetX: number;
 	offsetY: number;
 	abbreviateValue: boolean;
 	absoluteValue: boolean;
 	toFixedDecimal: number;
+	/**
+	 * Values in [0, minDisplayValue) render as `<minDisplayValue` rather than
+	 * rounding to zero. Null formats every value normally.
+	 */
+	minDisplayValue: number | null;
 	toLocaleString: boolean;
 	customFormat: any; // function(d) { return d; },
 	rlsFormat: boolean;

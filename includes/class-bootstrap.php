@@ -77,6 +77,7 @@ class Bootstrap {
 
 		// Load the moved Scripts and Script_Modules classes (namespace PRC\Platform).
 		require_once plugin_dir_path( __DIR__ ) . '/includes/scripts/class-scripts.php';
+		require_once plugin_dir_path( __DIR__ ) . '/includes/scripts/class-settings-page-boot.php';
 		require_once plugin_dir_path( __DIR__ ) . '/includes/script-modules/class-script-modules.php';
 	}
 

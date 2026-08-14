@@ -1,6 +1,7 @@
 import { DataRender } from '../types/dataRender';
 import { Layout } from '../types/layout';
 import { abbreviateNumber, decodeHtmlEntities } from '../utilities/helpers';
+import { formatMinDisplayValue } from '../utilities/formatMinDisplayValue';
 import { Tooltip } from '../types/tooltip';
 import { Map } from '../types/map';
 import { timeFormat } from 'd3-time-format';
@@ -9,7 +10,32 @@ import { localPoint } from '@visx/event';
 import type { EventType } from '@visx/event/lib/types';
 import type { Point } from '@visx/point';
 
-type TooltipData = { [key: string]: string | number };
+type TooltipData = {
+	[key: string]: string | number | boolean | null | undefined;
+};
+
+type TooltipPoint = {
+	x: any;
+	y: any;
+	category: any;
+	color?: any;
+	/** Full flat row for arbitrary `{{key}}` template tokens. */
+	data?: Record<string, unknown>;
+};
+
+/**
+ * Attach the flat row so rich tooltip templates can resolve arbitrary `{{key}}`
+ * tokens beyond the virtual row / value / column placeholders.
+ */
+function tooltipFormatPoint(
+	point: { x: any; y: any; category: any; color?: any },
+	row?: Record<string, unknown> | null
+): TooltipPoint {
+	if (!row) {
+		return point;
+	}
+	return { ...point, data: row };
+}
 
 /**
  * Get local point coordinates for tooltip positioning.
@@ -47,8 +73,13 @@ function getLocalPoint(svgElement: Element, event: EventType): Point | null {
 	return point;
 }
 
-function styleTooltipString(formatString: string, color: string) {
-	// get each substring between {{ }} and replace it with a span
+function styleTooltipString(
+	formatString: string,
+	color: string,
+	wrapUnstyledTokens = true
+) {
+	// Apply legacy modifiers to each token. Legacy formats also wrap plain
+	// tokens, while RichText templates preserve their authored markup.
 	const formatted = formatString.replace(/{{(.*?)}}/g, (match, key) => {
 		let isBold, isColor, isLowerCase;
 		if (key.indexOf('.isBold()') > -1) {
@@ -69,27 +100,88 @@ function styleTooltipString(formatString: string, color: string) {
 				}; text-transform: ${
 					isLowerCase ? 'lowercase' : 'none'
 				};">{{${key}}}</span>`
-			: `<span>{{${key}}}</span>`;
+			: wrapUnstyledTokens
+				? `<span>{{${key}}}</span>`
+				: match;
 	});
 	return formatted;
+}
+
+function formatTooltipTokenValue(value: TooltipData[string]) {
+	if (null == value || value === '') {
+		return '';
+	}
+	return decodeHtmlEntities(value.toString());
 }
 
 function formatTooltipString(formatString: string) {
 	return function (data: TooltipData) {
 		const formatted = formatString
-			.replace(/{{\s*(\w+)\.toLowerCase\(\)\s*}}/g, (match, key) => {
-				const originalKey = key.replace(/\.toLowerCase\(\)$/, '');
+			.replace(/{{\s*(.+?)\.toLowerCase\(\)\s*}}/g, (_match, key) => {
+				const originalKey = key.trim();
 				const value = data[originalKey];
 				return value
 					? decodeHtmlEntities(value.toString().toLowerCase())
 					: '';
 			})
-			.replace(/{{\s*(\w+)\s*}}/g, (match, key) => {
-				const value = data[key];
-				return value ? decodeHtmlEntities(value.toString()) : '';
+			.replace(/{{\s*(.+?)\s*}}/g, (_match, key) => {
+				const trimmedKey = key.trim();
+				return formatTooltipTokenValue(data[trimmedKey]);
 			});
 		return formatted;
 	};
+}
+
+function shouldSkipRowTokenKey(key: string) {
+	return key.startsWith('__') || key === 'tooltip' || key === 'tooltipHeader';
+}
+
+function stringifyRowTokenValue(value: unknown): string | number {
+	if (null == value) {
+		return '';
+	}
+	if (typeof value === 'string' || typeof value === 'number') {
+		return value;
+	}
+	if (typeof value === 'boolean') {
+		return value ? 'true' : 'false';
+	}
+	return String(value);
+}
+
+/**
+ * Drop the sign from a numeric row field. Strings keep their authored
+ * formatting (trailing zeros, thousands separators) by losing the leading
+ * minus rather than round-tripping through `Number`.
+ */
+function absoluteRowTokenValue(value: string | number): string | number {
+	if (typeof value === 'number') {
+		return Number.isFinite(value) ? Math.abs(value) : value;
+	}
+	const trimmed = value.trim();
+	if (!trimmed.startsWith('-') || !Number.isFinite(Number(trimmed))) {
+		return value;
+	}
+	return trimmed.slice(1);
+}
+
+function mergeRowFieldsIntoTokenBag(
+	data: Record<string, unknown> | undefined,
+	absoluteValue: boolean
+): TooltipData {
+	if (!data) {
+		return {};
+	}
+	return Object.entries(data).reduce<TooltipData>((acc, [key, value]) => {
+		if (shouldSkipRowTokenKey(key)) {
+			return acc;
+		}
+		const stringified = stringifyRowTokenValue(value);
+		acc[key] = absoluteValue
+			? absoluteRowTokenValue(stringified)
+			: stringified;
+		return acc;
+	}, {});
 }
 const getTooltipHeaderFormat = (
 	d: { x: any; category: any },
@@ -111,30 +203,114 @@ const getTooltipHeaderFormat = (
 	return typeof x === 'string' ? decodeHtmlEntities(x) : x;
 };
 
+/**
+ * Format the hovered point into the token substitution bag used by both the
+ * rich `template` and legacy mustache `format` paths.
+ */
+function buildTooltipTokenData(
+	d: TooltipPoint,
+	config: Tooltip,
+	dataRender: DataRender | undefined
+): TooltipData & {
+	row: string | number;
+	column: string | number;
+	value: string | number;
+	floored: string | null;
+} {
+	const d3DateFormat = timeFormat(config.dateFormat);
+	const row = d.x instanceof Date ? d3DateFormat(d.x) : d.x;
+	const column =
+		d.category instanceof Date ? d3DateFormat(d.category) : d.category;
+
+	const rowFields = mergeRowFieldsIntoTokenBag(d.data, config.absoluteValue);
+
+	if (dataRender && dataRender.mapScale === 'ordinal') {
+		return { ...rowFields, row, column, value: d.y, floored: null };
+	}
+
+	let value: number | string = config.absoluteValue
+		? Math.abs(d.y)
+		: Number(d.y);
+
+	// A value below the floor stands in for the number entirely; the floor has
+	// already been rendered through the same decimal, abbreviation and locale
+	// pipeline that the branch below would apply.
+	const floored = formatMinDisplayValue(Number(value), config);
+	if (null !== floored) {
+		return { ...rowFields, row, column, value: floored, floored };
+	}
+
+	if (config.toFixedDecimal) {
+		value = Number(Number(value).toFixed(config.toFixedDecimal));
+	}
+	if (config.abbreviateValue) {
+		value = abbreviateNumber(value, config.toFixedDecimal);
+	}
+	if (config.toLocaleString) {
+		value = value.toLocaleString();
+	}
+
+	return { ...rowFields, row, column, value, floored: null };
+}
+
+/**
+ * `formatTooltipString` decodes entities on every value it substitutes, so
+ * escaping the `<` before substitution would just be decoded back out. The
+ * body is injected with dangerouslySetInnerHTML, where a bare `<` reads as
+ * the start of a tag.
+ */
+function escapeTooltipFloor(body: string, floored: string | null) {
+	if (null === floored) {
+		return body;
+	}
+	return body.split(floored).join(`&lt;${floored.slice(1)}`);
+}
+
+/**
+ * Resolve a rich HTML tooltip template: substitute `{{row}}` / `{{value}}` /
+ * `{{column}}` and row-field tokens after applying legacy token modifiers and
+ * running the value through the number pipeline.
+ */
+function resolveTooltipTemplate(
+	template: string,
+	d: TooltipPoint,
+	config: Tooltip,
+	dataRender: DataRender | undefined
+) {
+	const tokenBag = buildTooltipTokenData(d, config, dataRender);
+	const { floored, ...substitutionBag } = tokenBag;
+	const styledTemplate = styleTooltipString(template, d.color, false);
+	const body = formatTooltipString(styledTemplate)(substitutionBag);
+	return escapeTooltipFloor(body, floored);
+}
+
 const getTooltipFormat = (
-	d: { x: any; y: any; category: any; color: any },
+	d: TooltipPoint,
 	config: Tooltip,
 	dataRender: DataRender | undefined
 ) => {
-	// if d.x is a date, format it
-	const d3DateFormat = timeFormat(config.dateFormat);
-	const x = d.x instanceof Date ? d3DateFormat(d.x) : d.x;
-	// if d.category is a date, format it
-	const category =
-		d.category instanceof Date ? d3DateFormat(d.category) : d.category;
-	let datum: number | string = config.absoluteValue
-		? Math.abs(d.y)
-		: Number(d.y);
+	// Rich HTML template wins over the legacy mustache `format` string.
+	// Default remains null so existing charts keep using `format`.
+	if (null != config.template) {
+		return resolveTooltipTemplate(config.template, d, config, dataRender);
+	}
+
 	//if custom label is set, use it
 	if (config.customFormat) {
-		return config.customFormat(datum);
+		const raw = config.absoluteValue ? Math.abs(d.y) : Number(d.y);
+		return config.customFormat(raw);
 	}
+
+	const {
+		row: x,
+		column: category,
+		value: datum,
+		floored,
+	} = buildTooltipTokenData(d, config, dataRender);
 
 	// TODO: extend toolitip formatter to support full data object, so that we can return non-numeric values tied to the data point
 	// eg. {{data.tooltipValue}} would return the value of data.tooltipValue
-	// if there is a dataRender, check is the mapScale is 'ordinal', if so, datum is a string
 	if (dataRender && dataRender.mapScale === 'ordinal') {
-		datum = d.y;
 		if (config.format && config.format.length > 0) {
 			// quick conversion for strings using sprintf format
 			const reformat = config.format
@@ -148,16 +324,7 @@ const getTooltipFormat = (
 		const format = formatTooltipString('{{row}}: {{value}}');
 		return format({ row: x, value: datum });
 	}
-	// do some formatting on the numerical value
-	if (config.toFixedDecimal) {
-		datum = Number(Number(datum).toFixed(config.toFixedDecimal));
-	}
-	if (config.abbreviateValue) {
-		datum = abbreviateNumber(datum, config.toFixedDecimal);
-	}
-	if (config.toLocaleString) {
-		datum = datum.toLocaleString();
-	}
+
 	if (config.format && config.format.length > 0) {
 		// quick conversion for strings using sprintf format
 		const reformat = config.format
@@ -166,12 +333,13 @@ const getTooltipFormat = (
 			.replace(/%3\$s/g, '{{row}}');
 		const styledFormat = styleTooltipString(reformat, d.color);
 		const format = formatTooltipString(styledFormat);
-		return format({ column: category, value: datum, row: x });
+		return escapeTooltipFloor(
+			format({ column: category, value: datum, row: x }),
+			floored
+		);
 	}
 	const format = formatTooltipString('{{row}}: {{value}}');
-	return format({ row: x, value: datum });
-
-	// otherwise, return the value with the unit at the start
+	return escapeTooltipFloor(format({ row: x, value: datum }), floored);
 };
 
 const getTooltipVisible = (
@@ -240,4 +408,5 @@ export {
 	getTooltipFormat,
 	getTooltipVisible,
 	getTooltipMapDeemphasisProps,
+	tooltipFormatPoint,
 };

@@ -66,12 +66,16 @@ class Rest_API_Endpoint {
 	public function restfully_get_postid_by_url( WP_REST_Request $request ) {
 		$url = $request->get_param( 'url' );
 		if ( empty( $url ) ) {
-			return new WP_Error( 'no-url-provided', __( 'No url provided', 'my_textdomain' ), array( 'status' => 400 ) );
+			return new WP_Error( 'no-url-provided', __( 'No url provided', 'prc-scripts' ), array( 'status' => 400 ) );
 		}
 		$url_helper = new URL_Helper( $url );
 		$post_id    = $url_helper->get_post_id();
 		if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
-			return new WP_Error( 'no-post-found', __( 'No post found', 'my_textdomain' ), array( 'status' => 404 ) );
+			return new WP_Error( 'no-post-found', __( 'No post found', 'prc-scripts' ), array( 'status' => 404 ) );
+		}
+		// Prefer 404 over 403 to avoid an existence oracle for inaccessible posts.
+		if ( ! current_user_can( 'read_post', $post_id ) ) {
+			return new WP_Error( 'no-post-found', __( 'No post found', 'prc-scripts' ), array( 'status' => 404 ) );
 		}
 		return array(
 			'postId'   => $post_id,

@@ -12,7 +12,11 @@ module.exports = {
 	output: {
 		...defaultConfig.output,
 		path: __dirname + '/../../../build/third-party/emotion-styled',
-		library: { name: 'emotionStyled', type: 'window' },
+		// Export the default styled() function onto the global. Without
+		// `export: 'default'`, webpack assigns `{ default: styled }` and ESM
+		// consumers (e.g. MUI in the Publishing Calendar) call the object as a
+		// function → "X is not a function" at shouldForwardProp.
+		library: { name: 'emotionStyled', type: 'window', export: 'default' },
 	},
 	plugins: [
 		...basePluginsWithoutDep,

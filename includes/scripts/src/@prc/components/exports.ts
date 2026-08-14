@@ -6,6 +6,28 @@
 // Auth Provider Context
 export { ProvideAuth, useAuth } from './auth-provider-context';
 
+// Analytics period controls + calendar heatmap
+export { default as AnalyticsPeriodControls } from './calendar-heatmap/analytics-period-controls';
+export {
+	default as CalendarHeatmap,
+	MONTH_LABELS,
+	getHeatLevel,
+} from './calendar-heatmap';
+export type {
+	AnalyticsPeriodControlsProps,
+	CalendarHeatmapProps,
+	HeatLevel,
+} from './calendar-heatmap';
+
+// Audience Build Panel
+export { default as AudienceBuildPanel } from './audience-build-panel';
+export type {
+	AudienceBuildPanelProps,
+	AudiencePanelStatus,
+	AudienceSnapshot,
+	VerificationMode,
+} from './audience-build-panel';
+
 // Detach Blocks Toolbar Control
 export { default as DetachBlocksToolbarControl } from './detach-blocks-toolbar-control';
 
@@ -29,8 +51,8 @@ export type {
 // InnerBlocks utilities
 export {
 	InnerBlocksAsContextTemplate,
-	useInnerBlocksContextAsQuery,
 	InnerBlocksAsSyncedContent,
+	useInnerBlocksContextAsQuery,
 } from './innerblocks';
 
 // Inspector Popout Panel
@@ -38,10 +60,10 @@ export { default as InspectorPopoutPanel } from './inspector-popout-panel';
 
 // List Store
 export {
-	registerListStore,
-	ListStoreItem,
 	actions as listStoreActions,
+	ListStoreItem,
 	reducer as listStoreReducer,
+	registerListStore,
 } from './list-store';
 
 // Loading Indicator
@@ -55,9 +77,9 @@ export { default as MailchimpSegmentSelect } from './mailchimp-segment-select';
 
 // Mailchimp data hooks (same REST as prc-email-builder)
 export {
+	getMailchimpRestNamespace,
 	useMailchimpAudiences,
 	useMailchimpSegments,
-	getMailchimpRestNamespace,
 } from './mailchimp/use-mailchimp-data';
 
 // Marked Range Control
@@ -77,42 +99,42 @@ export { default as ResponsiveImage } from './responsive-image';
 
 // Social Image Generator
 export {
-	SocialImageGenerator,
-	renderToCanvas,
+	ColorPickerButton,
+	DEFAULT_FONT_FAMILY_OPTIONS,
+	DEFAULT_PLATFORM_SIZES,
 	generateImage,
 	generateImageFile,
-	DEFAULT_PLATFORM_SIZES,
 	PLATFORM_NAMES,
-	DEFAULT_FONT_FAMILY_OPTIONS,
-	ColorPickerButton,
+	renderToCanvas,
+	SocialImageGenerator,
 } from './social-image-generator';
 
 // Social Preview (wrapper + individual previews + types)
 export {
-	SocialPreview,
-	FacebookPreview,
-	TwitterPreview,
-	ThreadsPreview,
 	BlueskyPreview,
-	SlackPreview,
 	DiscordPreview,
+	FacebookPreview,
 	GooglePreview,
-	LinkedInPreview,
-	TeamsPreview,
-	InstagramStoryPreview,
-	InstagramReelPreview,
 	InstagramPostPreview,
+	InstagramReelPreview,
+	InstagramStoryPreview,
+	LinkedInPreview,
+	SlackPreview,
+	SocialPreview,
+	TeamsPreview,
+	ThreadsPreview,
+	TwitterPreview,
 } from './social-preview';
 
 // Styled Component Context
 export { default as StyledComponentContext } from './styled-component-context';
 
 // Synced Entity Blocks
+export { default as SyncedEntityCreateModal } from './synced-entity-create-modal';
+export { default as SyncedEntityEdit } from './synced-entity-edit';
 export { default as SyncedEntityIcon } from './synced-entity-icon';
 export { default as SyncedEntityIsolationControls } from './synced-entity-isolation-controls';
 export { default as SyncedEntityPlaceholder } from './synced-entity-placeholder';
-export { default as SyncedEntityCreateModal } from './synced-entity-create-modal';
-export { default as SyncedEntityEdit } from './synced-entity-edit';
 
 // Taxonomy Select
 export { default as TaxonomySelect } from './taxonomy-select';
@@ -131,26 +153,26 @@ export { default as WPEntitySearch } from './wp-entity-search';
 
 // AI Components
 export {
-	useAISuggest,
-	AISuggestButton,
-	AISuggestToolbarButton,
 	AILoadingIndicator,
-	AISuggestModal,
+	AINumberCheckBadge,
+	AISuggestButton,
 	AISuggestionPreview,
 	AISuggestionsList,
-	AINumberCheckBadge,
+	AISuggestModal,
+	AISuggestToolbarButton,
+	useAISuggest,
 } from './ai';
 
 // Editable Text
-export { EditableText } from './social-preview/editable-text';
 export { EditableMedia } from './social-preview/editable-media';
+export { EditableText } from './social-preview/editable-text';
 export type {
-	EditablePreviewProps,
 	EditablePreviewCallbacks,
+	EditablePreviewProps,
 } from './social-preview/types';
 
 // Browser Chrome
-export { MobileSafariChrome, DesktopSafariChrome } from './browser-chrome';
+export { DesktopSafariChrome, MobileSafariChrome } from './browser-chrome';
 
 // Character Counter
 export { default as CharacterCounter } from './character-counter';
@@ -160,33 +182,33 @@ export type { CharacterCounterRingProps } from './character-counter/ring';
 
 // Settings Page (WP Admin)
 export {
-	SettingsAccordion,
-	SettingsSubSection,
-	SettingsPage,
-	SettingsFieldsSection,
 	ConnectionBadge,
-	SettingsSectionFooter,
-	createSettingsStore,
-	createSettingsClient,
 	createPartialSaveClient,
-	useSettingsDraft,
+	createSettingsClient,
+	createSettingsStore,
 	mountSettingsPage,
+	SettingsAccordion,
+	SettingsFieldsSection,
+	SettingsPage,
+	SettingsSectionFooter,
+	SettingsSubSection,
+	useSettingsDraft,
 } from './settings-page';
 export type {
+	ConnectionBadgeProps,
+	CreatePartialSaveClientConfig,
+	CreateSettingsClientConfig,
+	CreateSettingsStoreConfig,
+	SaveSettingsOptions,
+	SettingsAccordionProps,
 	SettingsApiResponse,
-	SettingsStoreState,
 	SettingsFieldConfig,
 	SettingsFieldOption,
-	SettingsFieldType,
-	SettingsAccordionProps,
-	SettingsSubSectionProps,
-	SettingsSectionConfig,
-	SettingsPageProps,
 	SettingsFieldsSectionProps,
-	ConnectionBadgeProps,
+	SettingsFieldType,
+	SettingsPageProps,
+	SettingsSectionConfig,
 	SettingsSectionFooterProps,
-	CreateSettingsStoreConfig,
-	CreateSettingsClientConfig,
-	CreatePartialSaveClientConfig,
-	SaveSettingsOptions,
+	SettingsStoreState,
+	SettingsSubSectionProps,
 } from './settings-page';

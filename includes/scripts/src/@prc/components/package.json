@@ -16,12 +16,12 @@
 		"@prc/hooks": "*",
 		"@prc/icons": "*",
 		"@wordpress/admin-ui": "^1.12.0",
-		"@wordpress/dataviews": "^14.1.0",
+		"@wordpress/dataviews": "17.2.0",
 		"can-use-dom": "^0.1.0",
 		"classnames": "^2.5.1",
 		"framer-motion": "^11.0.3",
 		"picturefill": "^3.0.3",
 		"prop-types": "^15.8.1"
 	},
-	"version": "1.1.0"
+	"version": "1.2.0"
 }

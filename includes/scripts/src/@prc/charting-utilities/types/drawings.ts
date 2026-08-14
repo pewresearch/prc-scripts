@@ -24,7 +24,16 @@ interface BaseDrawing {
 	fill?: string;
 	opacity?: number;
 	fillOpacity?: number;
-	positioningContext?: 'chart' | 'inner';
+	/**
+	 * Coordinate frame:
+	 * - `'chart'`: full chart area including padding
+	 * - `'inner'`: data area only
+	 * - `'panel'`: small-multiples panel cell (requires `panelKey`)
+	 * - `'panel-inner'`: plot area inside a panel cell (requires `panelKey`)
+	 */
+	positioningContext?: 'chart' | 'inner' | 'panel' | 'panel-inner';
+	/** Panel key when `positioningContext === 'panel'` or `'panel-inner'`. */
+	panelKey?: string;
 }
 
 // Line drawing (straight, curved, or angled)

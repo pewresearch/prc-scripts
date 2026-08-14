@@ -29,9 +29,19 @@ export interface LabelCustomizations {
 	customStyles?: Record<string, LabelStyleOverride>;
 }
 
+/** Placement for first/last point labels on line-family charts. */
+export type FirstLastLabelLayout = 'default' | 'outside';
+
 export type Labels = {
 	active: boolean;
 	showFirstLastPointsOnly: boolean;
+	/**
+	 * How first and last point labels are placed on line / area / stacked-area charts.
+	 * - `default` — base offset (0, 0); `labelPositionDX` / `labelPositionDY` apply as usual
+	 * - `outside` — first base (-5, 0) with `textAnchor: 'end'`, last base (5, 0) with
+	 *   `textAnchor: 'start'`; DX/DY still layer on top of those bases
+	 */
+	firstLastLabelLayout: FirstLastLabelLayout;
 	color: 'inherit' | 'contrast' | 'black' | 'white';
 	// altColor: 'white',
 	fontWeight: number;
@@ -40,6 +50,12 @@ export type Labels = {
 	textAnchor: 'start' | 'middle' | 'end';
 	labelPositionBar: 'inside' | 'outside' | 'center';
 	labelCutoff: number;
+	/**
+	 * Values in [0, minDisplayValue) render as `<minDisplayValue` rather than
+	 * rounding to zero. Null formats every value normally. Unrelated to
+	 * `labelCutoff`, which decides whether a label is drawn at all.
+	 */
+	minDisplayValue: number | null;
 	labelPositionDX: number;
 	labelPositionDY: number;
 	pieLabelRadius?: number;
@@ -57,6 +73,16 @@ export type Labels = {
 	autoDeclutter?: boolean;
 	/** Extra padding (px) between labels during auto-declutter. */
 	declutterPadding?: number;
+	/**
+	 * When set, greedily omit labels whose anchors sit within this many pixels
+	 * of a kept label. Keeps series names near their lines on dense charts.
+	 */
+	declutterOmitWithin?: number;
+	/**
+	 * When set, omit the remaining representative of a crowded cluster when
+	 * its anchor is this close to the top or bottom plot edge.
+	 */
+	declutterOmitEdgeWithin?: number;
 	/** When true, draw leader lines from anchor to displaced decluttered labels. */
 	declutterLeaderLines?: boolean;
 	/**
@@ -77,6 +103,8 @@ export type Labels = {
 /** Auto-declutter engine types (labelLayout subsystem). */
 export interface DeclutterLabelInput {
 	id: string;
+	/** Series/category key for consumers that coordinate related labels. */
+	category?: string;
 	x: number;
 	y: number;
 	text: string;
@@ -90,6 +118,12 @@ export interface DeclutterLabelInput {
 	defaultDy?: number;
 	/** When true, keep defaultDx/defaultDy and skip simulation for this label. */
 	locked?: boolean;
+	/**
+	 * When true, `omitWithin` may drop this label in a crowd. Reserve it for
+	 * series names, which a reader can still recover from the colour key. Value
+	 * labels are data and must be separated rather than deleted.
+	 */
+	omittable?: boolean;
 }
 
 export interface DeclutterOptions {
@@ -105,11 +139,25 @@ export interface DeclutterOptions {
 	anchorStrengthY?: number;
 	innerWidth?: number;
 	innerHeight?: number;
+	/**
+	 * When set, greedily drop labels whose anchors sit within this many pixels
+	 * of a kept label (top-to-bottom). Locked labels are always kept. Use this
+	 * for dense multi-series charts where stacking would float names too far
+	 * from their lines.
+	 */
+	omitWithin?: number;
+	/**
+	 * Omit the survivor of a crowded cluster when its anchor is this close to
+	 * the top or bottom plot edge. Requires `omitWithin` and `innerHeight`.
+	 */
+	omitEdgeWithin?: number;
 }
 
 export interface DeclutterOffset {
 	dx: number;
 	dy: number;
+	/** When true, the label should not be rendered. */
+	hidden?: boolean;
 }
 
 export interface SimRectNode {

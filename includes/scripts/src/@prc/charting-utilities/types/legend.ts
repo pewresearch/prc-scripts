@@ -110,6 +110,13 @@ export type Legend = {
 	bubbleLegend?: {
 		/** 'category' fills circles with the first category color; 'none' = outlines only. */
 		fill: 'none' | 'category';
+		/**
+		 * Ring stroke for the legend circles. Set this to match a map whose
+		 * bubbles use a custom `map.bubble.stroke`; when unset the legend picks a
+		 * contrasting stroke itself, because the white map default is invisible
+		 * against the legend background. Not colour-resolved — pass a CSS colour.
+		 */
+		stroke?: string;
 		/** Specific values to render as legend circles. Empty = auto = [min, median, max]. */
 		refValues: number[];
 		/**

@@ -1,5 +1,7 @@
 # PRC Scripts
 
+> Canonical docs: [docs/plugins/prc-scripts/](../../docs/plugins/prc-scripts/)
+
 Shared first-party (`@prc/*`) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.
 
 This plugin owns the `Scripts` and `Script_Modules` registration classes that were previously bundled inside `prc-platform-core`. Every leaf `prc-*` plugin that consumes shared script handles (e.g. `prc-components`, `prc-controls`, `prc-charting-utilities`) declares `Requires Plugins: prc-scripts` in its main plugin file header.

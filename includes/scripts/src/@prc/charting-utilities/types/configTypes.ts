@@ -28,13 +28,18 @@ import { Custom } from './custom';
 import { ErrorBars } from './errorBars';
 import { AnnotationsConfig, TextAnnotation, MetadataText } from './text';
 import { DrawingsConfig } from './drawings';
+import { BeeSwarm } from './beeSwarm';
 import { Treemap } from './treemap';
 import { Sankey } from './sankey';
+import { SmallMultiples } from './smallMultiples';
+import { Waffle } from './waffle';
+import { HeatMapTable } from './heatMapTable';
 
 type BaseConfig = {
 	animate: Animate;
 	animation?: Animation;
 	bar: Bar;
+	beeSwarm: BeeSwarm;
 	colors: Colors;
 	dataRender: DataRender;
 	diffColumn: DiffColumn;
@@ -43,6 +48,7 @@ type BaseConfig = {
 	errorBars: ErrorBars;
 	events: Events;
 	explodedBar: ExplodedBar;
+	heatMapTable: HeatMapTable;
 	labels: Labels;
 	layout: Layout;
 	legend: Legend;
@@ -64,6 +70,8 @@ type BaseConfig = {
 	drawings: DrawingsConfig;
 	treemap: Treemap;
 	sankey: Sankey;
+	smallMultiples: SmallMultiples;
+	waffle: Waffle;
 };
 
 export type {
@@ -71,6 +79,7 @@ export type {
 	Animate,
 	Animation,
 	Bar,
+	BeeSwarm,
 	Colors,
 	DataRender,
 	DiffColumn,
@@ -102,4 +111,7 @@ export type {
 	DrawingsConfig,
 	Treemap,
 	Sankey,
+	SmallMultiples,
+	Waffle,
+	HeatMapTable,
 };

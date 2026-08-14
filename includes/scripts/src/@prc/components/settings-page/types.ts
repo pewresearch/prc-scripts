@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { StoreDescriptor } from '@wordpress/data';
+import type { EditConfig } from '@wordpress/dataviews';
 
 export interface SettingsApiResponse<TSettings> {
 	settings?: TSettings;
@@ -32,7 +33,7 @@ export interface SettingsFieldConfig {
 	label: string;
 	description?: string;
 	type: SettingsFieldType;
-	edit?: string | { control: string; rows?: number };
+	edit?: string | EditConfig;
 	options?: SettingsFieldOption[];
 	autoSave?: boolean;
 	min?: number;

@@ -1,4 +1,5 @@
 import { abbreviateNumber, decodeHtmlEntities } from '../utilities/helpers';
+import { formatMinDisplayValue } from '../utilities/formatMinDisplayValue';
 
 type LabelFormatConfig = {
 	absoluteValue: boolean;
@@ -11,6 +12,7 @@ type LabelFormatConfig = {
 	abbreviateValue: boolean;
 	labelUnit: string;
 	labelUnitPosition: 'start' | 'end';
+	minDisplayValue?: number | null;
 };
 
 type BarProps = {
@@ -19,6 +21,8 @@ type BarProps = {
 	width: number;
 	height: number;
 	value: number;
+	/** When set, labels anchor to the bar edge at `start` (x/y) vs `start+size`. */
+	valueAtStart?: boolean;
 };
 
 type PositionProps = {
@@ -79,53 +83,44 @@ const getLabelFormat = (
 
 	// if custom label is not set, check for cutoff
 	if (cutoff === null || Number(fixedDatum) > cutoff) {
-		//if there is a unit specified, add it to the label either at end or start
+		const floored = formatMinDisplayValue(datum, config);
+		let numeric: string;
+		if (null !== floored) {
+			numeric = floored;
+		} else if (config.abbreviateValue) {
+			numeric = `${abbreviatedDatum}`;
+		} else if (config.toLocaleString) {
+			numeric = `${localizedDatum}`;
+		} else {
+			numeric = `${fixedDatum}`;
+		}
 
 		if (config.labelUnit) {
-			if (config.labelUnitPosition === 'end') {
-				// check if abbreviated values is selected
-				if (config.abbreviateValue) {
-					return decodeHtmlEntities(
-						`${abbreviatedDatum}${config.labelUnit}`
-					);
-				}
-				//if not abbreviated values, check if toLocaleString is selected
-				if (config.toLocaleString) {
-					return decodeHtmlEntities(
-						`${localizedDatum}${config.labelUnit}`
-					);
-				}
-				// if neither selected, return the value with the unit
-				return decodeHtmlEntities(`${fixedDatum}${config.labelUnit}`);
-			}
-			// if position label start and abbreviated values is selected
-			if (config.abbreviateValue) {
-				return decodeHtmlEntities(
-					`${config.labelUnit}${abbreviatedDatum}`
-				);
-			}
-			// if position label start and toLocaleString is selected
-			if (config.toLocaleString) {
-				return decodeHtmlEntities(
-					`${config.labelUnit}${localizedDatum}`
-				);
-			}
-			// otherwise, return the value with the unit at the start
-			return decodeHtmlEntities(`${config.labelUnit}${fixedDatum}`);
+			return decodeHtmlEntities(
+				'end' === config.labelUnitPosition
+					? `${numeric}${config.labelUnit}`
+					: `${config.labelUnit}${numeric}`
+			);
 		}
-		if (config.abbreviateValue) {
-			return decodeHtmlEntities(`${abbreviatedDatum}`);
-		}
-		if (config.toLocaleString) {
-			return decodeHtmlEntities(`${localizedDatum}`);
-		}
-		// if none of the above are selected, return the value as is to the specified decimal place
-		return decodeHtmlEntities(`${fixedDatum}`);
+		return decodeHtmlEntities(numeric);
 	}
 	return '';
 };
 
 const positionNodeLabel = () => {};
+
+const valueTipAtStart = (
+	bar: BarProps,
+	orientation: 'vertical' | 'horizontal'
+): boolean => {
+	if (bar.valueAtStart !== undefined) {
+		return bar.valueAtStart;
+	}
+	// Stacked/diverging visx rects: vertical positives and horizontal negatives
+	// report the value on the rect start edge.
+	return orientation === 'vertical' ? bar.value >= 0 : bar.value < 0;
+};
+
 const horizontalPositioning = (
 	bar: BarProps,
 	config: PositionProps,
@@ -134,14 +129,14 @@ const horizontalPositioning = (
 ) => {
 	const { x, y, width, height, value } = bar;
 	const { labelPositionDX, labelPositionDY, labelPositionBar } = config;
-	// In diverging stacks, visx reports `x` as the leftmost edge and a positive
-	// `width` for negative bars. The bar's "value end" (i.e. the edge furthest
-	// from the zero axis) is therefore `x` for negatives and `x + width` for
-	// positives. We mirror the inside/outside offsets around that edge.
-	const isNegative = value < 0;
+	const tipAtStart = valueTipAtStart(bar, 'horizontal');
+	const tipX = tipAtStart ? x : x + width;
+	const outsideX = tipAtStart
+		? tipX - 5 + labelPositionDX
+		: tipX + 5 + labelPositionDX;
 	if (value < labelCutOff && stack === 'single') {
 		return {
-			x: x + width + 10 + labelPositionDX,
+			x: outsideX,
 			y: y + height / 2 + labelPositionDY,
 		};
 	}
@@ -153,16 +148,14 @@ const horizontalPositioning = (
 	}
 	if (labelPositionBar === 'inside') {
 		return {
-			x: isNegative
+			x: tipAtStart
 				? x + 20 + labelPositionDX
 				: x + width - 20 + labelPositionDX,
 			y: y + height / 2 + labelPositionDY,
 		};
 	}
 	return {
-		x: isNegative
-			? x - 5 + labelPositionDX
-			: x + width + 5 + labelPositionDX,
+		x: outsideX,
 		y: y + height / 2 + labelPositionDY,
 	};
 };
@@ -174,10 +167,15 @@ const verticalPositioning = (
 ) => {
 	const { x, y, width, height, value } = bar;
 	const { labelPositionDX, labelPositionDY, labelPositionBar } = config;
+	const tipAtStart = valueTipAtStart(bar, 'vertical');
+	const tipY = tipAtStart ? y : y + height;
+	const outsideY = tipAtStart
+		? tipY - 5 + labelPositionDY
+		: tipY + 5 + labelPositionDY;
 	if (Math.abs(value) < labelCutOff) {
 		return {
 			x: x + width / 2 + labelPositionDX,
-			y: y - 5 + labelPositionDY,
+			y: outsideY,
 		};
 	}
 	if (labelPositionBar === 'center') {
@@ -189,12 +187,14 @@ const verticalPositioning = (
 	if (labelPositionBar === 'inside') {
 		return {
 			x: x + width / 2 + labelPositionDX,
-			y: y + 20 + labelPositionDY,
+			y: tipAtStart
+				? y + 20 + labelPositionDY
+				: y + height - 20 + labelPositionDY,
 		};
 	}
 	return {
 		x: x + width / 2 + labelPositionDX,
-		y: y - 5 + labelPositionDY,
+		y: outsideY,
 	};
 };
 

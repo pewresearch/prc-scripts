@@ -1,8 +1,10 @@
 export { computeLabelDeclutter } from './computeLabelDeclutter';
 export { forceRectCollide } from './forceRectCollide';
 export {
+	FIRST_LAST_OUTSIDE_BASE_DX,
 	buildLineChartLabelId,
 	buildLineChartLabelInputs,
+	getFirstLastLabelPlacement,
 	getLineLabelContent,
 } from './buildLineChartLabels';
 export {
@@ -38,3 +40,8 @@ export type {
 } from './leaderLineStore';
 export { measureLabelBBox, measureTextWidth, wordWrap } from './measureLabel';
 export type { LabelBBox, MeasureLabelBBoxOptions } from './measureLabel';
+export { resolveVerticalStacks } from './resolveVerticalStacks';
+export type {
+	ResolveVerticalStacksOptions,
+	StackItem,
+} from './resolveVerticalStacks';

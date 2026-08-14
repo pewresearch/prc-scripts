@@ -21,6 +21,7 @@ export type Line = {
 	strokeDasharray: string;
 	strokeWidth: number;
 	showPoints: boolean;
+	showFirstLastPointsOnly: boolean;
 	showArea: boolean;
 	areaFillOpacity: number;
 };

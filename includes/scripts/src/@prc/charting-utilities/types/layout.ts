@@ -4,6 +4,7 @@ export type ChartLayoutType =
 	| 'line'
 	| 'area'
 	| 'scatter'
+	| 'bee-swarm'
 	| 'pie'
 	| 'dot-plot'
 	| 'stacked-bar'
@@ -21,7 +22,10 @@ export type ChartLayoutType =
 	| 'map-europe'
 	| 'treemap'
 	| 'sankey'
-	| 'radar';
+	| 'radar'
+	| 'small-multiples'
+	| 'waffle'
+	| 'heat-map-table';
 
 export type LayoutOrientation = 'vertical' | 'horizontal';
 

@@ -26,6 +26,8 @@ interface AISuggestionsListProps<T> {
 
 	/** Message shown when the suggestions array is empty. */
 	emptyMessage?: string;
+	/** When true, the list is non-interactive (HTML inert). */
+	inertList?: boolean;
 }
 
 /**
@@ -49,6 +51,7 @@ export default function AISuggestionsList<T>({
 	getId,
 	renderItem,
 	emptyMessage,
+	inertList = false,
 }: AISuggestionsListProps<T>) {
 	if (suggestions.length === 0) {
 		return (
@@ -79,6 +82,7 @@ export default function AISuggestionsList<T>({
 							label={renderItem(item)}
 							checked={isSelected}
 							onChange={() => onToggle(id)}
+							disabled={inertList}
 						/>
 					</div>
 				);

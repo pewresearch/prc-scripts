@@ -9,4 +9,4 @@ runtime modules 937 bytes 4 modules
 cacheable modules 13.2 KiB
   ./index.js 89 bytes [built] [code generated]
   ../../../../../../../node_modules/comma-separated-values/csv.js 13.1 KiB [built] [code generated]
-webpack 5.106.2 compiled successfully in 871 ms
+webpack 5.106.2 compiled successfully in 1065 ms

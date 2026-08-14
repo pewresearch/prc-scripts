@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const defaultConfig = require('../../../../../../../packages');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const {
@@ -27,6 +30,28 @@ module.exports = {
 	},
 	plugins: [
 		...basePluginsWithoutDep,
+		{
+			apply(compiler) {
+				compiler.hooks.afterEmit.tap('CopySettingsBootRoutes', () => {
+					const dest = path.resolve(
+						__dirname,
+						'../../../build/@prc/components/boot'
+					);
+					fs.mkdirSync(dest, { recursive: true });
+					fs.copyFileSync(
+						path.resolve(__dirname, 'settings-page/boot/loader.js'),
+						path.join(dest, 'loader.js')
+					);
+					fs.copyFileSync(
+						path.resolve(
+							__dirname,
+							'settings-page/boot/content.js'
+						),
+						path.join(dest, 'content.js')
+					);
+				});
+			},
+		},
 		new DependencyExtractionWebpackPlugin({
 			requestToExternal(request) {
 				if (BUNDLED_EMOTION.has(request)) {

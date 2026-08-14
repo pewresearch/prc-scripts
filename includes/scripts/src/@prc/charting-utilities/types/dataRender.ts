@@ -14,7 +14,7 @@ export type DataRender = {
 	// 'bubble' draws scaleSqrt-sized circles at each feature's centroid with the
 	// polygon as decorative context. Only applies to map types in
 	// BUBBLE_MAP_CHART_TYPES (states/counties/CBSA/world — not block/hex).
-	mapStyle?: 'choropleth' | 'bubble';
+	mapStyle?: 'choropleth' | 'bubble' | 'geo-points';
 	xFormat?:
 		| 'YYYY-MM-DD'
 		| 'YYYY-MM'

@@ -154,7 +154,10 @@ export function toDataFormField(
 		id: field.id,
 		label: field.label,
 		description: field.description,
-		type: field.type,
+		type:
+			field.type === 'select' || field.type === 'textarea'
+				? 'text'
+				: field.type,
 		placeholder: field.placeholder,
 	};
 
@@ -193,8 +196,8 @@ export function findChangedFieldId(
 	fieldIds: string[]
 ): string | null {
 	for (const fieldId of fieldIds) {
-		// DataForm boolean/select controls pass sparse setValue() patches that
-		// only include the changed nested path. Missing siblings are not changes.
+		// DataViews 17.2 setValue() returns only the changed field path.
+		// Omitted nested siblings are unchanged.
 		if (!hasPath(nextValues, fieldId)) {
 			continue;
 		}

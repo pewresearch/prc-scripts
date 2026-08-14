@@ -5,6 +5,11 @@ export type dependentAxis = {
 	padding: number;
 	domain: number[];
 	domainPadding: number;
+	/**
+	 * When true, Visx/d3 scale.nice() rounds the domain to clean tick values.
+	 * When false/undefined with an explicit domain, the domain is used as-is.
+	 */
+	nice?: boolean;
 	showZero: boolean;
 	tickCount: number | undefined;
 	tickValues: string[] | number[] | Date[] | undefined;

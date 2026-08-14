@@ -1,5 +1,5 @@
 
-> d3v7@1.0.0 build
+> d3v7@1.0.1 build
 > wp-scripts build
 
 asset index.js 273 KiB [compared for emit] [minimized] [big] (name: index)
@@ -24,4 +24,4 @@ WARNING in webpack performance recommendations:
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
 For more info visit https://webpack.js.org/guides/code-splitting/
 
-webpack 5.106.2 compiled with 3 warnings in 6946 ms
+webpack 5.106.2 compiled with 3 warnings in 6562 ms

@@ -143,3 +143,10 @@ $radius-large: 4px;
 		padding-bottom: $grid-unit-10;
 	}
 }
+
+.boot-layout__stage > .prc-settings {
+	box-sizing: border-box;
+	height: 100%;
+	min-height: 0;
+	overflow: auto;
+}

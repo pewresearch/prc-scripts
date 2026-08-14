@@ -54,13 +54,33 @@ export type Map = {
 	rotatePhi: number; // pitch
 	rotateGamma: number; // roll
 	customScale: number; // scale multiplier (1 = default fitSize)
-	// Bubble-mode styling — consumed when dataRender.mapStyle === 'bubble'.
+	// Bubble-mode styling — consumed when dataRender.mapStyle === 'bubble' or 'geo-points'.
 	bubble: {
 		minRadius: number;
 		maxRadius: number;
+		/** Optional shared upper bound for bubble-size scales. */
+		maxValue?: number;
 		opacity: number;
 		stroke: string;
 		strokeWidth: number;
+	};
+	/**
+	 * Explicit lat/lon point overlay. Used when dataRender.mapStyle === 'geo-points'
+	 * (regional bubbles, locator markers) instead of joining rows to topology features.
+	 */
+	geoPoints?: {
+		latitudeColumn: string;
+		longitudeColumn: string;
+		labelColumn?: string;
+		sizeCategory?: string;
+		/** When set, draw fixed-radius markers (locator) instead of sized bubbles. */
+		fixedRadius?: number;
+		/**
+		 * Marker fill. Defaults to the series colour, which makes the marker
+		 * vanish into an identically-filled polygon beneath it — set this when
+		 * the marker has to stay legible on top of its own country.
+		 */
+		fill?: string;
 	};
 	// Globe styling/interaction — consumed by the orthographic world map
 	// (layout.type === 'map-world-orthographic').
@@ -73,5 +93,12 @@ export type Map = {
 		dragToRotate: boolean; // pointer drag rotates the globe
 		showPlayPause: boolean; // overlay play/pause control for rotation
 		playPausePosition: 'bottom-left' | 'bottom-right';
+		/**
+		 * Which world topology the globe loads.
+		 * - `full` — countries-50m (default; richer coastlines)
+		 * - `locator` — countries-locator (low-res, broader country coverage;
+		 *   sized for small decorative globes)
+		 */
+		topology?: 'full' | 'locator';
 	};
 };

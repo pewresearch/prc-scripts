@@ -6,15 +6,32 @@
  */
 namespace PRC\Platform\Scripts\WP_Entity_Search;
 
-use WP_Query, WP_User_Query, WP_Term_Query, WP_REST_Request;
+use WP_Error;
+use WP_Query;
+use WP_User;
+use WP_User_Query;
+use WP_Term_Query;
+use WP_REST_Request;
 use PRC\URL_Helper;
-
-use function PRC\BlockUtils\log_error;
 
 /**
  * WP Entity Search REST API Endpoint.
  */
 class Rest_API_Endpoint {
+	/**
+	 * Allowed entity_type values.
+	 *
+	 * @var string[]
+	 */
+	const ALLOWED_ENTITY_TYPES = array( 'postType', 'taxonomy', 'user' );
+
+	/**
+	 * Allowed post status values for entity_status.
+	 *
+	 * @var string[]
+	 */
+	const ALLOWED_ENTITY_STATUSES = array( 'publish', 'draft', 'future', 'pending', 'private' );
+
 	/**
 	 * Endpoint.
 	 *
@@ -35,19 +52,27 @@ class Rest_API_Endpoint {
 			},
 			'args'                => array(
 				'entity_type'     => array(
-					'required' => false,
-					'type'     => 'string',
-					'default'  => 'postType',
+					'required'          => false,
+					'type'              => 'string',
+					'default'           => 'postType',
+					'enum'              => self::ALLOWED_ENTITY_TYPES,
+					'sanitize_callback' => 'sanitize_text_field',
 				),
 				'entity_sub_type' => array(
 					'required' => true,
 					'type'     => array( 'string', 'array' ),
 					'default'  => 'post',
 				),
+				'entity_status'   => array(
+					'required' => false,
+					'type'     => array( 'string', 'array' ),
+					'default'  => array( 'publish' ),
+				),
 				'search'          => array(
-					'required'    => true,
-					'type'        => 'string',
-					'description' => 'The search term to use.',
+					'required'          => true,
+					'type'              => 'string',
+					'description'       => 'The search term to use.',
+					'sanitize_callback' => 'sanitize_text_field',
 				),
 			),
 		);
@@ -61,6 +86,80 @@ class Rest_API_Endpoint {
 	 */
 	public function get_endpoint() {
 		return self::$endpoint;
+	}
+
+	/**
+	 * Normalize a request param that may be a CSV string or array into a string list.
+	 *
+	 * @param mixed $value Raw request value.
+	 * @return string[]
+	 */
+	protected function normalize_string_list( $value ) {
+		if ( null === $value || '' === $value ) {
+			return array();
+		}
+		if ( ! is_array( $value ) ) {
+			$value = explode( ',', (string) $value );
+		}
+		$normalized = array();
+		foreach ( $value as $item ) {
+			if ( ! is_string( $item ) && ! is_numeric( $item ) ) {
+				continue;
+			}
+			$item = sanitize_text_field( (string) $item );
+			if ( '' !== $item ) {
+				$normalized[] = $item;
+			}
+		}
+		return array_values( array_unique( $normalized ) );
+	}
+
+	/**
+	 * Filter entity statuses to the allowlist; default to publish when empty.
+	 *
+	 * @param mixed $value Raw entity_status param.
+	 * @return string[]
+	 */
+	protected function sanitize_entity_statuses( $value ) {
+		$statuses = array_values(
+			array_intersect(
+				$this->normalize_string_list( $value ),
+				self::ALLOWED_ENTITY_STATUSES
+			)
+		);
+		if ( empty( $statuses ) ) {
+			return array( 'publish' );
+		}
+		return $statuses;
+	}
+
+	/**
+	 * Allowlist entity subtypes against registered REST post types or taxonomies.
+	 *
+	 * @param string   $entity_type Entity type.
+	 * @param string[] $sub_types   Requested subtypes.
+	 * @return string[]|WP_Error
+	 */
+	protected function sanitize_entity_sub_types( $entity_type, array $sub_types ) {
+		if ( 'user' === $entity_type ) {
+			return array( 'user' );
+		}
+
+		if ( 'taxonomy' === $entity_type ) {
+			$allowed = array_keys( get_taxonomies( array( 'show_in_rest' => true ), 'names' ) );
+		} else {
+			$allowed = array_keys( get_post_types( array( 'show_in_rest' => true ), 'names' ) );
+		}
+
+		$filtered = array_values( array_intersect( $sub_types, $allowed ) );
+		if ( empty( $filtered ) ) {
+			return new WP_Error(
+				'invalid_entity_sub_type',
+				__( 'No valid entity_sub_type values were provided.', 'prc-scripts' ),
+				array( 'status' => 400 )
+			);
+		}
+		return $filtered;
 	}
 
 	/**
@@ -91,14 +190,37 @@ class Rest_API_Endpoint {
 	}
 
 	/**
+	 * Shape a user into the shared entity DTO (no email, password, or activation key).
+	 *
+	 * @param WP_User $user User object.
+	 * @return object
+	 */
+	protected function shape_user( WP_User $user ) {
+		return (object) array(
+			'entityName'          => $user->display_name,
+			'entityDescription'   => null,
+			'entityDate'          => null,
+			'entityType'          => 'user',
+			'entitySubType'       => 'user',
+			'entitySlug'          => $user->user_nicename,
+			'entityId'            => (int) $user->ID,
+			'entityUrl'           => '',
+			'entityFeaturedImage' => null,
+		);
+	}
+
+	/**
 	 * Shape the item.
 	 *
-	 * @param mixed $item
+	 * @param mixed $item WP_Post, WP_Term, or WP_User.
 	 * @return object
 	 */
 	protected function shape_item( $item ) {
+		if ( is_a( $item, 'WP_User' ) ) {
+			return $this->shape_user( $item );
+		}
+
 		$new_item = array();
-		// Check if $item is a WP_Post class or WP_Term class
 		if ( is_a( $item, 'WP_Post' ) ) {
 			$new_item['entityName']          = $item->post_title;
 			$new_item['entityDescription']   = $item->post_excerpt;
@@ -128,8 +250,8 @@ class Rest_API_Endpoint {
 	 *
 	 * Pasted URLs identify an exact post; post type is not filtered here (unlike keyword search).
 	 *
-	 * @param string $url
-	 * @param array  $entity_status
+	 * @param string $url URL to resolve.
+	 * @param array  $entity_status Allowed statuses.
 	 * @return object
 	 */
 	protected function get_id_from_url( $url, array $entity_status = array( 'publish' ) ) {
@@ -166,25 +288,29 @@ class Rest_API_Endpoint {
 	/**
 	 * Search posts for a value.
 	 *
-	 * @param string $search_value
-	 * @param array  $post_types
-	 * @param array  $entity_status
+	 * @param string   $search_value Search string.
+	 * @param string[] $post_types Post types.
+	 * @param string[] $entity_status Post statuses.
 	 * @return array
 	 */
 	protected function search_posts_for_value( $search_value, $post_types = array(), $entity_status = array( 'publish' ) ) {
-		$args = array(
-			's'           => $search_value,
-			'es'          => true,
-			'post_type'   => $post_types,
-			'per_page'    => 25,
-			'post_status' => $entity_status,
-			'post_parent' => 0,
-
+		// Use posts_per_page (WP_Query); keep per-result read_post filtering from FedRAMP pass.
+		$query = new WP_Query(
+			array(
+				's'              => $search_value,
+				'post_type'      => $post_types,
+				'posts_per_page' => 25,
+				'post_status'    => $entity_status,
+				'post_parent'    => 0,
+				'es'             => true,
+			)
 		);
-		$query   = new WP_Query( $args );
-		$posts   = $query->posts;
+
 		$matches = array();
-		foreach ( $posts as $post ) {
+		foreach ( $query->posts as $post ) {
+			if ( ! current_user_can( 'read_post', $post->ID ) ) {
+				continue;
+			}
 			$matches[] = $this->shape_item( $post );
 		}
 		return $matches;
@@ -193,19 +319,30 @@ class Rest_API_Endpoint {
 	/**
 	 * Search users for a value.
 	 *
-	 * @param string $search_value
-	 * @return array
+	 * @param string $search_value Search string.
+	 * @return array|WP_Error
 	 */
 	protected function search_users_for_value( $search_value ) {
+		if ( ! current_user_can( 'list_users' ) ) {
+			return new WP_Error(
+				'rest_forbidden_user_search',
+				__( 'You are not allowed to search users.', 'prc-scripts' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$args    = array(
-			'search' => $search_value,
-			'number' => 25,
+			'search'         => '*' . $search_value . '*',
+			'search_columns' => array( 'user_login', 'user_nicename', 'display_name' ),
+			'number'         => 25,
 		);
 		$query   = new WP_User_Query( $args );
 		$users   = $query->get_results();
 		$matches = array();
 		foreach ( $users as $user ) {
-			$matches[] = $user;
+			if ( $user instanceof WP_User ) {
+				$matches[] = $this->shape_user( $user );
+			}
 		}
 		return $matches;
 	}
@@ -213,22 +350,23 @@ class Rest_API_Endpoint {
 	/**
 	 * Search taxonomy for a value.
 	 *
-	 * @param string $search_value
-	 * @param array  $taxonomies
+	 * @param string   $search_value Search string.
+	 * @param string[] $taxonomies Taxonomies.
 	 * @return array
 	 */
 	protected function search_taxonomy_for_value( $search_value, $taxonomies = array() ) {
-		$args    = array(
-			'search'     => $search_value,
-			'taxonomy'   => $taxonomies,
-			'number'     => 25,
-			'hide_empty' => false,
-			'es'         => true,
+		$query = new WP_Term_Query(
+			array(
+				'search'     => $search_value,
+				'taxonomy'   => $taxonomies,
+				'number'     => 25,
+				'hide_empty' => false,
+				'es'         => true,
+			)
 		);
-		$query   = new WP_Term_Query( $args );
-		$terms   = $query->get_terms();
+
 		$matches = array();
-		foreach ( $terms as $term ) {
+		foreach ( $query->get_terms() as $term ) {
 			$matches[] = $this->shape_item( $term );
 		}
 		return $matches;
@@ -237,15 +375,13 @@ class Rest_API_Endpoint {
 	/**
 	 * Query for a search value.
 	 *
-	 * @param string $search_value
-	 * @param string $entity_type
-	 * @param array  $entity_sub_type
-	 * @param array  $entity_status
-	 * @return array
+	 * @param string   $search_value Search string.
+	 * @param string   $entity_type Entity type.
+	 * @param string[] $entity_sub_type Subtypes.
+	 * @param string[] $entity_status Statuses.
+	 * @return \WP_REST_Response|WP_Error
 	 */
 	protected function query_for_search_value( $search_value, $entity_type, $entity_sub_type, $entity_status ) {
-		$entity_matches = array();
-		// determine if search_value is a url...
 		$is_url = filter_var( $search_value, FILTER_VALIDATE_URL );
 		if ( $is_url ) {
 			$matched = $this->get_id_from_url( $search_value, $entity_status );
@@ -253,43 +389,76 @@ class Rest_API_Endpoint {
 				return rest_ensure_response( array( $matched ) );
 			}
 			return rest_ensure_response( array() );
-		} elseif ( 'postType' === $entity_type ) {
-			$entity_matches = $this->search_posts_for_value( $search_value, $entity_sub_type, $entity_status );
-		} elseif ( 'taxonomy' === $entity_type ) {
-			$entity_matches = $this->search_taxonomy_for_value( $search_value, $entity_sub_type );
-		} elseif ( 'user' === $entity_type ) {
-			$entity_matches = $this->search_users_for_value( $search_value );
 		}
-		return rest_ensure_response( $entity_matches );
+
+		if ( 'postType' === $entity_type ) {
+			return rest_ensure_response(
+				$this->search_posts_for_value( $search_value, $entity_sub_type, $entity_status )
+			);
+		}
+
+		if ( 'taxonomy' === $entity_type ) {
+			return rest_ensure_response(
+				$this->search_taxonomy_for_value( $search_value, $entity_sub_type )
+			);
+		}
+
+		if ( 'user' === $entity_type ) {
+			$result = $this->search_users_for_value( $search_value );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+			return rest_ensure_response( $result );
+		}
+
+		return new WP_Error(
+			'invalid_entity_type',
+			__( 'Invalid entity_type.', 'prc-scripts' ),
+			array( 'status' => 400 )
+		);
 	}
 
 	/**
-	 * Restfully log a download for a dataset.
+	 * Handle entity search REST request.
 	 *
-	 * @param WP_REST_Request $request
-	 * @return array|WP_Error
+	 * @param WP_REST_Request $request Request.
+	 * @return \WP_REST_Response|WP_Error
 	 */
 	public function restfully_handle_wp_entity_search( WP_REST_Request $request ) {
-		$search_value    = $request->get_param( 'search' );
-		$entity_type     = $request->get_param( 'entity_type' );
-		$entity_sub_type = $request->get_param( 'entity_sub_type' );
-		$entity_status   = $request->get_param( 'entity_status' );
-		if ( ! is_array( $entity_sub_type ) ) {
-			$entity_sub_type = explode( ',', $entity_sub_type );
+		$search_value = $request->get_param( 'search' );
+		$entity_type  = $request->get_param( 'entity_type' );
+
+		if ( ! in_array( $entity_type, self::ALLOWED_ENTITY_TYPES, true ) ) {
+			return new WP_Error(
+				'invalid_entity_type',
+				__( 'Invalid entity_type.', 'prc-scripts' ),
+				array( 'status' => 400 )
+			);
 		}
-		if ( ! is_array( $entity_sub_type ) ) {
-			$entity_sub_type = array( $entity_sub_type );
+
+		$entity_sub_type = $this->sanitize_entity_sub_types(
+			$entity_type,
+			$this->normalize_string_list( $request->get_param( 'entity_sub_type' ) )
+		);
+		if ( is_wp_error( $entity_sub_type ) ) {
+			return $entity_sub_type;
 		}
-		if ( ! is_array( $entity_status ) ) {
-			$entity_status = explode( ',', $entity_status );
-		}
-		if ( ! is_array( $entity_status ) ) {
-			$entity_status = array( $entity_status );
-		}
-		return $this->query_for_search_value( $search_value, $entity_type, $entity_sub_type, $entity_status );
+
+		$entity_status = $this->sanitize_entity_statuses(
+			$request->get_param( 'entity_status' )
+		);
+
+		return $this->query_for_search_value(
+			$search_value,
+			$entity_type,
+			$entity_sub_type,
+			$entity_status
+		);
 	}
 
 	/**
+	 * Register REST routes.
+	 *
 	 * @hook rest_api_init
 	 */
 	public function register_rest_endpoints() {
