@@ -1,13 +1,13 @@
 
-> @prc/charting-utilities@3.15.0 build
+> @prc/charting-utilities@3.14.1 build
 > wp-scripts build
 
-asset [1m[32mindex.js[39m[22m 127 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
+asset [1m[32mindex.js[39m[22m 128 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
 asset [1m[32mindex.asset.php[39m[22m 115 bytes [1m[32m[emitted][39m[22m (name: index)
-Entrypoint [1mindex[39m[22m 127 KiB = [1m[32mindex.js[39m[22m 127 KiB [1m[32mindex.asset.php[39m[22m 115 bytes
-orphan modules 339 KiB [1m[33m[orphan][39m[22m 277 modules
+Entrypoint [1mindex[39m[22m 128 KiB = [1m[32mindex.js[39m[22m 128 KiB [1m[32mindex.asset.php[39m[22m 115 bytes
+orphan modules 341 KiB [1m[33m[orphan][39m[22m 278 modules
 runtime modules 670 bytes 3 modules
-built modules 321 KiB [1m[33m[built][39m[22m
-  [1m./index.js + 176 modules[39m[22m 300 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+built modules 323 KiB [1m[33m[built][39m[22m
+  [1m./index.js + 177 modules[39m[22m 302 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   [1m../../../../../../../node_modules/d3-regression/dist/d3-regression.js[39m[22m 21.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 29681 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 9727 ms

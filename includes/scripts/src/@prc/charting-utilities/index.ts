@@ -297,6 +297,7 @@ export {
 	getVoronoiProps,
 	getFlattenedData,
 	getGroupedData,
+	getGroupColorDomain,
 	createGroupBandScale,
 	linearBarSpan,
 	linearBarBaseline,

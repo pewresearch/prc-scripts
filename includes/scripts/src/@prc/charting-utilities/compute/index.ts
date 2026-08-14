@@ -34,6 +34,7 @@ import {
 	getGroupPositioningVertical,
 	getGroupPositioningPie,
 } from './data';
+import { getGroupColorDomain } from './groupColorDomain';
 import { linearBarSpan, linearBarBaseline } from './linearBarSpan';
 import { domainCrossesZero } from './domainCrossesZero';
 
@@ -141,6 +142,7 @@ export {
 	getVoronoiProps,
 	getFlattenedData,
 	getGroupedData,
+	getGroupColorDomain,
 	createGroupBandScale,
 	linearBarSpan,
 	linearBarBaseline,
