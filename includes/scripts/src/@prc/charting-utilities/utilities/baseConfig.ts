@@ -229,6 +229,7 @@ const baseConfig: BaseConfig = {
 		abbreviateValue: false,
 		absoluteValue: false,
 		toFixedDecimal: 0,
+		truncateDecimal: false,
 		minDisplayValue: null,
 		toLocaleString: true,
 		customFormat: null, // function(d) { return d; },
@@ -377,7 +378,7 @@ const baseConfig: BaseConfig = {
 		abbreviateValue: false,
 		absoluteValue: false,
 		toLocaleString: true,
-		truncateDecimal: true,
+		truncateDecimal: false,
 		toFixedDecimal: 0,
 		labelUnit: '', //'%', '$', '€', '£', '¥'
 		labelUnitPosition: 'end',

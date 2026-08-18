@@ -4,6 +4,11 @@ export type MinDisplayValueConfig = {
 	/** Values below this read as `<floor`. Null disables the behaviour. */
 	minDisplayValue?: number | null;
 	toFixedDecimal: number;
+	/**
+	 * Charts saved before Decimal Places became authoritative. `true` keeps the
+	 * old "up to N places, drop trailing zeros" rendering so published charts do
+	 * not change. The editor clears it as soon as Decimal Places is edited.
+	 */
 	truncateDecimal?: boolean;
 	abbreviateValue?: boolean;
 	toLocaleString?: boolean;
@@ -11,8 +16,10 @@ export type MinDisplayValueConfig = {
 
 /**
  * Render a number through the decimal, abbreviation and locale pipeline that
- * label and tooltip values already share, so a floor reads exactly as a real
- * value at that magnitude would.
+ * label, tooltip and net value surfaces share.
+ *
+ * Decimal Places is authoritative: a value of 20 at 3 places reads `20.000`.
+ * Zero places leaves the number's own precision alone.
  *
  * @param datum  The number to render.
  * @param config The surface's number formatting options.
@@ -22,22 +29,31 @@ export function selectFormattedNumber(
 	datum: number,
 	config: MinDisplayValueConfig
 ): string {
+	const places = config.toFixedDecimal;
+
 	if (config.abbreviateValue) {
-		return abbreviateNumber(datum, config.toFixedDecimal);
+		return abbreviateNumber(datum, places);
 	}
-	if (config.toLocaleString) {
-		return false === config.truncateDecimal
-			? datum.toLocaleString('en-US', {
-					minimumFractionDigits: config.toFixedDecimal,
-					maximumFractionDigits: config.toFixedDecimal,
-				})
-			: Number(datum.toFixed(config.toFixedDecimal)).toLocaleString(
-					'en-US'
-				);
+
+	if (true === config.truncateDecimal) {
+		const trimmed = Number(Number(datum).toFixed(places));
+		return config.toLocaleString
+			? trimmed.toLocaleString('en-US')
+			: String(trimmed);
 	}
-	return false === config.truncateDecimal
-		? Number(datum).toFixed(config.toFixedDecimal)
-		: String(Number(Number(datum).toFixed(config.toFixedDecimal)));
+
+	if (!(places > 0)) {
+		return config.toLocaleString
+			? Number(datum).toLocaleString('en-US')
+			: String(Number(datum));
+	}
+
+	return config.toLocaleString
+		? Number(datum).toLocaleString('en-US', {
+				minimumFractionDigits: places,
+				maximumFractionDigits: places,
+			})
+		: Number(datum).toFixed(places);
 }
 
 /**

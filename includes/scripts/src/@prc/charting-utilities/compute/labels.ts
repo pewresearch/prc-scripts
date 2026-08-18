@@ -1,5 +1,8 @@
-import { abbreviateNumber, decodeHtmlEntities } from '../utilities/helpers';
-import { formatMinDisplayValue } from '../utilities/formatMinDisplayValue';
+import { decodeHtmlEntities } from '../utilities/helpers';
+import {
+	formatMinDisplayValue,
+	selectFormattedNumber,
+} from '../utilities/formatMinDisplayValue';
 
 type LabelFormatConfig = {
 	absoluteValue: boolean;
@@ -67,33 +70,13 @@ const getLabelFormat = (
 		return decodeHtmlEntities(config.customLabelFormat(datum, category));
 	}
 
-	// running Number() twice will truncate trailing zeros
-	const fixedDatum = config.truncateDecimal
-		? Number(Number(datum).toFixed(config.toFixedDecimal))
-		: Number(datum).toFixed(config.toFixedDecimal);
-
-	const localizedDatum = config.truncateDecimal
-		? Number(datum.toFixed(config.toFixedDecimal)).toLocaleString('en-US')
-		: // if we are not truncating decimals, we can just use the toLocaleString method
-			datum.toLocaleString('en-US', {
-				minimumFractionDigits: config.toFixedDecimal,
-				maximumFractionDigits: config.toFixedDecimal,
-			});
-	const abbreviatedDatum = abbreviateNumber(datum, config.toFixedDecimal);
+	const rounded = Number(Number(datum).toFixed(config.toFixedDecimal));
 
 	// if custom label is not set, check for cutoff
-	if (cutoff === null || Number(fixedDatum) > cutoff) {
+	if (cutoff === null || rounded > cutoff) {
 		const floored = formatMinDisplayValue(datum, config);
-		let numeric: string;
-		if (null !== floored) {
-			numeric = floored;
-		} else if (config.abbreviateValue) {
-			numeric = `${abbreviatedDatum}`;
-		} else if (config.toLocaleString) {
-			numeric = `${localizedDatum}`;
-		} else {
-			numeric = `${fixedDatum}`;
-		}
+		const numeric =
+			null !== floored ? floored : selectFormattedNumber(datum, config);
 
 		if (config.labelUnit) {
 			return decodeHtmlEntities(

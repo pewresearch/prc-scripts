@@ -1,7 +1,10 @@
 import { DataRender } from '../types/dataRender';
 import { Layout } from '../types/layout';
-import { abbreviateNumber, decodeHtmlEntities } from '../utilities/helpers';
-import { formatMinDisplayValue } from '../utilities/formatMinDisplayValue';
+import { decodeHtmlEntities } from '../utilities/helpers';
+import {
+	formatMinDisplayValue,
+	selectFormattedNumber,
+} from '../utilities/formatMinDisplayValue';
 import { Tooltip } from '../types/tooltip';
 import { Map } from '../types/map';
 import { timeFormat } from 'd3-time-format';
@@ -240,15 +243,7 @@ function buildTooltipTokenData(
 		return { ...rowFields, row, column, value: floored, floored };
 	}
 
-	if (config.toFixedDecimal) {
-		value = Number(Number(value).toFixed(config.toFixedDecimal));
-	}
-	if (config.abbreviateValue) {
-		value = abbreviateNumber(value, config.toFixedDecimal);
-	}
-	if (config.toLocaleString) {
-		value = value.toLocaleString();
-	}
+	value = selectFormattedNumber(Number(value), config);
 
 	return { ...rowFields, row, column, value, floored: null };
 }

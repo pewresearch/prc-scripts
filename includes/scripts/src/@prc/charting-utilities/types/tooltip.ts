@@ -24,6 +24,11 @@ export type Tooltip = {
 	absoluteValue: boolean;
 	toFixedDecimal: number;
 	/**
+	 * When true, drop trailing zeros after rounding to `toFixedDecimal`.
+	 * Default false so Decimal Places pads values (e.g. 20 → 20.0).
+	 */
+	truncateDecimal?: boolean;
+	/**
 	 * Values in [0, minDisplayValue) render as `<minDisplayValue` rather than
 	 * rounding to zero. Null formats every value normally.
 	 */
