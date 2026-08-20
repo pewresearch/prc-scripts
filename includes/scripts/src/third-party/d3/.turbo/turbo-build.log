@@ -2,26 +2,27 @@
 > @prc/vendor-d3@1.0.1 build
 > wp-scripts build
 
-asset index.js 273 KiB [compared for emit] [minimized] [big] (name: index)
-asset index.asset.php 84 bytes [compared for emit] (name: index)
-Entrypoint index [big] 273 KiB = index.js 273 KiB index.asset.php 84 bytes
+asset [1m[33mindex.js[39m[22m [1m[33m273 KiB[39m[22m [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m [1m[33m[big][39m[22m (name: index)
+asset [1m[32mindex.asset.php[39m[22m 84 bytes [1m[32m[emitted][39m[22m (name: index)
+Entrypoint [1mindex[39m[22m [1m[33m[big][39m[22m 273 KiB = [1m[32mindex.js[39m[22m 273 KiB [1m[32mindex.asset.php[39m[22m 84 bytes
 runtime modules 396 bytes 2 modules
-orphan modules 573 KiB [orphan] 1 module
-./index.js + 1 modules 574 KiB [built] [code generated]
+orphan modules 573 KiB [1m[33m[orphan][39m[22m 1 module
+[1m./index.js + 1 modules[39m[22m 574 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
 
-WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+[1m[33mWARNING[39m[22m in [1masset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
 This can impact web performance.
 Assets: 
-  index.js (273 KiB)
+  index.js (273 KiB)[39m[22m
 
-WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+[1m[33mWARNING[39m[22m in [1mentrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
 Entrypoints:
   index (273 KiB)
       index.js
       index.asset.php
+[39m[22m
 
-WARNING in webpack performance recommendations: 
+[1m[33mWARNING[39m[22m in [1mwebpack performance recommendations: 
 You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
-For more info visit https://webpack.js.org/guides/code-splitting/
+For more info visit https://webpack.js.org/guides/code-splitting/[39m[22m
 
-webpack 5.106.2 compiled with 3 warnings in 6484 ms
+webpack 5.106.2 compiled with [1m[33m3 warnings[39m[22m in 42199 ms
