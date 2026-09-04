@@ -3,7 +3,7 @@
         'name' => 'pewresearch/prc-scripts',
         'pretty_version' => 'dev-trunk',
         'version' => 'dev-trunk',
-        'reference' => '804ddde449658d8cb94e2325ff2a2de1d02e8bbf',
+        'reference' => 'd91321f0f98f5f30c06b8582005f1e728ae75e58',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'pewresearch/prc-scripts' => array(
             'pretty_version' => 'dev-trunk',
             'version' => 'dev-trunk',
-            'reference' => '804ddde449658d8cb94e2325ff2a2de1d02e8bbf',
+            'reference' => 'd91321f0f98f5f30c06b8582005f1e728ae75e58',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
