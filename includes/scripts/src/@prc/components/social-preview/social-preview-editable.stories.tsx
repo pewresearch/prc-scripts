@@ -1,11 +1,11 @@
 /**
  * Editable social previews use RichText and MediaUpload from
- * @wordpress/block-editor, so they run inside the real block editor decorator.
+ * the WordPress block editor, so they run inside the real block editor decorator.
  * The media picker is the fixture-backed editor.MediaUpload mock.
  */
 import { useState } from 'react';
 
-// eslint-disable-next-line import/no-unresolved -- resolved via the Storybook webpack alias.
+// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -- Storybook alias.
 import { withBlockEditor } from '@prc-storybook/decorators/with-block-editor';
 
 import {
@@ -137,4 +137,26 @@ export const Bluesky: Story = {
 
 export const LinkedIn: Story = {
 	render: (args) => <EditableLinkedInDemo {...args} />,
+};
+
+function TextSlotTwitterDemo(args: Record<string, unknown>) {
+	return (
+		<TwitterPreview
+			{...args}
+			isSelected
+			username="@pewresearch"
+			tweetText="Most Americans now encounter AI in daily life."
+			charLimit={280}
+			numberCheck={{ valid: true, flagged: [] }}
+			textSlot={
+				<p style={{ margin: 0 }}>
+					Most Americans now encounter AI in daily life.
+				</p>
+			}
+		/>
+	);
+}
+
+export const TwitterTextSlot: Story = {
+	render: (args) => <TextSlotTwitterDemo {...args} />,
 };

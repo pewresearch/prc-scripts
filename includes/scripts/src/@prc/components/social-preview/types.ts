@@ -43,6 +43,8 @@ export interface EditablePreviewProps {
 	editableCallbacks?: EditablePreviewCallbacks;
 	/** Number-check verdict for the content; shows a badge beside the counter ring. */
 	numberCheck?: { valid: boolean; flagged: string[] } | null;
+	/** Replaces the post-body string or RichText. Use for InnerBlocks compose. */
+	textSlot?: ReactNode;
 }
 
 export type TwitterPreviewProps = SocialPreviewProps &

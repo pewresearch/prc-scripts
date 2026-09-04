@@ -15,6 +15,7 @@ import { RichText } from '@wordpress/block-editor';
 import type { ThreadsPreviewProps } from './types';
 import CharacterCounterRing from '../character-counter/ring';
 import AINumberCheckBadge from '../ai/ai-number-check-badge';
+import { previewBody, showBodyChrome } from './preview-body';
 
 const PreviewContainer = styled.div`
 	font-family:
@@ -90,13 +91,19 @@ const Domain = styled.div`
  * Threads link preview component
  * Displays how content will appear when shared on Threads
  *
- * @param props             - SocialPreviewProps
- * @param props.title       - Link title
- * @param props.description - Link description
- * @param props.url         - URL
- * @param props.image       - Image URL
- * @param props.children    - Optional custom image content
- * @param props.showLabel   - When false, hides the platform name label above the preview
+ * @param props                   - SocialPreviewProps
+ * @param props.title             - Link title
+ * @param props.description       - Link description
+ * @param props.url               - URL
+ * @param props.image             - Image URL
+ * @param props.children          - Optional custom image content
+ * @param props.showLabel         - When false, hides the platform name label above the preview
+ * @param props.isEditable        - When true, body text is a RichText field
+ * @param props.isSelected        - When true, shows the character counter ring
+ * @param props.charLimit         - Character limit for the counter ring
+ * @param props.editableCallbacks - Change handlers for editable mode
+ * @param props.numberCheck       - Number-check verdict for the badge
+ * @param props.textSlot          - Optional node that replaces the body string or RichText
  */
 export function ThreadsPreview({
 	title,
@@ -110,6 +117,7 @@ export function ThreadsPreview({
 	charLimit,
 	editableCallbacks,
 	numberCheck,
+	textSlot,
 }: ThreadsPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
@@ -120,7 +128,9 @@ export function ThreadsPreview({
 	}, [url]);
 
 	const truncatedTitle =
-		!isEditable && title.length > 60 ? `${title.slice(0, 57)}...` : title;
+		!textSlot && !isEditable && title.length > 60
+			? `${title.slice(0, 57)}...`
+			: title;
 	const truncatedDescription =
 		description.length > 100
 			? `${description.slice(0, 97)}...`
@@ -138,40 +148,44 @@ export function ThreadsPreview({
 					</ImageContainer>
 				)}
 				<Content>
-					<Title>
-						{showEditableText ? (
+					<Title data-text-slot={textSlot ? true : undefined}>
+						{previewBody(
+							textSlot,
+							showEditableText,
 							<RichText
 								tagName="span"
 								value={title}
 								onChange={onContentChange}
 								allowedFormats={[]}
 								placeholder="Write your post..."
-							/>
-						) : (
+							/>,
 							truncatedTitle
 						)}
 					</Title>
-					{showEditableText &&
-						charLimit !== undefined &&
-						isSelected && (
-							<div
-								style={{
-									marginBottom: 8,
-									display: 'flex',
-									justifyContent: 'flex-end',
-									alignItems: 'center',
-									gap: 6,
-								}}
-							>
-								<AINumberCheckBadge
-									numberCheck={numberCheck ?? undefined}
-								/>
-								<CharacterCounterRing
-									current={title.length}
-									limit={charLimit}
-								/>
-							</div>
-						)}
+					{showBodyChrome(
+						textSlot,
+						showEditableText,
+						charLimit,
+						isSelected
+					) && (
+						<div
+							style={{
+								marginBottom: 8,
+								display: 'flex',
+								justifyContent: 'flex-end',
+								alignItems: 'center',
+								gap: 6,
+							}}
+						>
+							<AINumberCheckBadge
+								numberCheck={numberCheck ?? undefined}
+							/>
+							<CharacterCounterRing
+								current={title.length}
+								limit={charLimit ?? 0}
+							/>
+						</div>
+					)}
 					<Description>{truncatedDescription}</Description>
 					<Domain>{domain}</Domain>
 				</Content>

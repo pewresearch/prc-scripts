@@ -28,6 +28,7 @@ import type { Size } from '../types/windowSize';
 import { getTextVisible } from './text';
 import {
 	getFlattenedData,
+	getRowDisplayText,
 	getGroupedData,
 	createGroupBandScale,
 	getGroupPositioningHorizontal,
@@ -86,7 +87,7 @@ const getSharedProps = ({
 	const gridHeight = actualContentHeight || innerHeight;
 
 	return {
-		ariaProps: getAria({ chartType: chartType, data, tableData, alt: alt }),
+		ariaProps: getAria({ chartType, data, tableData, alt }),
 		labelProps: getLabelProps(labels),
 		legendProps: getLegendProps(legend),
 		voronoiProps: getVoronoiProps(voronoi),
@@ -141,6 +142,7 @@ export {
 	getTextVisible,
 	getVoronoiProps,
 	getFlattenedData,
+	getRowDisplayText,
 	getGroupedData,
 	getGroupColorDomain,
 	createGroupBandScale,
@@ -156,3 +158,5 @@ export {
 	buildBeeswarmGroupCenters,
 	computeBeeswarmForce,
 };
+
+export { canonicalRowValue, selectPlotRows } from './selectPlotRows';

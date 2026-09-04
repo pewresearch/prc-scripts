@@ -1,11 +1,11 @@
 /* eslint-disable @wordpress/i18n-text-domain -- textDomain is supplied by consumer plugins */
 import { __ } from '@wordpress/i18n';
-import {
-	__experimentalHStack as HStack,
-	__experimentalText as Text,
-} from '@wordpress/components';
 
+import StatusDotBadge from '../status-dot-badge';
 import type { ConnectionBadgeProps } from './types';
+
+const CONNECTED_COLOR = '#00a32a';
+const DISCONNECTED_COLOR = '#d63638';
 
 export default function ConnectionBadge({
 	connected,
@@ -14,23 +14,13 @@ export default function ConnectionBadge({
 	textDomain = 'default',
 }: ConnectionBadgeProps) {
 	return (
-		<HStack spacing={1} style={{ display: 'inline-flex', width: 'auto' }}>
-			<span
-				style={{
-					display: 'inline-block',
-					width: 8,
-					height: 8,
-					borderRadius: '50%',
-					background: connected ? '#00a32a' : '#d63638',
-					flexShrink: 0,
-					marginTop: 2,
-				}}
-			/>
-			<Text size={12} color={connected ? '#00a32a' : '#d63638'}>
-				{connected
+		<StatusDotBadge
+			label={
+				connected
 					? (connectedLabel ?? __('Connected', textDomain))
-					: (disconnectedLabel ?? __('Not connected', textDomain))}
-			</Text>
-		</HStack>
+					: (disconnectedLabel ?? __('Not connected', textDomain))
+			}
+			color={connected ? CONNECTED_COLOR : DISCONNECTED_COLOR}
+		/>
 	);
 }

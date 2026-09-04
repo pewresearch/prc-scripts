@@ -14,6 +14,7 @@ import type { Field } from '@wordpress/dataviews';
 import { store as noticesStore } from '@wordpress/notices';
 
 import { useSettingsPageContext } from './settings-page-context';
+import { SettingsReadOnlyEdit } from './settings-dataform-edits';
 import {
 	annotationFieldId,
 	badgeFieldId,
@@ -237,7 +238,7 @@ export default function SettingsFieldsSection({
 				id: badgeFieldId(slug),
 				type: 'text',
 				readOnly: true,
-				Edit: 'text',
+				Edit: SettingsReadOnlyEdit,
 				render: () => <BadgeRender badge={badge} />,
 			});
 		}
@@ -247,7 +248,7 @@ export default function SettingsFieldsSection({
 				id: introFieldId(slug),
 				type: 'text',
 				readOnly: true,
-				Edit: 'text',
+				Edit: SettingsReadOnlyEdit,
 				render: () => <IntroRender intro={intro} />,
 			});
 		}
@@ -259,7 +260,7 @@ export default function SettingsFieldsSection({
 					id: annotationFieldId(field.id),
 					type: 'text',
 					readOnly: true,
-					Edit: 'text',
+					Edit: SettingsReadOnlyEdit,
 					render: () => <AnnotationRender annotation={annotation} />,
 				});
 			}
@@ -270,7 +271,7 @@ export default function SettingsFieldsSection({
 				id: footerFieldId(slug),
 				type: 'text',
 				readOnly: true,
-				Edit: 'text',
+				Edit: SettingsReadOnlyEdit,
 				render: () => <FooterRender footer={footer} />,
 			});
 		}

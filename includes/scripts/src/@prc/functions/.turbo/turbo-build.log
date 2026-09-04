@@ -2,10 +2,10 @@
 > @prc/functions@1.1.0 build
 > wp-scripts build
 
-asset index.js 7.44 KiB [compared for emit] [minimized] (name: index)
-asset index.asset.php 184 bytes [compared for emit] (name: index)
-Entrypoint index 7.62 KiB = index.js 7.44 KiB index.asset.php 184 bytes
-orphan modules 16.2 KiB [orphan] 17 modules
+asset [1m[32mindex.js[39m[22m 7.44 KiB [1m[32m[emitted][39m[22m [1m[32m[minimized][39m[22m (name: index)
+asset [1m[32mindex.asset.php[39m[22m 184 bytes [1m[32m[emitted][39m[22m (name: index)
+Entrypoint [1mindex[39m[22m 7.62 KiB = [1m[32mindex.js[39m[22m 7.44 KiB [1m[32mindex.asset.php[39m[22m 184 bytes
+orphan modules 16.2 KiB [1m[33m[orphan][39m[22m 17 modules
 runtime modules 937 bytes 4 modules
-./exports.js + 17 modules 17 KiB [not cacheable] [built] [code generated]
-webpack 5.106.2 compiled successfully in 681 ms
+[1m./exports.js + 17 modules[39m[22m 17 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 3393 ms

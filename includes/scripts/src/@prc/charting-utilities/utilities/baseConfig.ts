@@ -173,6 +173,7 @@ const baseConfig: BaseConfig = {
 		deselectedColor: NEUTRAL_DESELECTED_COLOR,
 		deselectedOpacity: 1,
 		highlightedCategories: [],
+		rowFilter: { column: 'x', exclude: [] },
 		mapScale: 'threshold',
 		mapScaleDomain: [10, 20, 30, 40, 50],
 		mapStyle: 'choropleth',

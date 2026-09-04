@@ -22,9 +22,21 @@ export type CalendarHeatmapProps = {
 	labels?: string[];
 	renderValue?: (value: number, index: number) => ReactNode;
 	getTooltipText?: (value: number, index: number) => string | undefined;
+	getCellAriaLabel?: (value: number, index: number) => string | undefined;
+	onCellClick?: (index: number) => void;
 	highlightIndex?: number | null;
 	className?: string;
 };
+
+/**
+ * Convert a 0-based month index (January = 0) to the `MM` key used by
+ * analytics period state (`01`–`12`).
+ *
+ * @param index Month index.
+ */
+export function monthKeyFromIndex(index: number): string {
+	return String(index + 1).padStart(2, '0');
+}
 
 export type AnalyticsPeriodControlsProps = {
 	years: Array<string | number>;

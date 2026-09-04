@@ -4,6 +4,9 @@
 		"@wordpress/scripts": "^30.26.0",
 		"react": "^18.3.1"
 	},
+	"peerDependencies": {
+		"@wordpress/block-editor": "*"
+	},
 	"main": "exports.ts",
 	"scripts": {
 		"build": "wp-scripts build",
@@ -23,5 +26,5 @@
 		"picturefill": "^3.0.3",
 		"prop-types": "^15.8.1"
 	},
-	"version": "1.1.1"
+	"version": "1.3.0"
 }

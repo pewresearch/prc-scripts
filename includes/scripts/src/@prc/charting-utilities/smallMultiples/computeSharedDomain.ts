@@ -21,8 +21,8 @@ export function computeSharedDomain(
 
 	for (const panel of panels) {
 		for (const row of panel.rows) {
-			const value = Number(row.y);
-			if (!Number.isFinite(value)) {
+			const value = row.y;
+			if (typeof value !== 'number' || !Number.isFinite(value)) {
 				continue;
 			}
 			if (value < min) {

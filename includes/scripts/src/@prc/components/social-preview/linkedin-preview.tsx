@@ -15,6 +15,7 @@ import { RichText } from '@wordpress/block-editor';
 import CharacterCounterRing from '../character-counter/ring';
 import AINumberCheckBadge from '../ai/ai-number-check-badge';
 import type { LinkedInPreviewProps } from './types';
+import { previewBody, showBodyChrome } from './preview-body';
 
 const PreviewContainer = styled.div`
 	font-family:
@@ -276,21 +277,27 @@ const ActionButton = styled.button`
  * LinkedIn post preview component
  * Displays how content will appear when shared on LinkedIn
  *
- * @param props                - LinkedInPreviewProps
- * @param props.title          - Title for the link card
- * @param props.url            - URL being shared
- * @param props.image          - Image URL for the link card
- * @param props.children       - Optional custom content for thumbnail
- * @param props.displayName    - Page/company display name
- * @param props.profilePicture - Avatar/logo URL
- * @param props.followers      - Follower count text
- * @param props.postText       - Post content text
- * @param props.timestamp      - Post timestamp
- * @param props.shortUrl       - Shortened URL to display
- * @param props.reactions      - Reaction count
- * @param props.comments       - Comment count
- * @param props.reposts        - Repost count
- * @param props.showLabel      - When false, hides the platform name label above the preview
+ * @param props                   - LinkedInPreviewProps
+ * @param props.title             - Title for the link card
+ * @param props.url               - URL being shared
+ * @param props.image             - Image URL for the link card
+ * @param props.children          - Optional custom content for thumbnail
+ * @param props.displayName       - Page/company display name
+ * @param props.profilePicture    - Avatar/logo URL
+ * @param props.followers         - Follower count text
+ * @param props.postText          - Post content text
+ * @param props.timestamp         - Post timestamp
+ * @param props.shortUrl          - Shortened URL to display
+ * @param props.reactions         - Reaction count
+ * @param props.comments          - Comment count
+ * @param props.reposts           - Repost count
+ * @param props.showLabel         - When false, hides the platform name label above the preview
+ * @param props.isEditable        - When true, body text is a RichText field
+ * @param props.isSelected        - When true, shows the character counter ring
+ * @param props.charLimit         - Character limit for the counter ring
+ * @param props.editableCallbacks - Change handlers for editable mode
+ * @param props.numberCheck       - Number-check verdict for the badge
+ * @param props.textSlot          - Optional node that replaces the body string or RichText
  */
 export function LinkedInPreview({
 	title,
@@ -312,6 +319,7 @@ export function LinkedInPreview({
 	charLimit,
 	editableCallbacks,
 	numberCheck,
+	textSlot,
 }: LinkedInPreviewProps): JSX.Element {
 	const displayText = postText ?? '';
 	const onContentChange = editableCallbacks?.onContentChange;
@@ -366,19 +374,20 @@ export function LinkedInPreview({
 					<MoreButton aria-label="More options">···</MoreButton>
 				</ProfileHeader>
 
-				<PostContent>
-					{showEditableText ? (
+				<PostContent data-text-slot={textSlot ? true : undefined}>
+					{previewBody(
+						textSlot,
+						showEditableText,
 						<RichText
 							tagName="span"
 							value={displayText}
 							onChange={onContentChange}
 							allowedFormats={[]}
 							placeholder="Write your post..."
-						/>
-					) : (
+						/>,
 						displayText
 					)}
-					{displayText && url && '\n\n'}
+					{!textSlot && displayText && url && '\n\n'}
 					{url && (
 						<>
 							Full analysis:{' '}
@@ -386,7 +395,12 @@ export function LinkedInPreview({
 						</>
 					)}
 				</PostContent>
-				{showEditableText && charLimit !== undefined && isSelected && (
+				{showBodyChrome(
+					textSlot,
+					showEditableText,
+					charLimit,
+					isSelected
+				) && (
 					<div
 						style={{
 							padding: '0 16px 12px',
@@ -401,7 +415,7 @@ export function LinkedInPreview({
 						/>
 						<CharacterCounterRing
 							current={displayText.length}
-							limit={charLimit}
+							limit={charLimit ?? 0}
 						/>
 					</div>
 				)}

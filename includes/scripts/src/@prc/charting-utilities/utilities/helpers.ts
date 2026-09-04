@@ -185,8 +185,9 @@ const BAR_LIKE_CHART_TYPES = new Set([
 
 /**
  * Resolve the effective text-outline mode for a chart.
- * @param labels    Label config (may omit `textOutlineMode`).
- * @param chartType Layout chart type when available.
+ * @param labels                 Label config (may omit `textOutlineMode`).
+ * @param labels.textOutlineMode
+ * @param chartType              Layout chart type when available.
  */
 function resolveTextOutlineMode(
 	labels: { textOutlineMode?: 'background' | 'contrast' },
@@ -297,12 +298,16 @@ export function getLabelFill({
  *
  * @param labels
  * @param labels.labelCutoff
+ * @param _containerWidth
+ * @param _designWidth
  */
 export function resolveLabelCutoff(
 	labels: { labelCutoff?: number },
 	_containerWidth?: number | undefined,
 	_designWidth?: number
 ): number {
+	void _containerWidth;
+	void _designWidth;
 	return labels.labelCutoff ?? 0;
 }
 
@@ -501,7 +506,8 @@ const getGroupValue = (
 	if (
 		dataRender?.groupBreaksActive &&
 		dataRender?.groupBreaksCategory &&
-		dataPoint?.[dataRender.groupBreaksCategory] != null
+		dataPoint?.[dataRender.groupBreaksCategory] !== null &&
+		dataPoint?.[dataRender.groupBreaksCategory] !== undefined
 	) {
 		return String(dataPoint[dataRender.groupBreaksCategory]);
 	}

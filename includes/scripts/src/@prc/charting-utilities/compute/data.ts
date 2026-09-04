@@ -11,20 +11,34 @@ const getFlattenedData = (data: any) => {
 			return acc.concat(curr);
 		}, [])
 		.map((row: any) => {
-			return Object.keys(row).reduce((acc, key) => {
-				const value =
+			const displayText: Record<string, string> = {};
+			const flatRow = Object.keys(row).reduce((acc, key) => {
+				const coercible = !(
 					row[key] === '' ||
 					isNaN(row[key]) ||
 					typeof row[key] === 'boolean'
-						? row[key]
-						: parseFloat(row[key]);
+				);
+				const value = coercible ? parseFloat(row[key]) : row[key];
+				if (
+					coercible &&
+					typeof row[key] === 'string' &&
+					row[key].trim() !== String(value)
+				) {
+					displayText[key] = row[key].trim();
+				}
 				return {
 					...acc,
 					[key]: value,
 				};
 			}, {});
+			return Object.keys(displayText).length
+				? { ...flatRow, __raw: displayText }
+				: flatRow;
 		}) as FlatData[];
 };
+
+const getRowDisplayText = (row: FlatData, key: string) =>
+	row?.__raw?.[key] ?? row?.[key];
 
 type GroupedData = {
 	group: string | null;
@@ -80,10 +94,6 @@ const getGroupedData = (
 		dataRender.groupBreaksCategoryValues &&
 		dataRender.groupBreaksCategoryValues.length > 0
 	) {
-		console.log(
-			'dataRender.groupBreaksCategoryValues',
-			dataRender.groupBreaksCategoryValues
-		);
 		const orderedGroups: GroupedData[] = [];
 		dataRender.groupBreaksCategoryValues.forEach(
 			(groupName: string | number) => {
@@ -353,6 +363,7 @@ const getGroupPositioningPie = (
 
 export {
 	getFlattenedData,
+	getRowDisplayText,
 	getGroupedData,
 	createGroupBandScale,
 	getGroupPositioningHorizontal,

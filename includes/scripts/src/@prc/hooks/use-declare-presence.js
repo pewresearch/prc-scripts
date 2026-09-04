@@ -36,10 +36,9 @@ function generateClientId(prefix) {
  * room and keeps it alive.
  *
  * Think of this as a "mixin" on top of baseline presence: each call adds another
- * entry for the current user in the room, carrying a `data` payload. Observers
- * using `usePresenceUsers` see all entries for a user shallow-merged into a
- * single record (newest-wins on key collision), so independent components can
- * contribute activity attributes without coordinating with each other.
+ * entry for the current user in the room, carrying a `data` payload. The official
+ * `usePresenceUsers` hook from Presence API lists occupants (id, display name,
+ * avatar) and does not surface those `data` payloads.
  *
  * Use as a companion to `usePresenceUsers` when a consumer wants to *declare*
  * activity (e.g. "editing the data table") rather than just observe presence.

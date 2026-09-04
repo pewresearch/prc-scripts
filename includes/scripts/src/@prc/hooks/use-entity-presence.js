@@ -5,17 +5,23 @@ import { useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 
 /**
+ * External Dependencies
+ */
+import { usePresenceUsers } from '@presence-api/src';
+
+/**
  * Internal Dependencies
  */
 import { presenceRoom } from '@prc/functions';
-import usePresenceUsers from './use-presence-users';
+import { isPresenceApiEnabled } from './presence-utils';
 
 export default function useEntityPresence(
 	postType,
 	ref,
 	{ debug = false } = {}
 ) {
-	const room = ref ? presenceRoom(postType, ref) : null;
+	const room =
+		ref && isPresenceApiEnabled() ? presenceRoom(postType, ref) : null;
 
 	const currentUserId = useSelect(
 		(select) => select('core').getCurrentUser()?.id,
@@ -24,10 +30,9 @@ export default function useEntityPresence(
 
 	const { isPresent, users } = usePresenceUsers(room, {
 		includeSelf: true,
-		debug,
 	});
 
-	const editors = users.filter((user) => user.userId !== currentUserId);
+	const editors = users.filter((user) => user.id !== currentUserId);
 	const isBeingEdited = editors.length > 0;
 
 	useEffect(() => {
@@ -42,9 +47,9 @@ export default function useEntityPresence(
 			isBeingEdited,
 			editorCount: editors.length,
 			editors: editors.map((user) => ({
-				userId: user.userId,
+				id: user.id,
 				displayName: user.displayName,
-				data: user.data,
+				avatarUrl: user.avatarUrl,
 			})),
 		});
 	}, [debug, ref, room, isPresent, isBeingEdited, editors]);

@@ -15,6 +15,7 @@ import { RichText } from '@wordpress/block-editor';
 import type { BlueskyPreviewProps } from './types';
 import CharacterCounterRing from '../character-counter/ring';
 import AINumberCheckBadge from '../ai/ai-number-check-badge';
+import { previewBody, showBodyChrome } from './preview-body';
 
 const PreviewContainer = styled.div`
 	font-family:
@@ -243,22 +244,28 @@ const ActionCount = styled.span`
  * Bluesky post preview component
  * Displays how content will appear when shared on Bluesky
  *
- * @param props                - BlueskyPreviewProps
- * @param props.title          - Title for the link card
- * @param props.description    - Description for the link card
- * @param props.url            - URL for the shared link
- * @param props.image          - Image URL for the link card
- * @param props.children       - Optional custom content for image container
- * @param props.displayName    - Display name shown in header
- * @param props.handle         - Bluesky handle
- * @param props.profilePicture - Avatar image URL
- * @param props.postText       - Actual post content
- * @param props.verified       - Show verified badge
- * @param props.timestamp      - Full timestamp
- * @param props.likes          - Number of likes
- * @param props.reposts        - Number of reposts
- * @param props.replies        - Number of replies
- * @param props.showLabel      - When false, hides the platform name label above the preview
+ * @param props                   - BlueskyPreviewProps
+ * @param props.title             - Title for the link card
+ * @param props.description       - Description for the link card
+ * @param props.url               - URL for the shared link
+ * @param props.image             - Image URL for the link card
+ * @param props.children          - Optional custom content for image container
+ * @param props.displayName       - Display name shown in header
+ * @param props.handle            - Bluesky handle
+ * @param props.profilePicture    - Avatar image URL
+ * @param props.postText          - Actual post content
+ * @param props.verified          - Show verified badge
+ * @param props.timestamp         - Full timestamp
+ * @param props.likes             - Number of likes
+ * @param props.reposts           - Number of reposts
+ * @param props.replies           - Number of replies
+ * @param props.showLabel         - When false, hides the platform name label above the preview
+ * @param props.isEditable        - When true, body text is a RichText field
+ * @param props.isSelected        - When true, shows the character counter ring
+ * @param props.charLimit         - Character limit for the counter ring
+ * @param props.editableCallbacks - Change handlers for editable mode
+ * @param props.numberCheck       - Number-check verdict for the badge
+ * @param props.textSlot          - Optional node that replaces the body string or RichText
  */
 export function BlueskyPreview({
 	title,
@@ -281,6 +288,7 @@ export function BlueskyPreview({
 	charLimit,
 	editableCallbacks,
 	numberCheck,
+	textSlot,
 }: BlueskyPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
@@ -339,20 +347,26 @@ export function BlueskyPreview({
 					</HeaderContent>
 				</ProfileHeader>
 
-				<PostText>
-					{showEditableText ? (
+				<PostText data-text-slot={textSlot ? true : undefined}>
+					{previewBody(
+						textSlot,
+						showEditableText,
 						<RichText
 							tagName="span"
 							value={displayPostText}
 							onChange={onContentChange}
 							allowedFormats={[]}
 							placeholder="Write your post..."
-						/>
-					) : (
+						/>,
 						displayPostText
 					)}
 				</PostText>
-				{showEditableText && charLimit !== undefined && isSelected && (
+				{showBodyChrome(
+					textSlot,
+					showEditableText,
+					charLimit,
+					isSelected
+				) && (
 					<div
 						style={{
 							marginBottom: 12,
@@ -367,7 +381,7 @@ export function BlueskyPreview({
 						/>
 						<CharacterCounterRing
 							current={displayPostText.length}
-							limit={charLimit}
+							limit={charLimit ?? 0}
 						/>
 					</div>
 				)}

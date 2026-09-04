@@ -15,6 +15,7 @@ import { RichText } from '@wordpress/block-editor';
 import type { TwitterPreviewProps } from './types';
 import CharacterCounterRing from '../character-counter/ring';
 import AINumberCheckBadge from '../ai/ai-number-check-badge';
+import { previewBody, showBodyChrome } from './preview-body';
 
 const PreviewContainer = styled.div`
 	font-family:
@@ -218,21 +219,27 @@ const ActionGroup = styled.div`
  * Twitter/X post preview component
  * Displays how content will appear when shared on Twitter/X
  *
- * @param props                - TwitterPreviewProps
- * @param props.title          - Title for the link card
- * @param props.description    - Description (fallback for tweet text)
- * @param props.url            - URL for the shared link
- * @param props.image          - Image URL for the link card
- * @param props.children       - Optional custom content for image container
- * @param props.displayName    - Display name shown in header
- * @param props.username       - Twitter handle
- * @param props.profilePicture - Avatar image URL
- * @param props.tweetText      - Actual tweet content
- * @param props.verified       - Show verified badge
- * @param props.timestamp      - Relative timestamp
- * @param props.likes          - Number of likes
- * @param props.replies        - Number of replies
- * @param props.showLabel      - When false, hides the platform name label above the preview
+ * @param props                   - TwitterPreviewProps
+ * @param props.title             - Title for the link card
+ * @param props.description       - Description (fallback for tweet text)
+ * @param props.url               - URL for the shared link
+ * @param props.image             - Image URL for the link card
+ * @param props.children          - Optional custom content for image container
+ * @param props.displayName       - Display name shown in header
+ * @param props.username          - Twitter handle
+ * @param props.profilePicture    - Avatar image URL
+ * @param props.tweetText         - Actual tweet content
+ * @param props.verified          - Show verified badge
+ * @param props.timestamp         - Relative timestamp
+ * @param props.likes             - Number of likes
+ * @param props.replies           - Number of replies
+ * @param props.showLabel         - When false, hides the platform name label above the preview
+ * @param props.isEditable        - When true, body text is a RichText field
+ * @param props.isSelected        - When true, shows the character counter ring
+ * @param props.charLimit         - Character limit for the counter ring
+ * @param props.editableCallbacks - Change handlers for editable mode
+ * @param props.numberCheck       - Number-check verdict for the badge
+ * @param props.textSlot          - Optional node that replaces the body string or RichText
  */
 export function TwitterPreview({
 	title,
@@ -254,6 +261,7 @@ export function TwitterPreview({
 	charLimit,
 	editableCallbacks,
 	numberCheck,
+	textSlot,
 }: TwitterPreviewProps): JSX.Element {
 	const domain = React.useMemo(() => {
 		try {
@@ -312,20 +320,26 @@ export function TwitterPreview({
 					<MoreButton aria-label="More">···</MoreButton>
 				</ProfileHeader>
 
-				<TweetText>
-					{showEditableText ? (
+				<TweetText data-text-slot={textSlot ? true : undefined}>
+					{previewBody(
+						textSlot,
+						showEditableText,
 						<RichText
 							tagName="span"
 							value={displayTweetText}
 							onChange={onContentChange}
 							allowedFormats={[]}
 							placeholder="Write your post..."
-						/>
-					) : (
+						/>,
 						displayTweetText
 					)}
 				</TweetText>
-				{showEditableText && charLimit !== undefined && isSelected && (
+				{showBodyChrome(
+					textSlot,
+					showEditableText,
+					charLimit,
+					isSelected
+				) && (
 					<div
 						style={{
 							marginBottom: 12,
@@ -340,7 +354,7 @@ export function TwitterPreview({
 						/>
 						<CharacterCounterRing
 							current={displayTweetText.length}
-							limit={charLimit}
+							limit={charLimit ?? 0}
 						/>
 					</div>
 				)}

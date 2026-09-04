@@ -12,6 +12,7 @@ export {
 	default as CalendarHeatmap,
 	MONTH_LABELS,
 	getHeatLevel,
+	monthKeyFromIndex,
 } from './calendar-heatmap';
 export type {
 	AnalyticsPeriodControlsProps,
@@ -27,6 +28,7 @@ export type {
 	AudienceSnapshot,
 	VerificationMode,
 } from './audience-build-panel';
+export { isAudienceJobInFlight } from './audience-build-panel';
 
 // Detach Blocks Toolbar Control
 export { default as DetachBlocksToolbarControl } from './detach-blocks-toolbar-control';
@@ -180,18 +182,34 @@ export type { CharacterCounterProps } from './character-counter';
 export { default as CharacterCounterRing } from './character-counter/ring';
 export type { CharacterCounterRingProps } from './character-counter/ring';
 
+// Status Dot Badge
+export {
+	default as StatusDotBadge,
+	STATUS_DOT_COLORS,
+} from './status-dot-badge';
+export type { StatusDotBadgeProps, StatusDotTone } from './status-dot-badge';
+
 // Settings Page (WP Admin)
 export {
 	ConnectionBadge,
 	createPartialSaveClient,
 	createSettingsClient,
 	createSettingsStore,
+	createSettingsTextareaEdit,
 	mountSettingsPage,
 	SettingsAccordion,
+	SettingsBooleanEdit,
+	SettingsEmailEdit,
 	SettingsFieldsSection,
+	SettingsNumberEdit,
 	SettingsPage,
+	SettingsPasswordEdit,
+	SettingsReadOnlyEdit,
 	SettingsSectionFooter,
+	SettingsSelectEdit,
 	SettingsSubSection,
+	SettingsTextEdit,
+	SettingsTextareaEdit,
 	useSettingsDraft,
 } from './settings-page';
 export type {

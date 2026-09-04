@@ -1,0 +1,25 @@
+@import "@wordpress/dataviews/build-style/style.css";
+
+.prc-audience-build-panel__audiences {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wpds-dimension-gap-md, 12px);
+}
+
+.prc-audience-build-panel__card {
+	.components-card__footer,
+	.components-card-footer {
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--wpds-dimension-gap-sm, 8px);
+	}
+}
+
+.prc-audience-build-panel__key {
+	overflow-wrap: anywhere;
+	word-break: break-all;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 11px;
+	line-height: 1.4;
+}

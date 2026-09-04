@@ -15,6 +15,7 @@ import { RichText } from '@wordpress/block-editor';
 import type { FacebookPreviewProps } from './types';
 import CharacterCounterRing from '../character-counter/ring';
 import AINumberCheckBadge from '../ai/ai-number-check-badge';
+import { previewBody, showBodyChrome } from './preview-body';
 
 const PreviewContainer = styled.div`
 	font-family: Helvetica, Arial, sans-serif;
@@ -242,19 +243,25 @@ const ActionButton = styled.button`
  * Facebook post preview component
  * Displays how content will appear when shared on Facebook
  *
- * @param props                - FacebookPreviewProps
- * @param props.description    - Description (fallback for postText)
- * @param props.image          - Image URL
- * @param props.children       - Optional custom content for image
- * @param props.displayName    - Page display name
- * @param props.profilePicture - Avatar URL
- * @param props.postText       - Post content text
- * @param props.timestamp      - Post timestamp
- * @param props.verified       - Show verified badge
- * @param props.reactions      - Reaction count
- * @param props.comments       - Comment count
- * @param props.shares         - Share count
- * @param props.showLabel      - When false, hides the platform name label above the preview
+ * @param props                   - FacebookPreviewProps
+ * @param props.description       - Description (fallback for postText)
+ * @param props.image             - Image URL
+ * @param props.children          - Optional custom content for image
+ * @param props.displayName       - Page display name
+ * @param props.profilePicture    - Avatar URL
+ * @param props.postText          - Post content text
+ * @param props.timestamp         - Post timestamp
+ * @param props.verified          - Show verified badge
+ * @param props.reactions         - Reaction count
+ * @param props.comments          - Comment count
+ * @param props.shares            - Share count
+ * @param props.showLabel         - When false, hides the platform name label above the preview
+ * @param props.isEditable        - When true, body text is a RichText field
+ * @param props.isSelected        - When true, shows the character counter ring
+ * @param props.charLimit         - Character limit for the counter ring
+ * @param props.editableCallbacks - Change handlers for editable mode
+ * @param props.numberCheck       - Number-check verdict for the badge
+ * @param props.textSlot          - Optional node that replaces the body string or RichText
  */
 export function FacebookPreview({
 	description,
@@ -274,6 +281,7 @@ export function FacebookPreview({
 	charLimit,
 	editableCallbacks,
 	numberCheck,
+	textSlot,
 }: FacebookPreviewProps): JSX.Element {
 	// Use postText if provided, otherwise use description
 	const displayText = postText || description;
@@ -282,7 +290,8 @@ export function FacebookPreview({
 
 	// Truncate text and show "See more" if needed
 	const maxLength = 200;
-	const shouldTruncate = !showEditableText && displayText.length > maxLength;
+	const shouldTruncate =
+		!textSlot && !showEditableText && displayText.length > maxLength;
 	const truncatedText = shouldTruncate
 		? displayText.slice(0, maxLength)
 		: displayText;
@@ -347,22 +356,28 @@ export function FacebookPreview({
 				</ProfileHeader>
 
 				<PostContent>
-					<PostText>
-						{showEditableText ? (
+					<PostText data-text-slot={textSlot ? true : undefined}>
+						{previewBody(
+							textSlot,
+							showEditableText,
 							<RichText
 								tagName="span"
 								value={displayText}
 								onChange={onContentChange}
 								allowedFormats={[]}
 								placeholder="Write your post..."
-							/>
-						) : (
+							/>,
 							truncatedText
 						)}
 					</PostText>
 					{shouldTruncate && <SeeMore>... See more</SeeMore>}
 				</PostContent>
-				{showEditableText && charLimit !== undefined && isSelected && (
+				{showBodyChrome(
+					textSlot,
+					showEditableText,
+					charLimit,
+					isSelected
+				) && (
 					<div
 						style={{
 							padding: '0 16px 12px',
@@ -377,7 +392,7 @@ export function FacebookPreview({
 						/>
 						<CharacterCounterRing
 							current={displayText.length}
-							limit={charLimit}
+							limit={charLimit ?? 0}
 						/>
 					</div>
 				)}

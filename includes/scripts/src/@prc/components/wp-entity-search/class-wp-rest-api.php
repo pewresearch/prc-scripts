@@ -1,9 +1,10 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- REST endpoints in this folder share class-wp-rest-api.php.
 /**
  * WP Entity Search REST API Endpoint.
  *
  * @package PRC\Platform\Scripts\WP_Entity_Search
  */
+
 namespace PRC\Platform\Scripts\WP_Entity_Search;
 
 use WP_Error;
@@ -73,6 +74,18 @@ class Rest_API_Endpoint {
 					'type'              => 'string',
 					'description'       => 'The search term to use.',
 					'sanitize_callback' => 'sanitize_text_field',
+				),
+				'taxonomy'        => array(
+					'required'          => false,
+					'type'              => 'string',
+					'description'       => 'Optional taxonomy to limit post results to a term.',
+					'sanitize_callback' => 'sanitize_key',
+				),
+				'term_id'         => array(
+					'required'          => false,
+					'type'              => 'integer',
+					'description'       => 'Optional term ID used with taxonomy.',
+					'sanitize_callback' => 'absint',
 				),
 			),
 		);
@@ -230,7 +243,8 @@ class Rest_API_Endpoint {
 			$new_item['entitySlug']          = $item->post_name;
 			$new_item['entityId']            = $item->ID;
 			$new_item['entityUrl']           = $this->resolve_entity_url( $item );
-			$new_item['entityFeaturedImage'] = get_the_post_thumbnail_url( $item->ID, 'thumbnail' ) ?: null;
+			$thumbnail                       = get_the_post_thumbnail_url( $item->ID, 'thumbnail' );
+			$new_item['entityFeaturedImage'] = false !== $thumbnail ? $thumbnail : null;
 		} elseif ( is_a( $item, 'WP_Term' ) ) {
 			$new_item['entityName']          = $item->name;
 			$new_item['entityDescription']   = $item->description;
@@ -252,9 +266,11 @@ class Rest_API_Endpoint {
 	 *
 	 * @param string $url URL to resolve.
 	 * @param array  $entity_status Allowed statuses.
+	 * @param string $taxonomy Optional taxonomy slug.
+	 * @param int    $term_id Optional term ID.
 	 * @return object
 	 */
-	protected function get_id_from_url( $url, array $entity_status = array( 'publish' ) ) {
+	protected function get_id_from_url( $url, array $entity_status = array( 'publish' ), $taxonomy = '', $term_id = 0 ) {
 		$url_helper = new URL_Helper( $url );
 		$post_id    = $url_helper->get_post_id();
 		if ( is_wp_error( $post_id ) || empty( $post_id ) ) {
@@ -271,6 +287,10 @@ class Rest_API_Endpoint {
 		}
 
 		if ( ! empty( $entity_status ) && ! in_array( $post->post_status, $entity_status, true ) ) {
+			return (object) array();
+		}
+
+		if ( '' !== $taxonomy && $term_id > 0 && ! has_term( $term_id, $taxonomy, $post->ID ) ) {
 			return (object) array();
 		}
 
@@ -291,20 +311,55 @@ class Rest_API_Endpoint {
 	 * @param string   $search_value Search string.
 	 * @param string[] $post_types Post types.
 	 * @param string[] $entity_status Post statuses.
+	 * @param string   $taxonomy Optional taxonomy slug.
+	 * @param int      $term_id Optional term ID.
 	 * @return array
 	 */
-	protected function search_posts_for_value( $search_value, $post_types = array(), $entity_status = array( 'publish' ) ) {
+	protected function search_posts_for_value( $search_value, $post_types = array(), $entity_status = array( 'publish' ), $taxonomy = '', $term_id = 0 ) {
 		// Use posts_per_page (WP_Query); keep per-result read_post filtering from FedRAMP pass.
-		$query = new WP_Query(
-			array(
-				's'              => $search_value,
-				'post_type'      => $post_types,
-				'posts_per_page' => 25,
-				'post_status'    => $entity_status,
-				'post_parent'    => 0,
-				'es'             => true,
-			)
+		$query_args = array(
+			's'              => $search_value,
+			'post_type'      => $post_types,
+			'posts_per_page' => 25,
+			'post_status'    => $entity_status,
+			'post_parent'    => 0,
 		);
+
+		if ( $this->should_use_elasticsearch() ) {
+			$query_args['es'] = true;
+		}
+
+		if ( '' !== $taxonomy && $term_id > 0 ) {
+			$query_args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				array(
+					'taxonomy' => $taxonomy,
+					'field'    => 'term_id',
+					'terms'    => array( $term_id ),
+				),
+			);
+		}
+
+		/**
+		 * Filter WP_Query args for WPEntitySearch post lookups.
+		 *
+		 * @param array    $query_args     WP_Query args.
+		 * @param string   $search_value   Search string.
+		 * @param string[] $post_types     Post types.
+		 * @param string[] $entity_status  Post statuses.
+		 * @param string   $taxonomy       Taxonomy slug or empty.
+		 * @param int      $term_id        Term ID or 0.
+		 */
+		$query_args = apply_filters(
+			'prc_wp_entity_search_posts_query',
+			$query_args,
+			$search_value,
+			$post_types,
+			$entity_status,
+			$taxonomy,
+			$term_id
+		);
+
+		$query = new WP_Query( $query_args );
 
 		$matches = array();
 		foreach ( $query->posts as $post ) {
@@ -361,7 +416,6 @@ class Rest_API_Endpoint {
 				'taxonomy'   => $taxonomies,
 				'number'     => 25,
 				'hide_empty' => false,
-				'es'         => true,
 			)
 		);
 
@@ -379,13 +433,15 @@ class Rest_API_Endpoint {
 	 * @param string   $entity_type Entity type.
 	 * @param string[] $entity_sub_type Subtypes.
 	 * @param string[] $entity_status Statuses.
+	 * @param string   $taxonomy Optional taxonomy slug.
+	 * @param int      $term_id Optional term ID.
 	 * @return \WP_REST_Response|WP_Error
 	 */
-	protected function query_for_search_value( $search_value, $entity_type, $entity_sub_type, $entity_status ) {
+	protected function query_for_search_value( $search_value, $entity_type, $entity_sub_type, $entity_status, $taxonomy = '', $term_id = 0 ) {
 		$is_url = filter_var( $search_value, FILTER_VALIDATE_URL );
 		if ( $is_url ) {
-			$matched = $this->get_id_from_url( $search_value, $entity_status );
-			if ( ! empty( $matched->entityId ) ) {
+			$matched = $this->get_id_from_url( $search_value, $entity_status, $taxonomy, $term_id );
+			if ( ! empty( $matched->entityId ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				return rest_ensure_response( array( $matched ) );
 			}
 			return rest_ensure_response( array() );
@@ -393,7 +449,7 @@ class Rest_API_Endpoint {
 
 		if ( 'postType' === $entity_type ) {
 			return rest_ensure_response(
-				$this->search_posts_for_value( $search_value, $entity_sub_type, $entity_status )
+				$this->search_posts_for_value( $search_value, $entity_sub_type, $entity_status, $taxonomy, $term_id )
 			);
 		}
 
@@ -448,12 +504,48 @@ class Rest_API_Endpoint {
 			$request->get_param( 'entity_status' )
 		);
 
+		$taxonomy = $this->sanitize_taxonomy( $request->get_param( 'taxonomy' ) );
+		$term_id  = absint( $request->get_param( 'term_id' ) );
+
 		return $this->query_for_search_value(
 			$search_value,
 			$entity_type,
 			$entity_sub_type,
-			$entity_status
+			$entity_status,
+			$taxonomy,
+			$term_id
 		);
+	}
+
+	/**
+	 * Allowlist a taxonomy against REST-visible taxonomies.
+	 *
+	 * @param mixed $taxonomy Raw taxonomy param.
+	 * @return string
+	 */
+	protected function sanitize_taxonomy( $taxonomy ) {
+		$taxonomy = sanitize_key( (string) $taxonomy );
+		if ( '' === $taxonomy ) {
+			return '';
+		}
+
+		$allowed = array_keys( get_taxonomies( array( 'show_in_rest' => true ), 'names' ) );
+		return in_array( $taxonomy, $allowed, true ) ? $taxonomy : '';
+	}
+
+	/**
+	 * Whether Elasticsearch should back keyword search.
+	 *
+	 * Forcing es=true when ES is down returns empty results instead of MySQL.
+	 *
+	 * @return bool
+	 */
+	protected function should_use_elasticsearch() {
+		if ( function_exists( 'ep_elasticsearch_alive' ) ) {
+			return (bool) ep_elasticsearch_alive();
+		}
+
+		return false;
 	}
 
 	/**

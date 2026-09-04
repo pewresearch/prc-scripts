@@ -1,16 +1,16 @@
 /**
  * Demos for the data-layer hooks in @prc/hooks. Entity hooks resolve through
- * the real @wordpress/core-data store; presence hooks poll the fixture-backed
- * /wp-presence/v1 routes (enabled via window.prcPlatform.presenceApiEnabled).
+ * the real @wordpress/core-data store; presence stories use the official
+ * Presence API hook against fixture-backed /wp-presence/v1 routes.
  */
 import { useMemo, useState } from 'react';
 
 import { SelectControl } from '@wordpress/components';
+import { usePresenceUsers } from '@presence-api/src';
 
 import useDeclarePresence from './use-declare-presence';
 import useMultiEntityRecords from './use-multi-entity-records';
 import usePostIdsAsOptions from './use-postids-as-options';
-import usePresenceUsers from './use-presence-users';
 import useTaxonomy from './use-taxonomy';
 
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
@@ -96,10 +96,7 @@ function UsePresenceUsersDemo() {
 			</p>
 			<ul>
 				{users.map((user) => (
-					<li key={user.userId}>
-						{user.displayName}{' '}
-						<code>{JSON.stringify(user.data)}</code>
-					</li>
+					<li key={user.id}>{user.displayName}</li>
 				))}
 			</ul>
 		</div>
@@ -125,7 +122,7 @@ function UseDeclarePresenceDemo() {
 			</p>
 			<ul>
 				{users.map((user) => (
-					<li key={user.userId}>{user.displayName}</li>
+					<li key={user.id}>{user.displayName}</li>
 				))}
 			</ul>
 		</div>

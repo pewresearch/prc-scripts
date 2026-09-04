@@ -42,6 +42,8 @@ const useWPEntitySearchContext = ({
 	showType,
 	showUrl,
 	showFeaturedImage,
+	taxonomy = '',
+	termId = 0,
 }) => {
 	// Debounce the search input
 	const searchString = useDebounce(searchInput, 750);
@@ -95,14 +97,20 @@ const useWPEntitySearchContext = ({
 		const subTypes = entitySubTypeKey.split(',').filter(Boolean);
 		const statuses = entityStatusKey.split(',').filter(Boolean);
 
+		const queryArgs = {
+			entity_type: entityType,
+			entity_sub_type: subTypes,
+			search: searchString,
+			entity_status: statuses,
+		};
+		if (taxonomy && Number(termId) > 0) {
+			queryArgs.taxonomy = taxonomy;
+			queryArgs.term_id = Number(termId);
+		}
+
 		setIsLoading(true);
 		apiFetch({
-			path: addQueryArgs(REST_ENDPOINT, {
-				entity_type: entityType,
-				entity_sub_type: subTypes,
-				search: searchString,
-				entity_status: statuses,
-			}),
+			path: addQueryArgs(REST_ENDPOINT, queryArgs),
 			method: 'GET',
 		})
 			.then((response) => {
@@ -112,7 +120,14 @@ const useWPEntitySearchContext = ({
 			.catch(() => {
 				setIsLoading(false);
 			});
-	}, [searchString, entityType, entitySubTypeKey, entityStatusKey]);
+	}, [
+		searchString,
+		entityType,
+		entitySubTypeKey,
+		entityStatusKey,
+		taxonomy,
+		termId,
+	]);
 
 	// Selection / onSelect is invoked from SearchItem onClick with the row `item` so parents always
 	// receive the entity (avoids records.find strict equality failures and timing gaps).
@@ -178,6 +193,8 @@ function ProvideWPEntitySearch({
 	showType,
 	showUrl,
 	showFeaturedImage,
+	taxonomy,
+	termId,
 	children,
 }) {
 	const provider = useWPEntitySearchContext({
@@ -197,6 +214,8 @@ function ProvideWPEntitySearch({
 		showType,
 		showUrl,
 		showFeaturedImage,
+		taxonomy,
+		termId,
 	});
 	return (
 		<wpEntitySearchContext.Provider value={provider}>

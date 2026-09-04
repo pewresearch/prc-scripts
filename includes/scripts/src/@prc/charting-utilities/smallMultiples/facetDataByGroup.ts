@@ -1,4 +1,5 @@
 import type { FlatData } from '../types/flatData';
+import { hasCategoryValue } from '../utilities/helpers';
 import { deriveCategories } from './facetDataByColumn';
 import { enrichFacetRow } from './enrichFacetRow';
 
@@ -55,7 +56,9 @@ export function facetDataByGroup(
 	}
 
 	const seriesKeys = (
-		Array.isArray(categories) && categories.length > 0 ? categories : deriveCategories(data)
+		Array.isArray(categories) && categories.length > 0
+			? categories
+			: deriveCategories(data)
 	).filter((key) => key !== groupKey);
 
 	return groupValues.map((group) => {
@@ -64,7 +67,9 @@ export function facetDataByGroup(
 			key: group,
 			series: seriesKeys.map((key) => ({
 				key,
-				rows: groupRows.map((row) => enrichFacetRow(row, key)),
+				rows: groupRows
+					.filter((row) => hasCategoryValue(row, key))
+					.map((row) => enrichFacetRow(row, key)),
 			})),
 		};
 	});

@@ -2,99 +2,125 @@ import {
 	Button,
 	Card,
 	CardBody,
+	CardFooter,
+	CardHeader,
+	DropdownMenu,
+	MenuItem,
 	Notice,
 	SelectControl,
 	Spinner,
-	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
+	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis -- ConfirmDialog is the standard destructive confirm pattern in WP packages.
 	__experimentalConfirmDialog as ConfirmDialog,
-	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
+import { DataForm } from '@wordpress/dataviews';
 import { useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
+import { moreVertical } from '@wordpress/icons';
 
+import {
+	AUDIENCE_FORM,
+	VERIFICATION_LABELS,
+	getAudienceFields,
+} from './fields';
 import type {
 	AudienceBuildPanelProps,
 	AudienceSnapshot,
 	VerificationMode,
 } from './types';
+import { isAudienceJobInFlight } from './types';
 
-const VERIFICATION_OPTIONS = [
-	{
-		label: __('Verified', 'prc-platform-core'),
-		value: 'verified',
-	},
-	{
-		label: __('Unverified', 'prc-platform-core'),
-		value: 'unverified',
-	},
-	{
-		label: __('All recipients', 'prc-platform-core'),
-		value: 'all',
-	},
-] satisfies { label: string; value: VerificationMode }[];
+import './style.scss';
 
 function isVerificationMode(value: string): value is VerificationMode {
 	return value === 'verified' || value === 'unverified' || value === 'all';
 }
 
-function getVerificationLabel(verification: VerificationMode): string {
-	switch (verification) {
-		case 'verified':
-			return __('Verified', 'prc-platform-core');
-		case 'unverified':
-			return __('Unverified', 'prc-platform-core');
-		case 'all':
-			return __('All recipients', 'prc-platform-core');
-		default: {
-			const exhaustive: never = verification;
-			return exhaustive;
-		}
-	}
-}
+type AudienceCardProps = {
+	audience: AudienceSnapshot;
+	actionsDisabled: boolean;
+	onRebuild: AudienceBuildPanelProps['onRebuild'];
+	onDeleteRequest: (audience: AudienceSnapshot) => void;
+	onCreateDraft?: AudienceBuildPanelProps['onCreateDraft'];
+};
 
-function getAudienceMetadata(
-	audience: AudienceSnapshot
-): { label: string; value: string }[] {
-	const metadata: { label: string; value: string }[] = [
-		{
-			label: __('Recipients', 'prc-platform-core'),
-			value: audience.count.toLocaleString(),
-		},
-		{
-			label: __('Verification', 'prc-platform-core'),
-			value: getVerificationLabel(audience.verification),
-		},
-		{
-			label: __('Built', 'prc-platform-core'),
-			value: audience.builtAt || __('Not available', 'prc-platform-core'),
-		},
-		{
-			label: __('Key', 'prc-platform-core'),
-			value: audience.key,
-		},
-	];
-
-	if (audience.stats?.scanned !== undefined) {
-		metadata.push({
-			label: __('Scanned', 'prc-platform-core'),
-			value: audience.stats.scanned.toLocaleString(),
-		});
-	}
-	if (audience.stats?.matched !== undefined) {
-		metadata.push({
-			label: __('Matched', 'prc-platform-core'),
-			value: audience.stats.matched.toLocaleString(),
-		});
-	}
-	if (audience.stats?.v2Groups !== undefined) {
-		metadata.push({
-			label: __('V2 groups', 'prc-platform-core'),
-			value: audience.stats.v2Groups.toLocaleString(),
-		});
-	}
-
-	return metadata;
+function AudienceCard({
+	audience,
+	actionsDisabled,
+	onRebuild,
+	onDeleteRequest,
+	onCreateDraft,
+}: AudienceCardProps) {
+	return (
+		<Card className="prc-audience-build-panel__card">
+			<CardHeader>
+				<strong>{audience.label}</strong>
+			</CardHeader>
+			<CardBody>
+				<DataForm
+					data={audience}
+					fields={getAudienceFields()}
+					form={AUDIENCE_FORM}
+					onChange={() => {}}
+				/>
+			</CardBody>
+			<CardFooter>
+				<Button
+					__next40pxDefaultSize
+					variant="secondary"
+					disabled={actionsDisabled}
+					onClick={() =>
+						onRebuild({ verification: audience.verification })
+					}
+					aria-label={sprintf(
+						/* translators: %s: verification label */
+						__('Update %s audience', 'prc-platform-core'),
+						VERIFICATION_LABELS[audience.verification]
+					)}
+				>
+					{__('Update', 'prc-platform-core')}
+				</Button>
+				<DropdownMenu
+					icon={moreVertical}
+					label={__('More actions', 'prc-platform-core')}
+					toggleProps={{
+						disabled: actionsDisabled,
+						__next40pxDefaultSize: true,
+					}}
+				>
+					{({ onClose }) => (
+						<>
+							{onCreateDraft ? (
+								<MenuItem
+									onClick={() => {
+										onCreateDraft({
+											verification: audience.verification,
+											key: audience.key,
+										});
+										onClose();
+									}}
+								>
+									{__(
+										'Create email draft',
+										'prc-platform-core'
+									)}
+								</MenuItem>
+							) : null}
+							<MenuItem
+								isDestructive
+								onClick={() => {
+									onDeleteRequest(audience);
+									onClose();
+								}}
+							>
+								{__('Delete', 'prc-platform-core')}
+							</MenuItem>
+						</>
+					)}
+				</DropdownMenu>
+			</CardFooter>
+		</Card>
+	);
 }
 
 export default function AudienceBuildPanel({
@@ -107,9 +133,11 @@ export default function AudienceBuildPanel({
 	referencingPostIds = [],
 	disabled = false,
 	disabledHelpText,
+	jobStats,
 	onBuild,
 	onRebuild,
 	onDelete,
+	onCreateDraft,
 }: AudienceBuildPanelProps) {
 	const [verification, setVerification] =
 		useState<VerificationMode>(defaultVerification);
@@ -120,7 +148,12 @@ export default function AudienceBuildPanel({
 		(audience) => audience.verification === verification
 	);
 	const actionsDisabled =
-		disabled || status === 'building' || status === 'deleting';
+		disabled ||
+		status === 'queued' ||
+		status === 'scanning' ||
+		status === 'building' ||
+		status === 'deleting' ||
+		status === 'creating-draft';
 
 	return (
 		<div className="prc-audience-build-panel">
@@ -136,18 +169,35 @@ export default function AudienceBuildPanel({
 				</div>
 			) : (
 				<>
-					{status === 'building' && (
+					{isAudienceJobInFlight(status) && (
 						<div
 							className="prc-audience-build-panel__status"
 							role="status"
 						>
 							<Spinner />
 							<span>
-								{__(
-									'Building audience… this can take several minutes.',
-									'prc-platform-core'
-								)}
+								{status === 'queued'
+									? __(
+											'Queued… you can leave this screen. The list appears when the build finishes.',
+											'prc-platform-core'
+										)
+									: __(
+											'Scanning Firebase users… this can take several minutes. You can leave this screen.',
+											'prc-platform-core'
+										)}
 							</span>
+							{typeof jobStats?.scanned === 'number' ? (
+								<span>
+									{sprintf(
+										/* translators: %s: number of scanned users or groups */
+										__(
+											'Scanned %s so far.',
+											'prc-platform-core'
+										),
+										jobStats.scanned.toLocaleString()
+									)}
+								</span>
+							) : null}
 						</div>
 					)}
 
@@ -159,6 +209,21 @@ export default function AudienceBuildPanel({
 							<Spinner />
 							<span>
 								{__('Deleting audience…', 'prc-platform-core')}
+							</span>
+						</div>
+					)}
+
+					{status === 'creating-draft' && (
+						<div
+							className="prc-audience-build-panel__status"
+							role="status"
+						>
+							<Spinner />
+							<span>
+								{__(
+									'Creating email draft…',
+									'prc-platform-core'
+								)}
 							</span>
 						</div>
 					)}
@@ -183,7 +248,12 @@ export default function AudienceBuildPanel({
 						<SelectControl
 							label={__('Verification', 'prc-platform-core')}
 							value={verification}
-							options={VERIFICATION_OPTIONS}
+							options={Object.entries(VERIFICATION_LABELS).map(
+								([value, label]) => ({
+									value,
+									label,
+								})
+							)}
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
 							onChange={(value) => {
@@ -195,6 +265,7 @@ export default function AudienceBuildPanel({
 
 						{!selectedAudience && (
 							<Button
+								__next40pxDefaultSize
 								variant="primary"
 								disabled={actionsDisabled}
 								onClick={() => onBuild({ verification })}
@@ -210,57 +281,14 @@ export default function AudienceBuildPanel({
 								{__('Built audiences', 'prc-platform-core')}
 							</h4>
 							{audiences.map((audience) => (
-								<Card key={audience.key}>
-									<CardBody>
-										<strong>{audience.label}</strong>
-										<dl className="prc-audience-build-panel__meta">
-											{getAudienceMetadata(audience).map(
-												({ label, value }) => (
-													<div key={label}>
-														<dt>{label}</dt>
-														<dd>{value}</dd>
-													</div>
-												)
-											)}
-										</dl>
-
-										{audience.verification ===
-											verification && (
-											<div className="prc-audience-build-panel__actions">
-												<Button
-													variant="secondary"
-													disabled={actionsDisabled}
-													onClick={() =>
-														onRebuild({
-															verification:
-																audience.verification,
-														})
-													}
-												>
-													{__(
-														'Rebuild',
-														'prc-platform-core'
-													)}
-												</Button>
-												<Button
-													variant="tertiary"
-													isDestructive
-													disabled={actionsDisabled}
-													onClick={() =>
-														setDeleteTarget(
-															audience
-														)
-													}
-												>
-													{__(
-														'Delete',
-														'prc-platform-core'
-													)}
-												</Button>
-											</div>
-										)}
-									</CardBody>
-								</Card>
+								<AudienceCard
+									key={audience.key}
+									audience={audience}
+									actionsDisabled={actionsDisabled}
+									onRebuild={onRebuild}
+									onDeleteRequest={setDeleteTarget}
+									onCreateDraft={onCreateDraft}
+								/>
 							))}
 						</div>
 					)}
@@ -300,3 +328,4 @@ export type {
 	AudienceSnapshot,
 	VerificationMode,
 } from './types';
+export { isAudienceJobInFlight } from './types';

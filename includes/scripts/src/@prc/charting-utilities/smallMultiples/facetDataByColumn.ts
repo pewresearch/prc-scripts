@@ -1,4 +1,5 @@
 import type { FlatData } from '../types/flatData';
+import { hasCategoryValue } from '../utilities/helpers';
 import { enrichFacetRow, isFacetMetaKey } from './enrichFacetRow';
 
 export type SmallMultiplesPanel = {
@@ -27,7 +28,9 @@ export function deriveCategories(data: FlatData[]): string[] {
 	if (!first || typeof first !== 'object') {
 		return [];
 	}
-	return Object.keys(first).filter((key) => !RESERVED_KEYS.has(key) && !isFacetMetaKey(key));
+	return Object.keys(first).filter(
+		(key) => !RESERVED_KEYS.has(key) && !isFacetMetaKey(key)
+	);
 }
 
 /**
@@ -43,10 +46,16 @@ export function facetDataByColumn(
 		return [];
 	}
 
-	const keys = Array.isArray(categories) && categories.length > 0 ? categories : deriveCategories(data);
+	const keys =
+		Array.isArray(categories) && categories.length > 0
+			? categories
+			: deriveCategories(data);
 
 	return keys.map((key) => ({
 		key,
-		rows: data.map((row) => enrichFacetRow(row, key)),
+		// Same as Line.tsx: drop empty cells, then connect remaining points.
+		rows: data
+			.filter((row) => hasCategoryValue(row, key))
+			.map((row) => enrichFacetRow(row, key)),
 	}));
 }

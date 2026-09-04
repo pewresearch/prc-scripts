@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Tooltip } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
 import type { CalendarHeatmapProps, HeatLevel } from './types';
 import { MONTH_LABELS, getHeatLevel } from './types';
 
@@ -45,7 +46,15 @@ const HeatmapGrid = styled.div`
 	}
 `;
 
-const HeatmapCell = styled.div<{ $heat: HeatLevel; $highlight?: boolean }>`
+const HeatmapCell = styled.div<{
+	$heat: HeatLevel;
+	$highlight?: boolean;
+	$interactive?: boolean;
+}>`
+	appearance: none;
+	font: inherit;
+	width: 100%;
+	margin: 0;
 	position: relative;
 	background: ${(props) => HEAT_STYLES[props.$heat].background};
 	border: 1px solid ${(props) => HEAT_STYLES[props.$heat].border};
@@ -58,6 +67,7 @@ const HeatmapCell = styled.div<{ $heat: HeatLevel; $highlight?: boolean }>`
 	justify-content: center;
 	transition: all 0.2s ease;
 	color: ${(props) => HEAT_STYLES[props.$heat].color};
+	cursor: ${(props) => (props.$interactive ? 'pointer' : 'default')};
 	outline: ${(props) =>
 		props.$highlight
 			? '2px solid var(--wp-admin-theme-color, #007cba)'
@@ -83,6 +93,11 @@ const HeatmapCell = styled.div<{ $heat: HeatLevel; $highlight?: boolean }>`
 				? 'var(--wp-admin-theme-color-lighter-80, #e5f0f8)'
 				: HEAT_STYLES[props.$heat].background};
 	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp-admin-theme-color, #007cba);
+		outline-offset: 2px;
+	}
 `;
 
 const HeatmapValue = styled.span<{ $heat: HeatLevel }>`
@@ -99,9 +114,13 @@ export default function CalendarHeatmap({
 	labels = [...MONTH_LABELS],
 	renderValue,
 	getTooltipText,
+	getCellAriaLabel,
+	onCellClick,
 	highlightIndex = null,
 	className,
 }: CalendarHeatmapProps) {
+	const isInteractive = typeof onCellClick === 'function';
+
 	return (
 		<HeatmapGrid className={className}>
 			{values.map((value, index) => {
@@ -112,23 +131,46 @@ export default function CalendarHeatmap({
 				const content = (
 					<HeatmapValue $heat={heat}>{display}</HeatmapValue>
 				);
+				const ariaLabel =
+					getCellAriaLabel?.(value, index) ||
+					(isInteractive
+						? sprintf(
+								/* translators: %s: month or day label */
+								__('View %s analytics', 'prc-components'),
+								label
+							)
+						: undefined);
 
-				return (
+				const cell = (
 					<HeatmapCell
 						key={label}
+						as={isInteractive ? 'button' : 'div'}
+						type={isInteractive ? 'button' : undefined}
 						data-month={label}
 						data-heat={heat}
+						data-index={index}
 						$heat={heat}
 						$highlight={highlightIndex === index}
+						$interactive={isInteractive}
+						onClick={
+							isInteractive
+								? () => {
+										onCellClick(index);
+									}
+								: undefined
+						}
+						aria-label={ariaLabel}
 					>
-						{tooltip ? (
-							<Tooltip text={tooltip}>
-								<span tabIndex={0}>{content}</span>
-							</Tooltip>
-						) : (
-							content
-						)}
+						{content}
 					</HeatmapCell>
+				);
+
+				return tooltip ? (
+					<Tooltip key={label} text={tooltip}>
+						{cell}
+					</Tooltip>
+				) : (
+					cell
 				);
 			})}
 		</HeatmapGrid>
@@ -140,4 +182,4 @@ export type {
 	HeatLevel,
 	AnalyticsPeriodControlsProps,
 } from './types';
-export { MONTH_LABELS, getHeatLevel } from './types';
+export { MONTH_LABELS, getHeatLevel, monthKeyFromIndex } from './types';

@@ -11,6 +11,17 @@ export {
 } from './create-settings-client';
 export { useSettingsDraft } from './use-settings-draft';
 export { mountSettingsPage } from './mount-settings-page';
+export {
+	createSettingsTextareaEdit,
+	SettingsBooleanEdit,
+	SettingsEmailEdit,
+	SettingsNumberEdit,
+	SettingsPasswordEdit,
+	SettingsReadOnlyEdit,
+	SettingsSelectEdit,
+	SettingsTextEdit,
+	SettingsTextareaEdit,
+} from './settings-dataform-edits';
 
 export type {
 	SettingsApiResponse,

@@ -1,5 +1,14 @@
 import type { Field } from '@wordpress/dataviews';
 
+import {
+	SettingsBooleanEdit,
+	SettingsEmailEdit,
+	SettingsNumberEdit,
+	SettingsPasswordEdit,
+	SettingsSelectEdit,
+	SettingsTextEdit,
+	createSettingsTextareaEdit,
+} from './settings-dataform-edits';
 import type { SettingsFieldConfig } from './types';
 
 const SYNTHETIC_FIELD_PREFIX = '__';
@@ -146,6 +155,30 @@ export function parseFieldValuesFromForm(
 	}, {});
 }
 
+function dataFormEditForField(field: SettingsFieldConfig) {
+	switch (field.type) {
+		case 'boolean':
+			return SettingsBooleanEdit;
+		case 'select':
+			return SettingsSelectEdit;
+		case 'textarea':
+			return createSettingsTextareaEdit(field.rows ?? 4);
+		case 'integer':
+		case 'number':
+			return SettingsNumberEdit;
+		case 'email':
+			return SettingsEmailEdit;
+		case 'password':
+			return SettingsPasswordEdit;
+		case 'text':
+			return SettingsTextEdit;
+		default: {
+			const exhaustive: never = field.type;
+			return exhaustive;
+		}
+	}
+}
+
 export function toDataFormField(
 	field: SettingsFieldConfig,
 	settings: Record<string, unknown>
@@ -161,15 +194,14 @@ export function toDataFormField(
 		placeholder: field.placeholder,
 	};
 
-	if (field.type === 'boolean') {
-		dataFormField.Edit = 'toggle';
-	} else if (field.type === 'textarea') {
-		dataFormField.Edit = { control: 'textarea', rows: field.rows ?? 4 };
-	} else if (field.type === 'select' && field.options) {
+	if (field.type === 'select' && field.options) {
 		dataFormField.elements = field.options;
-		dataFormField.Edit = 'select';
-	} else if (field.edit) {
+	}
+
+	if (field.edit) {
 		dataFormField.Edit = field.edit;
+	} else {
+		dataFormField.Edit = dataFormEditForField(field);
 	}
 
 	if (field.min !== undefined || field.max !== undefined) {

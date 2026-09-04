@@ -19,10 +19,10 @@ PHP namespaces (`PRC\Platform\Scripts`, `PRC\Platform\Script_Modules`) are uncha
 
 Legacy chart and interactive bundles externalize D3 to script handles built from the UMD `d3/dist/d3.js` entry (not `d3/src`, which breaks under npm workspaces). Each webpack build must export the **populated UMD global** as the library default:
 
-| Build output | Global | Typical consumer import |
-|--------------|--------|-------------------------|
-| `build/third-party/d3/` | `window.d3` | `d3` external in older interactives |
-| `build/third-party/d3-v7/` | `window.d3v7` | `import * as d3 from 'd3v7'` |
+| Build output               | Global        | Typical consumer import             |
+| -------------------------- | ------------- | ----------------------------------- |
+| `build/third-party/d3/`    | `window.d3`   | `d3` external in older interactives |
+| `build/third-party/d3-v7/` | `window.d3v7` | `import * as d3 from 'd3v7'`        |
 
 A bare `export * from 'd3'` against the UMD file produced an empty module object and overwrote `window.d3` / `window.d3v7` with `{}`, breaking `d3.select` at runtime. The entry files re-export `globalThis.d3` after importing the UMD bundle (see comments in `includes/scripts/src/third-party/d3/index.js`).
 
@@ -56,12 +56,12 @@ Charting-library stories additionally alias `useChartStore` to its editor stub (
 
 ### Mocks and decorators
 
-| Path | Purpose |
-| --- | --- |
-| `.storybook/mocks/api-fetch-handlers.ts` | Offline REST fixtures for `apiFetch` (terms, posts, Mailchimp segments, etc.) |
-| `.storybook/mocks/window-globals.ts` | Seeds `window.prc*` globals when a story needs production-style externals |
-| `.storybook/decorators/with-editor.tsx` | Minimal block-editor shell |
-| `.storybook/decorators/with-block-editor.tsx` | Full inserter + block canvas for editor-dependent components |
+| Path                                          | Purpose                                                                       |
+| --------------------------------------------- | ----------------------------------------------------------------------------- |
+| `.storybook/mocks/api-fetch-handlers.ts`      | Offline REST fixtures for `apiFetch` (terms, posts, Mailchimp segments, etc.) |
+| `.storybook/mocks/window-globals.ts`          | Seeds `window.prc*` globals when a story needs production-style externals     |
+| `.storybook/decorators/with-editor.tsx`       | Minimal block-editor shell                                                    |
+| `.storybook/decorators/with-block-editor.tsx` | Full inserter + block canvas for editor-dependent components                  |
 
 Import decorators via the `@prc-storybook` alias (e.g. `import { withBlockEditor } from '@prc-storybook/decorators/with-block-editor'`).
 
@@ -73,3 +73,45 @@ Import decorators via the `@prc-storybook` alias (e.g. `import { withBlockEditor
 4. Icon stories rely on committed FontAwesome sprites served from `.storybook/main.ts` `staticDirs` at the same `/wp-content/plugins/prc-icon-library/...` path production uses.
 
 Charting-library chart type stories live under `plugins/prc-charting-library/src/` and are picked up by the same root config.
+
+## `@prc/components` (selected exports)
+
+Shared React UI under `includes/scripts/src/@prc/components/`, exported from `@prc/components` (handle `prc-components`). Documented here when multiple plugins consume the same primitive.
+
+### `CalendarHeatmap` + `AnalyticsPeriodControls`
+
+Year/month analytics picker used by dataset and quiz inspector panels (`prc-datasets` stats sidebar, `prc-quiz-builder` quiz analytics).
+
+```tsx
+import {
+  AnalyticsPeriodControls,
+  CalendarHeatmap,
+  MONTH_LABELS,
+  monthKeyFromIndex,
+} from '@prc/components';
+
+// Month grid: click a cell to drill into daily breakdown for that month.
+<CalendarHeatmap
+  values={monthlyTotals}          // length 12 (Jan–Dec)
+  onCellClick={(index) => setMonth(monthKeyFromIndex(index))}  // "01"–"12"
+  highlightIndex={selectedMonth ? Number(selectedMonth) - 1 : null}
+  getTooltipText={(v) => v.toLocaleString()}
+  renderValue={(v) => formatCompactNumber(v)}
+/>
+
+<AnalyticsPeriodControls
+  years={availableYears}
+  selectedYear={year}
+  onYearChange={setYear}
+  selectedMonth={month}             // "" = all months
+  onMonthChange={setMonth}
+/>
+```
+
+`monthKeyFromIndex(0)` → `"01"` (January). `onCellClick` and `highlightIndex` are optional; without them cells are display-only.
+
+### `AudienceBuildPanel`
+
+DataForm-backed audience cards for Firebase audience builds. Used by `prc-datasets`, `prc-quiz-builder`, and `prc-email-builder` transactional hub.
+
+Props surface `audiences: AudienceSnapshot[]` (verified / unverified / all counts, `builtAt`, optional job stats), async `status`, and callbacks `onBuild`, `onRebuild`, `onDelete`, plus optional `onCreateDraft`. Each card renders read-only `DataForm` fields and an **Update** action that calls `onRebuild` for that verification mode. In-flight job states (`queued`, `scanning`, `building`) disable actions via `isAudienceJobInFlight()`.

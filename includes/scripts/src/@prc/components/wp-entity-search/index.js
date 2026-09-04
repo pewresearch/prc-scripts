@@ -22,8 +22,30 @@ const NOOP = () => {};
  * A component to search for a post or stub by url or title
  * using the WordPress REST API and entities store.
  *
- * @param {*} param0
- * @return
+ * @param {Object}                    param0                   Component props.
+ * @param {string}                    param0.placeholder       Placeholder for the search input.
+ * @param {string}                    param0.searchValue       Pre-populated search input.
+ * @param {Function}                  param0.onSelect          Called with the selected entity.
+ * @param {Function}                  param0.onKeyEnter        Called when Enter is pressed.
+ * @param {Function}                  param0.onKeyESC          Called when Escape is pressed.
+ * @param {number}                    param0.entityId          Currently selected entity id.
+ * @param {string}                    param0.entityType        Entity kind: postType, taxonomy, or user.
+ * @param {string|string[]}           param0.entitySubType     Post type, taxonomy, or user subtype.
+ * @param {string[]}                  param0.entityStatus      Post statuses to include.
+ * @param {number}                    param0.perPage           Result page size.
+ * @param {boolean}                   param0.hideChildren      Hide child posts from results.
+ * @param {Function|boolean}          param0.onUpdateURL       Optional URL update handler.
+ * @param {boolean}                   param0.clearOnSelect     Clear the search after select.
+ * @param {Function|boolean}          param0.createNew         Optional create-new handler.
+ * @param {boolean}                   param0.showExcerpt       Show excerpt in results.
+ * @param {boolean}                   param0.showType          Show entity subtype in results.
+ * @param {boolean}                   param0.showUrl           Show entity URL in results.
+ * @param {boolean}                   param0.showFeaturedImage Show featured image in results.
+ * @param {string}                    param0.searchSize        Search control size: default or large.
+ * @param {string}                    param0.taxonomy          Optional taxonomy to scope post results.
+ * @param {number}                    param0.termId            Optional term ID used with taxonomy.
+ * @param {import('react').ReactNode} param0.children          Optional children.
+ * @return {import('react').ReactElement} Search control and results.
  */
 export default function WPEntitySearch({
 	placeholder = 'Climate Change', // placeholder for the search input
@@ -45,6 +67,8 @@ export default function WPEntitySearch({
 	showUrl = true,
 	showFeaturedImage = false,
 	searchSize = 'default', // compact also available
+	taxonomy = '',
+	termId = 0,
 	children,
 }) {
 	// Setup our search value first thing.
@@ -99,6 +123,8 @@ export default function WPEntitySearch({
 							showType,
 							showUrl,
 							showFeaturedImage,
+							taxonomy,
+							termId,
 						}}
 					>
 						<SearchResults />

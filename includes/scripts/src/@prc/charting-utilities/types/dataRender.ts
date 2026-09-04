@@ -1,3 +1,8 @@
+export type RowFilter = {
+	column: string;
+	exclude: string[];
+};
+
 export type DataRender = {
 	x: string;
 	y: string;
@@ -44,6 +49,7 @@ export type DataRender = {
 	deselectedColor: string;
 	deselectedOpacity: number;
 	highlightedCategories: string[];
+	rowFilter?: RowFilter;
 	// Group Breaks - for visually separating data by category
 	groupBreaksActive?: boolean;
 	groupBreaksCategory?: string;

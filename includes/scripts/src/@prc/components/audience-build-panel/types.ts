@@ -2,8 +2,11 @@ export type VerificationMode = 'verified' | 'unverified' | 'all';
 export type AudiencePanelStatus =
 	| 'idle'
 	| 'loading'
+	| 'queued'
+	| 'scanning'
 	| 'building'
 	| 'deleting'
+	| 'creating-draft'
 	| 'error';
 export type AudienceSnapshot = {
 	key: string;
@@ -28,7 +31,22 @@ export type AudienceBuildPanelProps = {
 	referencingPostIds?: number[];
 	disabled?: boolean;
 	disabledHelpText?: string;
+	jobStats?: {
+		scanned?: number | null;
+		matched?: number | null;
+		v2Groups?: number | null;
+	};
 	onBuild: (args: { verification: VerificationMode }) => void;
 	onRebuild: (args: { verification: VerificationMode }) => void;
 	onDelete: (args: { verification: VerificationMode; key: string }) => void;
+	onCreateDraft?: (args: {
+		verification: VerificationMode;
+		key: string;
+	}) => void;
 };
+
+export function isAudienceJobInFlight(status: AudiencePanelStatus): boolean {
+	return (
+		status === 'queued' || status === 'scanning' || status === 'building'
+	);
+}
