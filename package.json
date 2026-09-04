@@ -1,6 +1,6 @@
 {
 	"name": "@prc/scripts",
-	"version": "1.2.1",
+	"version": "1.2.0",
 	"description": "Shared first-party (@prc/*) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.",
 	"scripts": {
 		"build": "echo '@prc/scripts is a meta-package; sub-packages built via turbo dependency graph'",
