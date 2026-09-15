@@ -1,6 +1,12 @@
+/**
+ * WordPress packages ship with the editor host. This package does not list
+ * them as npm dependencies.
+ */
+/* eslint-disable import/no-extraneous-dependencies */
 import apiFetch from '@wordpress/api-fetch';
 import { dispatch, select } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
+/* eslint-enable import/no-extraneous-dependencies */
 
 import type {
 	CreatePartialSaveClientConfig,
@@ -98,20 +104,23 @@ export function createSettingsClient<
 		}
 	}
 
+	function invalidateInFlightSave() {
+		if (draining) {
+			// Drop stale hydration so a slower earlier POST cannot clobber
+			// patches applied while it was outstanding.
+			saveGeneration += 1;
+		}
+	}
+
 	function saveSettings(options?: SaveSettingsOptions): Promise<TResponse> {
 		return new Promise<TResponse>((resolve, reject) => {
-			if (draining) {
-				// Invalidate in-flight hydration so a slower earlier POST cannot
-				// clobber patches applied while it was outstanding.
-				saveGeneration += 1;
-			}
-
+			invalidateInFlightSave();
 			queue.push({ options, resolve, reject });
 			void drainQueue();
 		});
 	}
 
-	return { fetchSettings, saveSettings };
+	return { fetchSettings, saveSettings, invalidateInFlightSave };
 }
 
 export function createPartialSaveClient<

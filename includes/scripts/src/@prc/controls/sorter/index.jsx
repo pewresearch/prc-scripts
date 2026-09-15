@@ -2,12 +2,22 @@
 /* eslint-disable @wordpress/no-unsafe-wp-apis */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable @wordpress/components-no-missing-40px-size-prop */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 /**
  * External Dependencies
  */
 import { List, arrayMove, arrayRemove } from 'react-movable';
 import styled from '@emotion/styled';
-import { plus } from '@wordpress/icons';
+import {
+	Icon as WPIcon,
+	plus,
+	trash,
+	seen,
+	unseen,
+	moreVertical,
+} from '@wordpress/icons';
 /**
  * Wordpress Dependencies
  */
@@ -33,7 +43,7 @@ const PopoverControls = ({ children }) => {
 	const [visible, setVisible] = useState(false);
 	return (
 		<Button style={{ width: '100%' }} onClick={() => setVisible(!visible)}>
-			<Icon icon="ellipsis-vertical" />
+			<WPIcon icon={moreVertical} />
 			{visible && (
 				<Popover placement="top-end">
 					<div
@@ -108,7 +118,7 @@ function Sorter({
 		setTimeout(() => {
 			setInputValue('');
 		}, 100);
-	}
+	};
 
 	return (
 		<Fragment>
@@ -219,12 +229,12 @@ function Sorter({
 											{!value.disabled ? (
 												<IconSpan>
 													Item is visible{' '}
-													<Icon icon="eye" />
+													<WPIcon icon={seen} />
 												</IconSpan>
 											) : (
 												<IconSpan>
 													Item is hidden{' '}
-													<Icon icon="eye-slash" />
+													<WPIcon icon={unseen} />
 												</IconSpan>
 											)}
 										</Button>
@@ -285,7 +295,7 @@ function Sorter({
 											>
 												<IconSpan>
 													Remove Item{' '}
-													<Icon icon="trash" />
+													<WPIcon icon={trash} />
 												</IconSpan>
 											</Button>
 										)}
@@ -308,7 +318,7 @@ function Sorter({
 					<KeyboardShortcuts
 						bindGlobal
 						shortcuts={{
-							'enter': () => {
+							enter: () => {
 								handleAddNewOption();
 							},
 						}}

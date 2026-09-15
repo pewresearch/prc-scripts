@@ -4,19 +4,19 @@ Registers the PRC icon library as a WordPress script (`prc-icons`) and exposes a
 
 ## What it does
 
-- Registers and enqueues `build/index.js` + `build/style-index.css` on both `enqueue_block_assets` and `admin_enqueue_scripts`
+- Registers `prc-icons` on `init` and enqueues `build/index.js` + `build/style-index.css` on `enqueue_block_assets`, `enqueue_block_editor_assets`, and `admin_enqueue_scripts`
 - Exposes `icon-render.php` for server-side icon rendering
 - Provides the `@prc/icons` package available as a webpack external via the build toolchain
 
 ## Key files
 
-| File | Purpose |
-|------|---------|
-| `class-icon-loader.php` | Asset registration and enqueue |
-| `icon-render.php` | Server-side icon rendering helper |
-| `src/` | Icon library source (React component + icon set) |
-| `build/` | Compiled assets |
-| `bin/` | Build utilities |
+| File                    | Purpose                                          |
+| ----------------------- | ------------------------------------------------ |
+| `class-icon-loader.php` | Asset registration and enqueue                   |
+| `icon-render.php`       | Server-side icon rendering helper                |
+| `src/`                  | Icon library source (React component + icon set) |
+| `build/`                | Compiled assets                                  |
+| `bin/`                  | Build utilities                                  |
 
 ## Using icons in a block
 
@@ -25,7 +25,7 @@ In JavaScript (block editor):
 ```js
 import { Icon } from '@prc/icons';
 
-<Icon icon="arrow-right" />
+<Icon icon="arrow-right" />;
 ```
 
 In PHP (server-side render):
@@ -37,10 +37,12 @@ echo prc_render_icon( 'arrow-right' );
 
 ## Hooks
 
-| Hook | Direction | Description |
-|------|-----------|-------------|
-| `enqueue_block_assets` | Action | Enqueues icons for blocks (editor + frontend) |
-| `admin_enqueue_scripts` | Action | Enqueues icons in WP Admin |
+| Hook                          | Direction | Description                                                  |
+| ----------------------------- | --------- | ------------------------------------------------------------ |
+| `init`                        | Action    | Registers first-party `@prc/*` handles including `prc-icons` |
+| `enqueue_block_assets`        | Action    | Enqueues icons for blocks (frontend + iframed editor canvas) |
+| `enqueue_block_editor_assets` | Action    | Enqueues icons on the outer block-editor admin frame         |
+| `admin_enqueue_scripts`       | Action    | Enqueues icons in WP Admin                                   |
 
 ## Build
 

@@ -1,74 +1,32 @@
-// for each svg file in the build directory, create a json file with the same name
-// and the following content:
-// {
-// 	"library": {filename},
-// 	"icons": [ ... ]
-// }
-// where the icons array contains ids of each symbol in the svg file
-//
+/**
+ * Copy the curated PRC + brands picker index into icon-library-index.json.
+ *
+ * Fill sprites live at prc-icon-library/build/icons/{prc,brands}.svg.
+ * Font Awesome Pro weight sprites are gone.
+ */
+
+/* eslint-disable no-console -- CLI status for the generate:index script. */
 
 const fs = require('fs');
 const path = require('path');
 
-// Extract `id` attributes from every <symbol> element in an SVG sprite.
-// Avoids pulling in `jsdom` (and its transitive `tough-cookie`/`url-parse` chain)
-// just to read attribute values from a static file.
-function extractSymbolIds(svg) {
-	const symbolRegex = /<symbol\b([^>]*)>/g;
-	const idRegex = /\bid\s*=\s*(?:"([^"]*)"|'([^']*)')/;
-	const ids = [];
-	for (const match of svg.matchAll(symbolRegex)) {
-		const attrs = match[1];
-		const idMatch = attrs.match(idRegex);
-		if (idMatch) {
-			ids.push(idMatch[1] !== undefined ? idMatch[1] : idMatch[2]);
-		}
-	}
-	return ids;
-}
+const curatedPath = path.join(__dirname, '../src/curated-prc-icons.json');
+const outputFile = path.join(__dirname, '../src/icon-library-index.json');
 
-// Sprite sources live in prc-icon-library (sibling plugin under plugins/).
-// From bin/: seven levels up to plugins/, then prc-icon-library/build/icons/sprites.
-const buildDir = path.join(
-	__dirname,
-	'../../../../../../../prc-icon-library/build/icons/sprites'
-);
-// if the build directory does not exist, log an error and exit
-if (!fs.existsSync(buildDir)) {
+if (!fs.existsSync(curatedPath)) {
 	console.error(
-		'Build directory does not exist. Run `npm run build` in `plugins/prc-icon-library` first.'
+		'Missing curated-prc-icons.json. Run `npm run generate:icon-manifest -w @prc/icon-library` first.'
 	);
 	process.exit(1);
 }
-const files = fs.readdirSync(buildDir);
 
-const outputDir = path.join(__dirname, '../src');
-const outputFile = path.join(outputDir, 'icon-library-index.json');
+const curated = JSON.parse(fs.readFileSync(curatedPath, 'utf8'));
+const index = {
+	prc: Array.isArray(curated.prc) ? curated.prc : [],
+	brands: Array.isArray(curated.brands) ? curated.brands : [],
+};
 
-// Ensure output directory exists
-if (!fs.existsSync(outputDir)) {
-	fs.mkdirSync(outputDir, { recursive: true });
-}
-
-// Read existing icons if file exists, otherwise start fresh
-let icons = {};
-if (fs.existsSync(outputFile)) {
-	try {
-		icons = JSON.parse(fs.readFileSync(outputFile, 'utf8'));
-	} catch (e) {
-		console.warn(
-			'Could not parse existing icon-library-index.json, starting fresh.'
-		);
-		icons = {};
-	}
-}
-
-files.forEach((file) => {
-	const filePath = path.join(buildDir, file);
-	const svg = fs.readFileSync(filePath, 'utf8');
-	const iconNames = extractSymbolIds(svg);
-	const library = file.replace('.svg', '');
-	icons[library] = iconNames.sort();
-});
-
-fs.writeFileSync(outputFile, JSON.stringify(icons, null, 2));
+fs.writeFileSync(outputFile, `${JSON.stringify(index, null, 2)}\n`);
+console.log(
+	`Wrote icon-library-index.json (${index.prc.length} prc, ${index.brands.length} brands)`
+);

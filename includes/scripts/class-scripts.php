@@ -1,10 +1,28 @@
 <?php
+/**
+ * Shared first-party and third-party script registration.
+ *
+ * @package PRC\Platform
+ */
+
 namespace PRC\Platform;
 
+/**
+ * Registers and enqueues `@prc/*` and third-party script handles.
+ */
 class Scripts {
-	// Note: These are public static properties so that they can be accessed from other classes and iterated over.
+	/**
+	 * REST endpoints registered by first-party components.
+	 *
+	 * @var array
+	 */
 	public static $rest_endpoints = array();
 
+	/**
+	 * Constructor.
+	 *
+	 * @param mixed $loader Loader.
+	 */
 	public function __construct( $loader = null ) {
 		if ( null !== $loader ) {
 			// Initialize component rest endpoints.
@@ -20,9 +38,16 @@ class Scripts {
 			// Enqueue scripts in the admin area.
 			$loader->add_action( 'admin_enqueue_scripts', $this, 'init_first_party_scripts', 0 );
 			$loader->add_action( 'admin_enqueue_scripts', $this, 'init_third_party_scripts', 0 );
+			// Register first-party handles on init so later enqueue calls find them.
+			$loader->add_action( 'init', $this, 'init_first_party_scripts', 20 );
 			// Always load @prc/icons (replaces Icon_Loader::enqueue_icon_loader).
+			// enqueue_block_assets is the Gutenberg iframe path. enqueue_block_editor_assets
+			// covers the outer admin frame. Register-before-enqueue inside the callback
+			// so the isolated WP_Styles instance used for __unstableResolvedAssets has
+			// the prc-icons handle.
 			$loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_prc_icons_everywhere', 10 );
 			$loader->add_action( 'enqueue_block_assets', $this, 'enqueue_prc_icons_everywhere', 10 );
+			$loader->add_action( 'enqueue_block_editor_assets', $this, 'enqueue_prc_icons_everywhere', 10 );
 		}
 	}
 
@@ -62,7 +87,7 @@ class Scripts {
 	 * @return void
 	 */
 	public function localize_platform_info(): void {
-		$version     = defined( 'PRC_PLATFORM_VERSION' ) ? \PRC_PLATFORM_VERSION : '1.0.0';
+		$version      = defined( 'PRC_PLATFORM_VERSION' ) ? \PRC_PLATFORM_VERSION : '1.0.0';
 		$release_name = defined( 'PRC_PLATFORM_RELEASE_NAME' ) ? \PRC_PLATFORM_RELEASE_NAME : '';
 		wp_localize_script(
 			'react', // We bind this to react which is effectively enqueued everywhere.
@@ -117,9 +142,20 @@ class Scripts {
 	 * Enqueue the shared @prc/icons bundle on every screen that loads block/editor assets.
 	 * Replaces the former Icon_Loader class (admin_enqueue_scripts + enqueue_block_assets).
 	 *
+	 * Gutenberg collects canvas iframe styles by firing `enqueue_block_assets` on a
+	 * fresh `WP_Styles` instance (`__unstableResolvedAssets`). Handles registered
+	 * only on `admin_enqueue_scripts` are missing there, so register first.
+	 *
+	 * @hook enqueue_block_assets
+	 * @hook enqueue_block_editor_assets
+	 * @hook admin_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_prc_icons_everywhere(): void {
+		if ( ! wp_script_is( 'prc-icons', 'registered' ) || ! wp_style_is( 'prc-icons', 'registered' ) ) {
+			$this->init_first_party_scripts();
+		}
 		wp_enqueue_script( 'prc-icons' );
 		wp_enqueue_style( 'prc-icons' );
 	}

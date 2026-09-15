@@ -22,14 +22,14 @@ function IconPickerDemo({
 	showSearch?: boolean;
 }) {
 	const [value, setValue] = useState<IconPickerValue>({
-		library: 'solid',
-		icon: 'chart-line',
+		library: 'prc',
+		icon: 'magnifying-glass',
 		position: 'left',
 	});
 	return (
 		<div style={{ maxWidth: 360 }}>
 			<IconPicker
-				library={value.library ?? 'solid'}
+				library={value.library ?? 'prc'}
 				icon={value.icon}
 				position={value.position}
 				onChange={(next) =>

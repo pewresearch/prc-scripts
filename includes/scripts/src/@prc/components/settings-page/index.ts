@@ -1,3 +1,6 @@
+export { DataForm } from '@wordpress/dataviews';
+export type { DataFormControlProps, Field, Form } from '@wordpress/dataviews';
+
 export { default as SettingsAccordion } from './settings-accordion';
 export { default as SettingsSubSection } from './settings-sub-section';
 export { default as SettingsPage } from './settings-page';

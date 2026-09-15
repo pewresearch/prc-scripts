@@ -26,7 +26,7 @@ final class Settings_Page_Boot {
 	/**
 	 * Container ids for which Boot was started this request.
 	 *
-	 * admin_enqueue_scripts runs before the page callback, so render() can
+	 * The admin_enqueue_scripts hook runs before the page callback, so render() can
 	 * fall back to classic .wrap when Boot files exist but the plugin skipped
 	 * enqueue (e.g. missing index.asset.php) and would otherwise print an
 	 * empty stage that hides every other #wpbody-content sibling.
@@ -81,6 +81,8 @@ final class Settings_Page_Boot {
 	 * @param string $container_id  Mount node id.
 	 */
 	public static function enqueue( string $script_handle, string $version, string $container_id ): void {
+		self::ensure_optional_script_handles();
+
 		if ( ! self::is_available() ) {
 			return;
 		}
@@ -95,6 +97,20 @@ final class Settings_Page_Boot {
 		self::enqueue_boot_styles( $boot_deps, $version );
 		self::enqueue_boot_runtime( $script_handle, $version, $container_id );
 		self::$enqueued_containers[ $container_id ] = true;
+	}
+
+	/**
+	 * Register optional handles that a settings bundle may still list.
+	 *
+	 * @return void
+	 */
+	public static function ensure_optional_script_handles(): void {
+		if ( wp_script_is( 'firebase', 'registered' ) ) {
+			return;
+		}
+
+		$version = defined( 'PRC_SCRIPTS_VERSION' ) ? PRC_SCRIPTS_VERSION : '1.0.0';
+		wp_register_script( 'firebase', false, array(), $version, true );
 	}
 
 	/**

@@ -1,6 +1,10 @@
 /**
  * WordPress Dependencies
+ *
+ * WordPress packages ship with the editor host. This package does not list
+ * them as npm dependencies.
  */
+/* eslint-disable import/no-extraneous-dependencies */
 import { __ } from '@wordpress/i18n';
 import {
 	SelectControl,
@@ -19,12 +23,22 @@ import {
 } from '@wordpress/components';
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { useInstanceId } from '@wordpress/compose';
+/* eslint-enable import/no-extraneous-dependencies */
 
 /**
  * External Dependencies
  */
 // @ts-expect-error - @prc/icons is a JS package without published types.
-import { IconLibraryIndex, Icon } from '@prc/icons';
+import { IconLibraryIndex, Icon, curatedPrcIcons } from '@prc/icons';
+
+import {
+	buildCuratedIconIndex,
+	isIconInCuratedIndex,
+	libraryForCommit,
+	normalizePickerLibrary,
+	PRC_PICKER_LIBRARY,
+	type CuratedPickerIndex,
+} from './curated-index';
 
 import './styles.scss';
 
@@ -53,13 +67,19 @@ export interface IconPickerProps {
 
 const ICONS_PER_PAGE = 60;
 
-const LIBRARY_OPTIONS = Object.keys(
-	IconLibraryIndex as Record<string, string[]>
-).map((lib) => ({
-	label: lib
-		.split('-')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' '),
+const CURATED_ICON_INDEX = buildCuratedIconIndex(
+	curatedPrcIcons as CuratedPickerIndex,
+	((IconLibraryIndex as Record<string, string[]>).brands || []) as string[]
+);
+
+const LIBRARY_OPTIONS = Object.keys(CURATED_ICON_INDEX).map((lib) => ({
+	label:
+		lib === PRC_PICKER_LIBRARY
+			? 'PRC Icons'
+			: lib
+					.split('-')
+					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(' '),
 	value: lib,
 }));
 
@@ -79,7 +99,7 @@ function IconGrid({ library, iconName, search, onSelect }: IconGridProps) {
 
 	const filtered = useMemo<string[]>(() => {
 		const all =
-			(IconLibraryIndex as Record<string, string[]>)[library] || [];
+			(CURATED_ICON_INDEX as Record<string, string[]>)[library] || [];
 		if (!search) return all;
 		const q = search.toLowerCase();
 		return all.filter((n) => n.toLowerCase().includes(q));
@@ -95,11 +115,16 @@ function IconGrid({ library, iconName, search, onSelect }: IconGridProps) {
 				{visible.map((n) => (
 					<Tooltip key={n} text={n}>
 						<Button
+							size="small"
 							isPressed={n === iconName}
 							onClick={() => onSelect(n)}
 							className="prc-icon-picker__cell"
 						>
-							<Icon library={library} icon={n} size={1} />
+							<Icon
+								library={libraryForCommit(library, n)}
+								icon={n}
+								size={1}
+							/>
 						</Button>
 					</Tooltip>
 				))}
@@ -162,24 +187,36 @@ export default function IconPicker({
 	showPosition = true,
 	showSearch = true,
 }: IconPickerProps) {
-	const [browseLibrary, setBrowseLibrary] = useState(library);
+	const [browseLibrary, setBrowseLibrary] = useState(
+		normalizePickerLibrary(library, icon, CURATED_ICON_INDEX)
+	);
 	const [search, setSearch] = useState('');
 	const baseId = `prc-icon-picker-${useInstanceId(IconPicker)}`;
+	const isSelectedIconCurated = isIconInCuratedIndex(
+		icon,
+		CURATED_ICON_INDEX
+	);
 
 	useEffect(() => {
-		setBrowseLibrary(library);
-	}, [library]);
+		setBrowseLibrary(
+			normalizePickerLibrary(library, icon, CURATED_ICON_INDEX)
+		);
+	}, [library, icon]);
 
 	return (
 		<VStack gap={1}>
 			<SelectControl
+				__next40pxDefaultSize
 				label={__('Library')}
 				value={browseLibrary}
 				options={LIBRARY_OPTIONS}
 				onChange={(val) => {
 					setBrowseLibrary(val);
 					setSearch('');
-					onChange({ library: val, icon: undefined });
+					onChange({
+						library: val,
+						icon: undefined,
+					});
 				}}
 			/>
 			{showSearch && (
@@ -188,6 +225,13 @@ export default function IconPicker({
 					value={search}
 					onChange={setSearch}
 				/>
+			)}
+			{!isSelectedIconCurated && (
+				<p className="prc-icon-picker__legacy-selection">
+					{__(
+						'This saved icon is outside the curated PRC icon set. Choose a replacement to keep it supported.'
+					)}
+				</p>
 			)}
 			<BaseControl
 				id={`${baseId}-grid`}
@@ -200,7 +244,13 @@ export default function IconPicker({
 					iconName={icon}
 					search={search}
 					onSelect={(selectedName) =>
-						onChange({ icon: selectedName })
+						onChange({
+							library: libraryForCommit(
+								browseLibrary,
+								selectedName
+							),
+							icon: selectedName,
+						})
 					}
 				/>
 			</BaseControl>

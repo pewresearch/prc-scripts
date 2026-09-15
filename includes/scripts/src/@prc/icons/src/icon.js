@@ -1,28 +1,15 @@
+/* eslint-disable import/no-extraneous-dependencies -- WordPress provides @wordpress/element at runtime. */
 import { memo, useMemo } from '@wordpress/element';
 
-const AVAILABLE_LIBRARIES = [
-	'brands',
-	'duotone',
-	'light',
-	'regular',
-	'sharp',
-	'sharp-solid',
-	'sharp-regular',
-	'sharp-light',
-	'sharp-thin',
-	'solid',
-	'thin',
-	'custom-icons',
-];
+import curatedPrcIcons from './curated-prc-icons.json';
+import {
+	PRC_LIBRARY,
+	getIconSpriteHref,
+	resolveIconSource,
+} from './resolve-icon-source';
 
 // Module-level cache for icon sources
 const iconSourceCache = new Map();
-
-// Memoize the base URL path
-const getBaseIconPath = (() => {
-	const basePath = `${window.location.origin}/wp-content/plugins/prc-icon-library/build/icons/sprites`;
-	return (library) => `${basePath}/${library}.svg`;
-})();
 
 const VALID_UNITS = [
 	'px',
@@ -47,23 +34,37 @@ function hasUnit(value) {
 }
 
 const Icon = memo(
-	({ library = 'solid', icon, size = 1, color = null, className = '' }) => {
-		// Validate library first
-		const validLibrary = AVAILABLE_LIBRARIES.includes(library)
-			? library
-			: 'solid';
+	({
+		library = PRC_LIBRARY,
+		icon,
+		size = 1,
+		color = null,
+		className = '',
+	}) => {
+		const source = resolveIconSource({
+			library,
+			icon,
+			curatedNames: curatedPrcIcons.prc,
+			approvedBrandNames: curatedPrcIcons.brands,
+		});
+		const { spriteLibrary, kind } = source;
+		const resolvedIcon = source.icon;
+		const isMissing = kind === 'missing';
 
-		// Get or create the xlinkHref value using the module-level cache
 		const xlinkHref = useMemo(() => {
-			const cacheKey = `${validLibrary}#${icon}`;
+			const cacheKey = `${kind}:${spriteLibrary}#${resolvedIcon}`;
 			if (!iconSourceCache.has(cacheKey)) {
+				const origin =
+					typeof window !== 'undefined' && window.location
+						? window.location.origin
+						: '';
 				iconSourceCache.set(
 					cacheKey,
-					`${getBaseIconPath(validLibrary)}#${icon}`
+					getIconSpriteHref(origin, spriteLibrary, resolvedIcon, kind)
 				);
 			}
 			return iconSourceCache.get(cacheKey);
-		}, [validLibrary, icon]);
+		}, [kind, spriteLibrary, resolvedIcon]);
 
 		const sizeUnit = useMemo(() => {
 			if (typeof size === 'number') {
@@ -90,11 +91,11 @@ const Icon = memo(
 			};
 		}, [sizeUnit, colorStyle]);
 
-		if (!icon || typeof icon !== 'string') {
+		if (!icon || typeof icon !== 'string' || isMissing) {
 			return null;
 		}
 
-		const rootClassName = className ? `icon ${className}` : 'icon';
+		const rootClassName = ['icon', className].filter(Boolean).join(' ');
 
 		return (
 			<i className={rootClassName}>

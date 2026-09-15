@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Size } from '../types/windowSize';
+import { readContainerSize } from './readContainerSize';
 
 function useSize(
 	className: string | undefined,
@@ -18,7 +19,7 @@ function useSize(
 			const windowHeight = window.innerHeight;
 
 			if (element) {
-				const { width, height } = element.getBoundingClientRect();
+				const { width, height } = readContainerSize(element);
 				setSize({ width, height, windowWidth, windowHeight });
 				return;
 			}
@@ -48,14 +49,18 @@ function useSize(
 			resizeObserver.observe(element);
 		}
 
-		if (
+		const hasTabs =
 			document.querySelector('.wp-block-prc-block-tabs') ||
-			document.querySelector('.wp-block-tabs')
-		) {
+			document.querySelector('.wp-block-tabs');
+		const hasDialog = document.querySelector('.wp-block-prc-block-dialog');
+
+		if (hasTabs) {
 			window.addEventListener('tabsReady', handleResize);
-		} else if (document.querySelector('.wp-block-prc-block-dialog')) {
+		}
+		if (hasDialog) {
 			window.addEventListener('wpDialogAnimationEnd', handleResize);
-		} else {
+		}
+		if (!hasTabs && !hasDialog) {
 			window.addEventListener('load', handleResize);
 		}
 

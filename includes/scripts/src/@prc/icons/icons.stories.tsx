@@ -1,5 +1,7 @@
+// eslint-disable-next-line import/no-extraneous-dependencies -- Storybook types.
 import { useState } from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies -- Storybook webpack alias.
 import { SearchControl, SelectControl } from '@wordpress/components';
 
 // eslint-disable-next-line import/no-unresolved -- resolved via the Storybook @prc/* webpack alias.
@@ -24,8 +26,8 @@ export const Single: StoryObj<{
 		library: { control: 'select', options: libraries },
 	},
 	args: {
-		library: 'solid',
-		icon: 'chart-line',
+		library: 'prc',
+		icon: 'circle-plus',
 		size: 3,
 	},
 	render: (args) => (
@@ -34,7 +36,7 @@ export const Single: StoryObj<{
 };
 
 function IconGallery() {
-	const [library, setLibrary] = useState('solid');
+	const [library, setLibrary] = useState('prc');
 	const [search, setSearch] = useState('');
 	const icons = (
 		(IconLibraryIndex as Record<string, string[]>)[library] ?? []
@@ -58,6 +60,7 @@ function IconGallery() {
 						value: lib,
 					}))}
 					onChange={setLibrary}
+					__next40pxDefaultSize
 					__nextHasNoMarginBottom
 				/>
 				<SearchControl
