@@ -295,10 +295,19 @@ class Rest_API_Endpoint {
 		}
 
 		$post_type = $post->post_type;
+		/**
+		 * Dataset and staff public URLs are term archives. Keep the term as the
+		 * search hit, but expose the CPT ID so consumers that persist post IDs
+		 * (e.g. dataset download buttons) do not store a colliding term ID.
+		 */
 		if ( in_array( $post_type, array( 'dataset', 'staff' ), true ) ) {
 			$term = \TDS\get_related_term( $post_id );
 			if ( $term ) {
-				return $this->shape_item( $term );
+				$shaped = $this->shape_item( $term );
+				if ( is_object( $shaped ) ) {
+					$shaped->entityPostId = (int) $post_id; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DTO matches entityId.
+				}
+				return $shaped;
 			}
 		}
 
