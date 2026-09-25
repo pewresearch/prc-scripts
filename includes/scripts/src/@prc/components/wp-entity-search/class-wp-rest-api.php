@@ -13,7 +13,7 @@ use WP_User;
 use WP_User_Query;
 use WP_Term_Query;
 use WP_REST_Request;
-use PRC\URL_Helper;
+use PRC\Primitives\URL_Helper\URL_Helper;
 
 /**
  * WP Entity Search REST API Endpoint.
@@ -301,7 +301,7 @@ class Rest_API_Endpoint {
 		 * (e.g. dataset download buttons) do not store a colliding term ID.
 		 */
 		if ( in_array( $post_type, array( 'dataset', 'staff' ), true ) ) {
-			$term = \TDS\get_related_term( $post_id );
+			$term = \PRC\Primitives\TDS\get_related_term( $post_id );
 			if ( $term ) {
 				$shaped = $this->shape_item( $term );
 				if ( is_object( $shaped ) ) {

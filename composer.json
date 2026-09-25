@@ -6,17 +6,12 @@
 	"require": {
 		"php": ">=8.2",
 		"automattic/jetpack-autoloader": "^5.0",
-		"prc/url-helper": "^1.0",
-		"prc/wp-html-processors": "^1.0"
+		"prc/primitives": "^2.0"
 	},
 	"repositories": {
-		"prc-url-helper": {
+		"prc-primitives": {
 			"type": "vcs",
-			"url": "https://github.com/pewresearch/prc-url-helper"
-		},
-		"wp-html-processors": {
-			"type": "vcs",
-			"url": "https://github.com/pewresearch/wp-html-processors"
+			"url": "https://github.com/pewresearch/prc-primitives.git"
 		}
 	},
 	"config": {

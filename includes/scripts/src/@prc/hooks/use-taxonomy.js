@@ -13,7 +13,7 @@ export default function useTaxonomy(
 		const { getEntityRecords } = select(coreStore);
 
 		const tax =
-			null !== slug
+			taxonomy && slug
 				? getEntityRecords('taxonomy', taxonomy, {
 						context: 'view',
 						per_page: 1,

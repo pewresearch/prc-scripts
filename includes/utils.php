@@ -266,7 +266,7 @@ namespace PRC\Platform\Icons {
 	 * @return string
 	 */
 	function icon_wrapper_class_names( $icon_library, $icon_name ) {
-		return \PRC\BlockUtils\classNames(
+		return \PRC\Primitives\BlockUtils\classNames(
 			'icon',
 			array(
 				'icon-library__' . $icon_library,

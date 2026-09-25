@@ -1,4 +1,6 @@
 export { useSize } from './useSize';
+export { useSeriesMask } from './useSeriesMask';
+export type { UseSeriesMaskInput } from './useSeriesMask';
 export { useDarkMode } from './useDarkMode';
 export { useLocalStorage } from './useLocalStorage';
 export { useMedia } from './useMedia';

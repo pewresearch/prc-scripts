@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 
-export default function NoResults({ createNew }) {
+export default function NoResults({ createNew, searchString }) {
 	return (
 		<div
 			style={{
@@ -22,7 +22,9 @@ export default function NoResults({ createNew }) {
 						<span>{__('No results found.')}</span>
 					</div>
 				)}
-				{typeof createNew === 'function' && <div>{createNew()}</div>}
+				{typeof createNew === 'function' && (
+					<div>{createNew(searchString)}</div>
+				)}
 			</div>
 		</div>
 	);

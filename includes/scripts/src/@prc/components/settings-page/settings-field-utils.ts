@@ -204,6 +204,10 @@ export function toDataFormField(
 		dataFormField.Edit = dataFormEditForField(field);
 	}
 
+	if (typeof field.step === 'number') {
+		Object.assign(dataFormField, { step: field.step });
+	}
+
 	if (field.min !== undefined || field.max !== undefined) {
 		dataFormField.isValid = {
 			...(field.min !== undefined ? { min: field.min } : {}),

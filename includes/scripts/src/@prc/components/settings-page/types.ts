@@ -38,6 +38,7 @@ export interface SettingsFieldConfig {
 	autoSave?: boolean;
 	min?: number;
 	max?: number;
+	step?: number;
 	rows?: number;
 	placeholder?: string;
 	format?: (value: unknown, settings: Record<string, unknown>) => unknown;

@@ -199,7 +199,11 @@ export function SettingsNumberEdit<Item>({
 }: DataFormControlProps<Item>) {
 	const { label, description, getValue, setValue, isValid } = field;
 	const value = getValue({ item: data });
-	const step = field.type === 'integer' ? 1 : undefined;
+	const configuredStep =
+		'step' in field && typeof field.step === 'number'
+			? field.step
+			: undefined;
+	const step = field.type === 'integer' ? 1 : (configuredStep ?? 'any');
 
 	return (
 		<NumberControl

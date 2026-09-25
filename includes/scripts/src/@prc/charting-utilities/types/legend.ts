@@ -67,6 +67,16 @@ export type LegendItemCustomization = {
 
 export type Legend = {
 	active: boolean;
+	/**
+	 * When true, published-chart legend clicks hide that series for the page view.
+	 * Editor clicks still customize. Default false.
+	 */
+	clickToHide?: boolean;
+	/**
+	 * When set, a legend click on any member toggles hide for every key in that group.
+	 * Empty or omitted means one legend item toggles one hide key.
+	 */
+	clickToHideGroups?: string[][];
 	orientation: 'row' | 'column' | 'row-reverse' | 'column-reverse';
 	title: string;
 	offsetX: number;

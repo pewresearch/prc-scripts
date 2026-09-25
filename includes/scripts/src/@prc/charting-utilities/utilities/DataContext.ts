@@ -2,6 +2,12 @@ import { createContext } from 'react';
 import { BaseConfig } from '../types/configTypes';
 import baseConfig from './baseConfig';
 import { randomDataPoints } from './randomData';
+import type { SeriesMaskView } from './seriesMask';
+
+export type LegendItemsController = {
+	onClick?: (key: string, text: string, el: EventTarget) => void;
+	getItemOpacity?: (key: string) => number;
+};
 
 type Data = {
 	data: any;
@@ -22,6 +28,8 @@ type Data = {
 	 * The frontend never sets this.
 	 */
 	animationPreview?: boolean;
+	seriesMask?: SeriesMaskView;
+	legendItems?: LegendItemsController;
 };
 export const DataContext = createContext<Data>({
 	data: [randomDataPoints(2, 1, 10)],

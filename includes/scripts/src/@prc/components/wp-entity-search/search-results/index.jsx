@@ -32,7 +32,7 @@ export default function SearchResults({}) {
 			<LoadingIndicator enabled={isLoading} label={loadingLabel} />
 
 			{hasNothingFound && !!searchString && (
-				<NoResults createNew={createNew} />
+				<NoResults createNew={createNew} searchString={searchString} />
 			)}
 
 			{hasSearchRecords && (
@@ -66,6 +66,7 @@ export default function SearchResults({}) {
 				>
 					<div> ~ or ~ </div>
 					<Button
+						__next40pxDefaultSize
 						variant="secondary"
 						onClick={() => {
 							onUpdateURL();

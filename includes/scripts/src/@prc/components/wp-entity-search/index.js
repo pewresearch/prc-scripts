@@ -36,7 +36,7 @@ const NOOP = () => {};
  * @param {boolean}                   param0.hideChildren      Hide child posts from results.
  * @param {Function|boolean}          param0.onUpdateURL       Optional URL update handler.
  * @param {boolean}                   param0.clearOnSelect     Clear the search after select.
- * @param {Function|boolean}          param0.createNew         Optional create-new handler.
+ * @param {Function|boolean}          param0.createNew         Optional create-new handler. Called with the current search text.
  * @param {boolean}                   param0.showExcerpt       Show excerpt in results.
  * @param {boolean}                   param0.showType          Show entity subtype in results.
  * @param {boolean}                   param0.showUrl           Show entity URL in results.

@@ -7,7 +7,7 @@
 
 namespace PRC\Platform\Scripts\Url_Search;
 
-use PRC\URL_Helper;
+use PRC\Primitives\URL_Helper\URL_Helper;
 use WP_Error;
 use WP_REST_Request;
 

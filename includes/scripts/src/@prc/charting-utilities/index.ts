@@ -47,6 +47,7 @@ export * from './types/heatMapTable';
 // React hooks
 export {
 	useSize,
+	useSeriesMask,
 	useDarkMode,
 	useLocalStorage,
 	useMedia,
@@ -59,6 +60,7 @@ export {
 	fipsToStateAbbr,
 } from './hooks';
 export type {
+	UseSeriesMaskInput,
 	UseWorldCountryDataArgs,
 	UseWorldCountryDataResult,
 	UseStateDataArgs,
@@ -118,6 +120,15 @@ export { getLinearValueDataExtent } from './utilities/getLinearValueDataExtent';
 export { resolveLinearScaleDomain } from './utilities/resolveLinearScaleDomain';
 export { resolveTimeScaleDomain } from './utilities/resolveTimeScaleDomain';
 export { DataContext, DataProvider } from './utilities/DataContext';
+export type { LegendItemsController } from './utilities/DataContext';
+export {
+	INERT_SERIES_MASK,
+	categoryKeyFromLegendDatum,
+	chartTypeSupportsSeriesMask,
+	markHideKey,
+	seriesMaskShouldHideTooltip,
+} from './utilities/seriesMask';
+export type { SeriesMaskView } from './utilities/seriesMask';
 export { createTopologyLoader } from './utilities/loadTopology';
 export { MAP_REGION_PRESETS } from './utilities/mapRegionPresets';
 export type { MapRegionPreset } from './utilities/mapRegionPresets';
