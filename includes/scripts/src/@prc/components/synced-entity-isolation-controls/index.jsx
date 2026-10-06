@@ -24,6 +24,7 @@ export default function SyncedEntityIsolationControls({
 	labels,
 	extraToolbarItems = null,
 	extraInspectorContent = null,
+	extraInspectorActions = null,
 }) {
 	const { ref } = attributes;
 
@@ -68,6 +69,7 @@ export default function SyncedEntityIsolationControls({
 				<PanelBody title={panelTitle}>
 					{extraInspectorContent}
 					<TextControl
+						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={entityTitleLabel}
 						value={entityTitle}
@@ -77,6 +79,7 @@ export default function SyncedEntityIsolationControls({
 					{showPreview && (
 						<PanelRow>
 							<Button
+								__next40pxDefaultSize
 								variant="secondary"
 								onClick={openPreview}
 								disabled={!previewLink}
@@ -87,6 +90,7 @@ export default function SyncedEntityIsolationControls({
 					)}
 					<PanelRow>
 						<Button
+							__next40pxDefaultSize
 							variant="secondary"
 							onClick={openEdit}
 							disabled={!editLink}
@@ -94,6 +98,7 @@ export default function SyncedEntityIsolationControls({
 							{labels.edit}
 						</Button>
 					</PanelRow>
+					{extraInspectorActions}
 				</PanelBody>
 			</InspectorControls>
 		</>

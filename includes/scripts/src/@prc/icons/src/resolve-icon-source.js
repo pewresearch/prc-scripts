@@ -56,6 +56,14 @@ export const ICON_NAME_ALIASES = {
 	'chevron-circle-down': 'circle-chevron-down',
 	'chevron-circle-left': 'circle-chevron-left',
 	'chevron-circle-right': 'circle-chevron-right',
+	earth: 'earth-americas',
+	'earth-america': 'earth-americas',
+	'globe-americas': 'earth-americas',
+	'globe-europe': 'earth-europe',
+	'globe-oceania': 'earth-oceania',
+	'globe-asia': 'earth-asia',
+	'globe-africa': 'earth-africa',
+	atlas: 'book-atlas',
 };
 
 /**
