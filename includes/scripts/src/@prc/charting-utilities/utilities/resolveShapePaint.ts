@@ -1,7 +1,49 @@
 import type { CategoryStyle } from '../types/colors';
+import type { Bar } from '../types/bar';
 import type { Nodes } from '../types/nodes';
 import { resolveNodeShapeColors } from '../compute/nodes';
 import { resolvePaint, seriesPaintLayer } from './resolvePaint';
+
+type BarRectStrokeConfig = Pick<
+	Bar,
+	'hasRectStroke' | 'rectStrokeColor' | 'rectStrokeWidth'
+>;
+
+/**
+ * Chart-level bar rectangle stroke defaults from `config.bar`.
+ * @param barConfig
+ */
+export function barRectStrokeDefaults(
+	barConfig?: BarRectStrokeConfig | null
+): Pick<ShapePaintDefaults, 'stroke' | 'strokeWidth'> {
+	if (!barConfig?.hasRectStroke) {
+		return { stroke: undefined, strokeWidth: undefined };
+	}
+
+	const width = barConfig.rectStrokeWidth ?? 1;
+	if (width <= 0) {
+		return { stroke: undefined, strokeWidth: undefined };
+	}
+
+	return {
+		stroke: barConfig.rectStrokeColor,
+		strokeWidth: width,
+	};
+}
+
+function seriesPaintWithoutStroke(
+	seriesStyle: ShapePaint | null | undefined
+): ShapePaint | null | undefined {
+	const series = seriesPaintLayer(seriesStyle);
+	if (!series) {
+		return undefined;
+	}
+
+	const { stroke, strokeWidth, strokeOpacity, strokeDasharray, ...rest } =
+		series;
+
+	return Object.keys(rest).length > 0 ? rest : undefined;
+}
 
 export type ShapePaintDefaults = CategoryStyle;
 export type ShapePaint = CategoryStyle;
@@ -99,13 +141,34 @@ export function resolvePointPaint(
  * @param defaults    Chart bar defaults, including compiled fill.
  * @param seriesStyle Per-series style.
  * @param custom      Per-mark popover style.
+ * @param barConfig
  */
 export function resolveBarPaint(
 	defaults: ShapePaintDefaults,
 	seriesStyle?: ShapePaint | null,
-	custom?: ShapePaint | null
+	custom?: ShapePaint | null,
+	barConfig?: BarRectStrokeConfig | null
 ): ShapePaint {
-	return resolveShapePaint(custom, { opacity: 1, ...defaults }, seriesStyle);
+	if (!barConfig) {
+		return resolveShapePaint(
+			custom,
+			{ opacity: 1, ...defaults },
+			seriesStyle
+		);
+	}
+
+	const chartStroke = barRectStrokeDefaults(barConfig);
+	const chartStrokeActive = chartStroke.stroke !== undefined;
+	const mergedDefaults = {
+		opacity: 1,
+		...defaults,
+		...chartStroke,
+	};
+	const series = chartStrokeActive
+		? seriesStyle
+		: seriesPaintWithoutStroke(seriesStyle);
+
+	return resolveShapePaint(custom, mergedDefaults, series);
 }
 
 /**

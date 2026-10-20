@@ -241,6 +241,27 @@ function getLabelOutlineStroke(
  * @param root0.barColor
  * @param root0.backgroundHex
  */
+/**
+ * Bar fill to use for contrast label color (patterns fall back to solid fill).
+ *
+ * @param shapeFill    Resolved SVG fill, possibly a pattern url().
+ * @param resolvedFill Solid category fill before pattern resolution.
+ */
+export function barFillForLabelContrast(
+	shapeFill: string | undefined,
+	resolvedFill: string
+): string {
+	if (
+		typeof shapeFill === 'string' &&
+		shapeFill.length > 0 &&
+		!shapeFill.startsWith('url(')
+	) {
+		return shapeFill;
+	}
+
+	return resolvedFill;
+}
+
 export function getLabelFill({
 	labelColor,
 	seriesColor,

@@ -88,6 +88,7 @@ export {
 	contrastLabelFillForLightDark,
 	LABEL_OUTLINE_COLOR,
 	getLabelFill,
+	barFillForLabelContrast,
 	getLabelOutlineStroke,
 	getBarLabelFill,
 	newDateByFormat,
@@ -216,6 +217,7 @@ export {
 	resolveShapePaint,
 	resolvePointPaint,
 	resolveBarPaint,
+	barRectStrokeDefaults,
 	resolveDivergingSecondaryPaint,
 } from './utilities/resolveShapePaint';
 export { resolvePointSize } from './utilities/resolvePointSize';
