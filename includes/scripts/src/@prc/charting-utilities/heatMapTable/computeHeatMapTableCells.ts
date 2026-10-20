@@ -5,7 +5,8 @@ export type HeatMapTableCell = {
 	colIndex: number;
 	rowKey: string;
 	columnKey: string;
-	value: number | null;
+	/** Text values feed ordinal scales. */
+	value: number | string | null;
 	dataPoint: FlatData;
 };
 
@@ -22,7 +23,7 @@ export type ComputeHeatMapTableCellsResult = {
 	cells: HeatMapTableCell[];
 };
 
-function parseCellValue(raw: unknown): number | null {
+function parseCellValue(raw: unknown): number | string | null {
 	if (raw === null || raw === undefined || raw === '') {
 		return null;
 	}
@@ -30,13 +31,21 @@ function parseCellValue(raw: unknown): number | null {
 		return null;
 	}
 	const n = typeof raw === 'number' ? raw : parseFloat(String(raw));
-	return Number.isFinite(n) ? n : null;
+	if (Number.isFinite(n)) {
+		return n;
+	}
+	return typeof raw === 'string' ? raw : null;
 }
 
 /**
  * Flatten row × column table data into one cell descriptor per intersection.
  * Each cell carries a FlatData point shaped for tooltips / shape overrides:
  * `{ x: rowLabel, category: columnKey, y: value, [columnKey]: value }`.
+ *
+ * @param root0             Cell arguments.
+ * @param root0.rows        Table rows.
+ * @param root0.columns     Value columns, in display order.
+ * @param root0.rowKeyField FlatData key for the row label.
  */
 export function computeHeatMapTableCells({
 	rows,
@@ -57,7 +66,7 @@ export function computeHeatMapTableCells({
 				...row,
 				x: rowKey,
 				category: columnKey,
-				y: value ?? undefined,
+				y: typeof value === 'number' ? value : undefined,
 				[columnKey]: value ?? row[columnKey],
 			};
 			cells.push({

@@ -6,7 +6,7 @@ import {
 	useRef,
 	useState,
 } from '@wordpress/element';
-import type { ReactNode } from 'react';
+import type { MutableRefObject, ReactNode } from 'react';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 import { DataForm } from '@wordpress/dataviews';
@@ -32,6 +32,65 @@ import {
 import type { SettingsFieldConfig, SettingsFieldsSectionProps } from './types';
 
 const DEBOUNCE_MS = 800;
+
+const sectionFlushers = new Set<() => Promise<void>>();
+
+/**
+ * Save every debounced field draft now and wait for all field saves in flight.
+ *
+ * Call before an action that reads the saved settings on the server.
+ */
+export async function flushSettingsSaves(): Promise<void> {
+	await Promise.all(Array.from(sectionFlushers, (flush) => flush()));
+}
+
+function fieldSavedMessage(
+	field: SettingsFieldConfig,
+	value: unknown,
+	textDomain: string
+): string {
+	if (field.type !== 'boolean') {
+		/* translators: %s: field label */
+		return sprintf(__('%s updated.', textDomain), field.label);
+	}
+	return value
+		? /* translators: %s: field label */
+			sprintf(__('%s enabled.', textDomain), field.label)
+		: /* translators: %s: field label */
+			sprintf(__('%s disabled.', textDomain), field.label);
+}
+
+function trackSave(inFlight: Set<Promise<void>>, save: Promise<void>) {
+	inFlight.add(save);
+	void save.finally(() => {
+		inFlight.delete(save);
+	});
+	return save;
+}
+
+function useRegisterFlusher(
+	debounceTimersRef: MutableRefObject<
+		Record<string, ReturnType<typeof setTimeout>>
+	>,
+	debouncedSavesRef: MutableRefObject<Record<string, () => Promise<void>>>,
+	inFlightSavesRef: MutableRefObject<Set<Promise<void>>>
+) {
+	useEffect(() => {
+		const flush = async () => {
+			for (const [fieldId, timer] of Object.entries(
+				debounceTimersRef.current
+			)) {
+				clearTimeout(timer);
+				void debouncedSavesRef.current[fieldId]?.();
+			}
+			await Promise.all(inFlightSavesRef.current);
+		};
+		sectionFlushers.add(flush);
+		return () => {
+			sectionFlushers.delete(flush);
+		};
+	}, [debounceTimersRef, debouncedSavesRef, inFlightSavesRef]);
+}
 
 function isImmediateSaveField(field: SettingsFieldConfig): boolean {
 	return (
@@ -144,6 +203,8 @@ export default function SettingsFieldsSection({
 	const debounceTimersRef = useRef<
 		Record<string, ReturnType<typeof setTimeout>>
 	>({});
+	const debouncedSavesRef = useRef<Record<string, () => Promise<void>>>({});
+	const inFlightSavesRef = useRef(new Set<Promise<void>>());
 	const formDataRef = useRef(storedFormData);
 
 	const formData = useMemo(
@@ -178,15 +239,7 @@ export default function SettingsFieldsSection({
 
 			applyPatch(parsedValues);
 
-			const successMessage =
-				field.type === 'boolean'
-					? sprintf(
-							value
-								? __('%s enabled.', textDomain)
-								: __('%s disabled.', textDomain),
-							field.label
-						)
-					: sprintf(__('%s updated.', textDomain), field.label);
+			const successMessage = fieldSavedMessage(field, value, textDomain);
 
 			try {
 				await saveSettings({ successMessage });
@@ -211,6 +264,12 @@ export default function SettingsFieldsSection({
 		[applyPatch, createErrorNotice, saveSettings, settings, textDomain]
 	);
 
+	const trackedPersistField = useCallback(
+		(field: SettingsFieldConfig, value: unknown) =>
+			trackSave(inFlightSavesRef.current, persistField(field, value)),
+		[persistField]
+	);
+
 	const scheduleDebouncedSave = useCallback(
 		(field: SettingsFieldConfig, value: unknown) => {
 			setPendingValues((currentPending) => ({
@@ -222,13 +281,20 @@ export default function SettingsFieldsSection({
 				clearTimeout(debounceTimersRef.current[field.id]);
 			}
 
-			debounceTimersRef.current[field.id] = setTimeout(() => {
-				void persistField(field, value);
+			const save = () => {
 				delete debounceTimersRef.current[field.id];
+				delete debouncedSavesRef.current[field.id];
+				return trackedPersistField(field, value);
+			};
+			debouncedSavesRef.current[field.id] = save;
+			debounceTimersRef.current[field.id] = setTimeout(() => {
+				void save();
 			}, DEBOUNCE_MS);
 		},
-		[persistField]
+		[trackedPersistField]
 	);
+
+	useRegisterFlusher(debounceTimersRef, debouncedSavesRef, inFlightSavesRef);
 
 	const dataFormFields = useMemo(() => {
 		const syntheticFields: Field<Record<string, unknown>>[] = [];
@@ -353,13 +419,13 @@ export default function SettingsFieldsSection({
 			const value = getValueByPath(nextValues, changedFieldId);
 
 			if (isImmediateSaveField(changedField)) {
-				void persistField(changedField, value);
+				void trackedPersistField(changedField, value);
 				return;
 			}
 
 			scheduleDebouncedSave(changedField, value);
 		},
-		[fields, persistField, scheduleDebouncedSave]
+		[fields, trackedPersistField, scheduleDebouncedSave]
 	);
 
 	return (

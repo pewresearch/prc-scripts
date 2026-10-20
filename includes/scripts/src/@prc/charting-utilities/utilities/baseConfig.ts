@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { BaseConfig } from '../types/configTypes';
 import { DEFAULT_FONT_FAMILY } from './defaultFontFamily';
 import {
@@ -285,8 +286,7 @@ const baseConfig: BaseConfig = {
 		},
 		customLabels: {},
 		bubbleLegend: {
-			fill: 'category',
-			stroke: 'transparent',
+			fill: 'none',
 			refValues: [],
 			layout: 'stacked',
 			labelPosition: 'outside',
@@ -498,7 +498,7 @@ const baseConfig: BaseConfig = {
 		ignoredLabels: [],
 		abbreviateLabels: true,
 		blockRectSize: 44,
-		pathBackgroundFill: '#f7f7f7',
+		pathBackgroundFill: 'light-dark(#F7F7F7, #242424)',
 		pathStroke: '#dadbdb',
 		pathStrokeWidth: 0.5,
 		showCountyBoundaries: false,
@@ -583,6 +583,8 @@ const baseConfig: BaseConfig = {
 		sharedScale: true,
 		axisTreatment: 'minimal',
 		emphasisMode: 'own-series',
+		colorMode: 'shared',
+		panelStyles: {},
 		ghost: {
 			stroke: '#E6E7E8',
 			strokeWidth: 1.5,
@@ -617,10 +619,7 @@ const baseConfig: BaseConfig = {
 	heatMapTable: {
 		cellGap: 0,
 		cellRadius: 0,
-		showValues: true,
 		emptyFill: '#F5F5F5',
-		rowLabelWidth: 0,
-		columnHeaderHeight: 48,
 		minCellWidth: 40,
 		minCellHeight: 28,
 	},

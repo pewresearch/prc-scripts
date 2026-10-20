@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import type { FlatData } from '../types/flatData';
 import type { FeatureShape } from '../types/featureShape';
 import isoAlpha3 from '../data/iso-alpha3.json';
-
+import { hasCategoryValue } from '../utilities/helpers';
 // ISO alpha-3 code (uppercase) -> ISO numeric code, used to resolve data rows
 // whose `x` value is an alpha-3 country code (e.g. "USA") to the topology's
 // numeric feature id (e.g. "840").
@@ -44,6 +44,12 @@ export interface UseWorldCountryDataResult {
  *
  * This is the shared implementation consumed by both the Robinson `World` map
  * and the orthographic globe so the country join stays in one place.
+ *
+ * @param root0               Hook arguments.
+ * @param root0.features      Country features from the topology.
+ * @param root0.flattenedData Flattened chart table rows.
+ * @param root0.category      Category column that marks a country as having data.
+ * @param root0.excludeIds    Feature ids to drop before merging.
  */
 export function useWorldCountryData({
 	features,
@@ -98,7 +104,9 @@ export function useWorldCountryData({
 
 	const mergedAndFilteredData = useMemo(() => {
 		if (!category) return mergedData;
-		return mergedData.filter((country) => country.properties?.[category]);
+		return mergedData.filter((country) =>
+			hasCategoryValue(country.properties, category)
+		);
 	}, [mergedData, category]);
 
 	return { mergedData, mergedAndFilteredData };

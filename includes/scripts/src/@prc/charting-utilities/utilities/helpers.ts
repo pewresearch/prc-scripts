@@ -430,6 +430,16 @@ const getCustomLabelText = (
 };
 
 /**
+ * Whether a cell value is absent: `undefined`, `null`, or `''`.
+ * Zero and `false` are real values.
+ *
+ * @param value The cell value
+ * @return Whether the value is missing
+ */
+const isMissingValue = (value: unknown): value is null | undefined | '' =>
+	value === null || value === undefined || value === '';
+
+/**
  * Whether a data point carries a plottable value for a category.
  *
  * Series rarely share the same set of x values — a source that reports nothing
@@ -445,10 +455,7 @@ const getCustomLabelText = (
 const hasCategoryValue = (
 	dataPoint: Record<string, any>,
 	key: string
-): boolean => {
-	const value = dataPoint?.[key];
-	return value !== null && value !== undefined && value !== '';
-};
+): boolean => !isMissingValue(dataPoint?.[key]);
 
 /**
  * Check if a label should be visible for a data point/category.
@@ -590,6 +597,7 @@ export {
 	getLabelOutlineStroke,
 	hasCategoryValue,
 	isLabelVisible,
+	isMissingValue,
 	labelFill,
 	newDateByFormat,
 	resolveTextOutlineMode,

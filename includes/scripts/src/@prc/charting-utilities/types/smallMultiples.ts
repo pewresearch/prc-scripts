@@ -1,3 +1,5 @@
+import type { CategoryStyle } from './colors';
+
 export type SmallMultiplesPanelType =
 	| 'line'
 	| 'column'
@@ -8,6 +10,8 @@ export type SmallMultiplesPanelType =
 export type SmallMultiplesAxisTreatment = 'minimal' | 'full';
 
 export type SmallMultiplesEmphasisMode = 'own-series' | 'highlight';
+
+export type SmallMultiplesColorMode = 'shared' | 'panel';
 
 export type SmallMultiplesGhost = {
 	stroke: string;
@@ -62,4 +66,8 @@ export type SmallMultiples = {
 	panelTitle: SmallMultiplesPanelTitle;
 	/** Editor/runtime customizations keyed by panel key (column or group value). */
 	customTitles?: Record<string, SmallMultiplesPanelTitleCustomization>;
+	/** `panel` lets each panel override the shared series rows. */
+	colorMode?: SmallMultiplesColorMode;
+	/** Panel rows keyed by panel key, then series key. Read only in `panel` mode. */
+	panelStyles?: Record<string, Record<string, CategoryStyle>>;
 };

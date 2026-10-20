@@ -1,7 +1,7 @@
 import { Animate } from './animate';
 import { Animation } from './animation';
 import { Bar } from './bar';
-import { Colors } from './colors';
+import { CategoryStyle, Colors } from './colors';
 import { DataRender } from './dataRender';
 import { DiffColumn } from './diffColumn';
 import { NetValues } from './netValues';
@@ -41,6 +41,7 @@ type BaseConfig = {
 	bar: Bar;
 	beeSwarm: BeeSwarm;
 	colors: Colors;
+	seriesStyles?: Record<string, CategoryStyle>;
 	dataRender: DataRender;
 	diffColumn: DiffColumn;
 	divergingBar: DivergingBar;

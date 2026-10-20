@@ -4,23 +4,22 @@
  * Defines custom styling for individual chart shapes (bars, circles, paths, etc.)
  */
 
-export type ShapeCustomStyle = {
-	fill?: string;
-	stroke?: string;
-	opacity?: number;
-	strokeWidth?: number;
-	pattern?: 'solid' | 'striped' | 'dotted' | 'crosshatch';
-};
+import type { CategoryStyle } from './colors';
+
+export type ShapeCustomStyle = CategoryStyle;
 
 /**
  * Segment-specific custom styling for line chart segments.
  */
-export type SegmentCustomStyle = {
-	stroke?: string;
-	strokeWidth?: number;
-	opacity?: number;
-	strokeDasharray?: string;
-};
+export type SegmentCustomStyle = Pick<
+	CategoryStyle,
+	| 'stroke'
+	| 'strokeWidth'
+	| 'strokeOpacity'
+	| 'opacity'
+	| 'strokeDasharray'
+	| 'strokeDashoffset'
+>;
 
 export type Shapes = {
 	customStyles: {

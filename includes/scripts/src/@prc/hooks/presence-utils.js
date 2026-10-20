@@ -1,7 +1,7 @@
 /**
- * Whether the Presence API plugin is loaded on this site. Reads the flag
+ * Whether Presence API can be read and written on this site. Reads the flag
  * emitted by `Scripts::localize_platform_info()` in `prc-scripts`, which in
- * turn reflects `function_exists( 'wp_set_presence' )` on the PHP side.
+ * turn reflects `wp_presence_is_available()` on the PHP side.
  *
  * Note: `wp_localize_script()` casts PHP booleans to strings ("1" for true,
  * "" for false), so we check for the string '1' rather than the boolean true.

@@ -3,6 +3,7 @@ export * from './types/animate';
 export * from './types/animation';
 export * from './types/bar';
 export * from './types/colors';
+export * from './types/pattern';
 export * from './types/configTypes';
 export * from './types/custom';
 export * from './types/dataRender';
@@ -96,6 +97,7 @@ export {
 	getCustomLabel,
 	getCustomLabelText,
 	hasCategoryValue,
+	isMissingValue,
 	isLabelVisible,
 	getCustomLabelStyle,
 	getCustomTooltip,
@@ -104,6 +106,20 @@ export {
 	resolveLabelCutoff,
 	resolveTextOutlineMode,
 } from './utilities/helpers';
+export {
+	generateTickLabelKey,
+	resolveTickLabelEntry,
+} from './utilities/tickLabelKeys';
+export type {
+	TickLabelEntries,
+	TickLabelEntry,
+} from './utilities/tickLabelKeys';
+export {
+	layoutRichTextLines,
+	parseRichText,
+	stripRichText,
+} from './utilities/richText';
+export type { RichTextRun } from './utilities/richText';
 export { shouldShowLinePoint } from './utilities/shouldShowLinePoint';
 export {
 	resolveCategoryColor,
@@ -111,6 +127,29 @@ export {
 	withCategoryOpacity,
 	legendCategoryShapeStyle,
 } from './utilities/resolveCategoryColor';
+export { resolvePaint, resolveLinePathPaint } from './utilities/resolvePaint';
+export {
+	resolvePatternFill,
+	seriesPatternId,
+	legendPatternId,
+	isHatchingPattern,
+	resolvePatternSpec,
+} from './utilities/resolvePatternFill';
+export {
+	HATCH_PATTERN_TYPES,
+	PATTERN_EDITOR_LINES_HORIZONTAL,
+	getPatternEditorOption,
+	getPatternType,
+	patternFromEditorOption,
+	patternPrimaryPaintField,
+	patternSupportsStrokeWidth,
+	readPatternPrimaryPaint,
+	readPatternStrokeWidth,
+	withPatternType,
+	withPatternPrimaryPaint,
+	withPatternStrokeWidth,
+} from './utilities/patternStyle';
+export type { ResolvePaintArgs } from './utilities/resolvePaint';
 export { resolveScaleNice } from './utilities/resolveScaleNice';
 export {
 	hasExplicitAxisDomain,
@@ -158,6 +197,7 @@ export {
 	facetDataByColumn,
 	deriveCategories,
 	facetDataByGroup,
+	sortPanelRowsByIndependent,
 	computeSharedDomain,
 	computePanelRects,
 	computeGridHeight,
@@ -169,11 +209,29 @@ export {
 	computeHorizontalBarRects,
 	computeBarPanelHeight,
 	resolveSliceDomain,
+	resolveGhostStroke,
+	SMALL_MULTIPLES_SHARED_SERIES_KEY,
+} from './smallMultiples';
+export {
 	resolveShapePaint,
+	resolvePointPaint,
+	resolveBarPaint,
+	resolveDivergingSecondaryPaint,
+} from './utilities/resolveShapePaint';
+export { resolvePointSize } from './utilities/resolvePointSize';
+export { resolveLabelStyle } from './utilities/resolveLabelStyle';
+export type {
+	ShapePaint,
+	ShapePaintDefaults,
+} from './utilities/resolveShapePaint';
+export {
 	generateSegmentKey,
 	resolveSegmentPaint,
-	resolveGhostStroke,
-} from './smallMultiples';
+} from './utilities/resolveSegmentPaint';
+export type {
+	SegmentPaint,
+	SegmentPaintDefaults,
+} from './utilities/resolveSegmentPaint';
 export {
 	computeWaffleCells,
 	allocateWaffleCellCounts,
@@ -200,7 +258,14 @@ export {
 	computeHeatMapTableCells,
 	computeHeatMapTableLayout,
 	createValueColorScale,
+	resolveBinFill,
+	resolveBinPaint,
 	resolveSolidColor,
+	getThresholdLegendLabels,
+	mapScaleStyleKey,
+	thresholdBinLabel,
+	thresholdLabelFill,
+	thresholdLegendItems,
 } from './heatMapTable';
 export type {
 	HeatMapTableCell,
@@ -208,9 +273,12 @@ export type {
 	ComputeHeatMapTableCellsResult,
 	ComputeHeatMapTableLayoutArgs,
 	HeatMapTableLayout,
+	BinMarkPaint,
 	CreateValueColorScaleArgs,
+	ResolveBinPaintDefaults,
 	ValueColorScale,
 	ValueColorScaleMode,
+	ThresholdLegendLanguage,
 } from './heatMapTable';
 export type {
 	SmallMultiplesPanel,
@@ -233,10 +301,6 @@ export type {
 	HorizontalBarRect,
 	ComputeHorizontalBarRectsArgs,
 	ComputeBarPanelHeightArgs,
-	ShapePaint,
-	ShapePaintDefaults,
-	SegmentPaint,
-	SegmentPaintDefaults,
 	ResolveGhostStrokeArgs,
 	ResolvedGhostPaint,
 } from './smallMultiples';
@@ -270,6 +334,7 @@ export {
 	measureLabelBBox,
 	measureTextWidth,
 	wordWrap,
+	wrapRichText,
 	resolveVerticalStacks,
 } from './labelLayout';
 export type {

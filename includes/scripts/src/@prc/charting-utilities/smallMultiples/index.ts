@@ -1,11 +1,16 @@
 export { enrichFacetRow, isFacetMetaKey } from './enrichFacetRow';
-export { facetDataByColumn, deriveCategories } from './facetDataByColumn';
+export {
+	facetDataByColumn,
+	deriveCategories,
+	SMALL_MULTIPLES_SHARED_SERIES_KEY,
+} from './facetDataByColumn';
 export type { SmallMultiplesPanel } from './facetDataByColumn';
 export { facetDataByGroup } from './facetDataByGroup';
 export type {
 	SmallMultiplesGroupPanel,
 	SmallMultiplesSeries,
 } from './facetDataByGroup';
+export { sortPanelRowsByIndependent } from './sortPanelRowsByIndependent';
 export { computeSharedDomain } from './computeSharedDomain';
 export type { SharedDomainOptions } from './computeSharedDomain';
 export {
@@ -48,10 +53,6 @@ export type {
 	ComputeBarPanelHeightArgs,
 } from './computeHorizontalBarRects';
 export { resolveSliceDomain } from './resolveSliceDomain';
-export { resolveShapePaint } from './resolveShapePaint';
-export type { ShapePaint, ShapePaintDefaults } from './resolveShapePaint';
-export { generateSegmentKey, resolveSegmentPaint } from './resolveSegmentPaint';
-export type { SegmentPaint, SegmentPaintDefaults } from './resolveSegmentPaint';
 export { resolveGhostStroke } from './resolveGhostStroke';
 export type {
 	ResolveGhostStrokeArgs,

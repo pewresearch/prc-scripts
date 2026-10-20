@@ -4,6 +4,8 @@
  */
 /* eslint-disable jsdoc/require-param */
 import { DEFAULT_FONT_FAMILY } from '../utilities/defaultFontFamily';
+import { layoutRichTextLines, parseRichText } from '../utilities/richText';
+import type { RichTextRun } from '../utilities/richText';
 
 export interface MeasureLabelOptions {
 	text: string;
@@ -30,18 +32,44 @@ export function measureTextWidth(
 	text: string,
 	fontSize: number,
 	fontFamily: string = DEFAULT_FONT_FAMILY,
-	fontWeight: string | number = 'normal'
+	fontWeight: string | number = 'normal',
+	fontStyle: string = 'normal'
 ): number {
 	const context = getMeasureContext();
 	if (!context || !text) {
 		return text.length * fontSize * 0.55;
 	}
-	context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+	context.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 	return context.measureText(text).width;
 }
 
 /**
- * Break text into lines by word boundaries to fit maxWidth.
+ * Break label text (plain or rich text HTML) into lines of styled runs that
+ * fit maxWidth. Each run is measured in its own weight and style.
+ */
+export function wrapRichText(
+	text: string,
+	maxWidth: number,
+	fontSize: number,
+	fontFamily: string = DEFAULT_FONT_FAMILY,
+	fontWeight: string | number = 'normal',
+	fontStyle: string = 'normal'
+): RichTextRun[][] {
+	const wrapWidth = maxWidth > 0 && getMeasureContext() ? maxWidth : 0;
+	return layoutRichTextLines(parseRichText(text), wrapWidth, (run) =>
+		measureTextWidth(
+			run.text,
+			fontSize,
+			fontFamily,
+			run.fontWeight || fontWeight,
+			run.fontStyle || fontStyle
+		)
+	);
+}
+
+/**
+ * Break text into plain lines by word boundaries to fit maxWidth.
+ * Rich text formatting is removed.
  */
 export function wordWrap(
 	text: string,
@@ -50,37 +78,14 @@ export function wordWrap(
 	fontFamily: string = DEFAULT_FONT_FAMILY,
 	fontWeight: string | number = 'normal'
 ): string[] {
-	if (!maxWidth || maxWidth <= 0) {
-		return [text];
-	}
-
-	const context = getMeasureContext();
-	if (!context) {
-		return [text];
-	}
-
-	context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-
-	const words = text.split(/(\s+)/);
-	const lines: string[] = [];
-	let currentLine = words[0] || '';
-
-	for (let i = 1; i < words.length; i++) {
-		const word = words[i];
-		const testLine = currentLine + word;
-		const metrics = context.measureText(testLine);
-		const isWhitespace = /^\s+$/.test(word);
-
-		if (metrics.width > maxWidth && currentLine !== '' && !isWhitespace) {
-			lines.push(currentLine);
-			currentLine = word;
-		} else {
-			currentLine = testLine;
-		}
-	}
-
-	lines.push(currentLine);
-	return lines;
+	const lines = wrapRichText(
+		text,
+		maxWidth,
+		fontSize,
+		fontFamily,
+		fontWeight
+	).map((line) => line.map((run) => run.text).join(''));
+	return lines.length ? lines : [''];
 }
 
 export interface LabelBBox {

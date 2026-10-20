@@ -36,6 +36,10 @@ npx turbo build --filter=@prc/scripts
 
 `prc-scripts` is registered in `client-mu-plugins/plugin-loader.php` after `prc-icon-library` / `prc-post-publish-pipeline` and immediately before `prc-block-library`, ensuring its handles are available before any plugin that lists it in `Requires Plugins:`.
 
+## Presence gate (`presenceApiEnabled`)
+
+`Scripts::localize_platform_info()` sets `window.prcPlatform.presenceApiEnabled` from `function_exists( 'wp_presence_is_available' ) && wp_presence_is_available()`. That check is stricter than "the Presence API plugin is loaded". It is false when the presence table is missing or recording is switched off (`wp_presence_has_table() && wp_presence_recording_enabled()`; toggle with `wp presence recording set off`, Settings → General, or Network Admin). `wp_localize_script()` casts the boolean to `'1'` or `''`, so `isPresenceApiEnabled()` in `@prc/hooks` (`presence-utils.js`) compares against the string `'1'`. When false, `useDeclarePresence` and other presence hooks do no `apiFetch`, timers, or state writes. Server consumers use the same check: the Admin DataViews `Presence_Provider::supports_post_type()` and the Watched Posts block `render.php`.
+
 ## Storybook
 
 The monorepo ships a **root Storybook** (`.storybook/`) that discovers stories colocated with `@prc/*` modules under `plugins/prc-scripts/includes/scripts/src/@prc/` and chart stories under `plugins/prc-charting-library/src/`. This mirrors the centralized Playwright setup — one config at the repo root, stories next to the components they document.

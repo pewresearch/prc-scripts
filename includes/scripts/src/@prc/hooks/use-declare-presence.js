@@ -12,8 +12,10 @@ import { isPresenceApiEnabled } from './presence-utils';
 /**
  * Default heartbeat interval (ms) for re-declaring presence.
  *
- * Presence entries TTL after 60 seconds (WP_PRESENCE_DEFAULT_TTL in presence-api),
- * so we re-declare at 30 s to keep our entry alive with a comfortable safety margin.
+ * Each presence entry stores its own expiry, set at write time from the server TTL
+ * (WP_PRESENCE_DEFAULT_TTL in presence-api, 150 s by default, filterable via
+ * `wp_presence_default_ttl`), so we re-declare at 30 s to keep our entry alive with
+ * a comfortable safety margin.
  */
 const DEFAULT_INTERVAL_MS = 30000;
 
@@ -44,7 +46,7 @@ function generateClientId(prefix) {
  * activity (e.g. "editing the data table") rather than just observe presence.
  * The hook manages a stable `client_id` for the mount, an immediate POST on
  * mount and data change, a heartbeat re-POST on an interval (to outrun the
- * 60 s server-side TTL), and a DELETE on unmount or room change.
+ * server-side TTL), and a DELETE on unmount or room change.
  *
  * Multiple hook instances in the same component (or across blocks) each hold
  * their own `client_id` and appear as separate entries in the room — this is

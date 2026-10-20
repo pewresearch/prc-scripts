@@ -8,6 +8,7 @@ export interface LabelStyleOverride {
 	fontStyle?: 'normal' | 'italic' | 'underline' | 'strikethrough';
 	fontFamily?: string;
 	maxWidth?: number;
+	textOutline?: boolean;
 }
 
 /**

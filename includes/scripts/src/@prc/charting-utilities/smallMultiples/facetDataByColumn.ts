@@ -2,6 +2,9 @@ import type { FlatData } from '../types/flatData';
 import { hasCategoryValue } from '../utilities/helpers';
 import { enrichFacetRow, isFacetMetaKey } from './enrichFacetRow';
 
+/** Series style key every column-facet panel paints from; also its row label. */
+export const SMALL_MULTIPLES_SHARED_SERIES_KEY = 'All panels';
+
 export type SmallMultiplesPanel = {
 	key: string;
 	rows: FlatData[];
@@ -37,6 +40,10 @@ export function deriveCategories(data: FlatData[]): string[] {
  * Facet wide-format chart rows into one panel series per data column.
  * Each panel key is a column header; each panel row carries `{ x, y }`, the
  * series value under its category key, and tooltip/label metadata bags.
+ *
+ * @param data       Wide-format chart rows.
+ * @param categories Series columns to facet; derived from the rows when empty.
+ * @return One panel per column.
  */
 export function facetDataByColumn(
 	data: FlatData[] | null | undefined,

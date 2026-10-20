@@ -2,7 +2,7 @@ import { DiffColumn } from '../types/diffColumn';
 import type { Size } from '../types/windowSize';
 import { Layout } from '../types/layout';
 
-type OverflowType = 'scroll' | 'hidden';
+type OverflowType = 'scroll' | 'clip';
 
 export type ChartDimensions = {
 	chartWidth: number;
@@ -19,7 +19,9 @@ const getOverflowX = (layout: Layout) => {
 	if (layout.overflowX === 'scroll-fixed-y-axis') {
 		return 'scroll';
 	}
-	return 'hidden';
+	// `clip`, unlike `hidden`, does not force overflow-y to `auto`, so inline
+	// (mobile) tooltips taller than the chart are not cut off vertically.
+	return 'clip';
 };
 
 const getChartDimensions = (

@@ -69,9 +69,10 @@ class Scripts {
 	 * run against the blog the editor is on (not only the content-site default).
 	 * Explicit `site_id` / `blog_id` in ability input still wins.
 	 *
-	 * `presenceApiEnabled` reflects `function_exists( 'wp_set_presence' )` and is
+	 * `presenceApiEnabled` reflects `wp_presence_is_available()` and is
 	 * consumed by `@prc/hooks` (`useDeclarePresence`) to gracefully degrade when
-	 * the Presence API plugin is not loaded on the site. We detect the plugin
+	 * the Presence API plugin is not loaded on the site, its table is missing, or
+	 * recording is switched off (writes fail in those cases). We detect the plugin
 	 * from the outside rather than patching it directly because `presence-api`
 	 * is upstream-maintained and we don't want to carry a local diff against it.
 	 * Without this signal, the declarer hook would POST `/wp-presence/v1/presence`
@@ -97,7 +98,7 @@ class Scripts {
 				'envType'            => wp_get_environment_type(),
 				'version'            => $version,
 				'releaseName'        => $release_name,
-				'presenceApiEnabled' => function_exists( 'wp_set_presence' ),
+				'presenceApiEnabled' => function_exists( 'wp_presence_is_available' ) && wp_presence_is_available(),
 				'siteId'             => get_current_blog_id(),
 			)
 		);

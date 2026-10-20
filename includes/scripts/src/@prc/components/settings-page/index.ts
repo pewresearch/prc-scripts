@@ -4,7 +4,10 @@ export type { DataFormControlProps, Field, Form } from '@wordpress/dataviews';
 export { default as SettingsAccordion } from './settings-accordion';
 export { default as SettingsSubSection } from './settings-sub-section';
 export { default as SettingsPage } from './settings-page';
-export { default as SettingsFieldsSection } from './settings-fields-section';
+export {
+	default as SettingsFieldsSection,
+	flushSettingsSaves,
+} from './settings-fields-section';
 export { default as ConnectionBadge } from './connection-badge';
 export { default as SettingsSectionFooter } from './settings-section-footer';
 export { createSettingsStore } from './create-settings-store';

@@ -38,7 +38,12 @@ export type {
 	LeaderLineRegistration,
 	LeaderLineStore,
 } from './leaderLineStore';
-export { measureLabelBBox, measureTextWidth, wordWrap } from './measureLabel';
+export {
+	measureLabelBBox,
+	measureTextWidth,
+	wordWrap,
+	wrapRichText,
+} from './measureLabel';
 export type { LabelBBox, MeasureLabelBBoxOptions } from './measureLabel';
 export { resolveVerticalStacks } from './resolveVerticalStacks';
 export type {

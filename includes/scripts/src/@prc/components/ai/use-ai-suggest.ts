@@ -85,6 +85,14 @@ interface UseAISuggestReturn<T = AbilityOutput> {
 	/** Trigger the ability. Accepts optional input parameters. */
 	fetch: (input?: AbilityInput) => Promise<void>;
 
+	/**
+	 * Stop waiting for the in-flight ability call. The promise settles without
+	 * setting `error` or `result`. Abilities that run through the client
+	 * abilities store cannot cancel the HTTP request, so the server may still
+	 * finish the work unless it also honors a cancel signal.
+	 */
+	abort: () => void;
+
 	/** Reset result and error back to idle state. */
 	reset: () => void;
 
@@ -121,11 +129,13 @@ function isAbilityNotFoundError(err: unknown): boolean {
  *
  * @param abilityName Registered ability name.
  * @param input       Optional ability input.
+ * @param signal      Optional signal that aborts the REST requests.
  * @return Ability output from the REST run endpoint.
  */
 async function runAbilityViaRest(
 	abilityName: string,
-	input?: AbilityInput
+	input?: AbilityInput,
+	signal?: AbortSignal
 ): Promise<AbilityOutput> {
 	const ability = await apiFetch<{
 		meta?: {
@@ -137,6 +147,7 @@ async function runAbilityViaRest(
 		};
 	}>({
 		path: `/wp-abilities/v1/abilities/${abilityName}`,
+		signal,
 	});
 
 	let method: 'GET' | 'POST' | 'DELETE' = 'POST';
@@ -167,6 +178,7 @@ async function runAbilityViaRest(
 
 	return apiFetch<AbilityOutput>({
 		path,
+		signal,
 		...options,
 	});
 }
@@ -202,6 +214,8 @@ export default function useAISuggest<T = AbilityOutput>(
 	// Guard against concurrent fetches.
 	const isFetchingRef = useRef(false);
 
+	const abortControllerRef = useRef<AbortController | null>(null);
+
 	// Keep latest transform without making `fetch` depend on function identity.
 	// Inline `transformResult` at call sites would otherwise change every render
 	// and break consumers that list `fetch` in useEffect/useCallback deps.
@@ -220,8 +234,11 @@ export default function useAISuggest<T = AbilityOutput>(
 			setResult(null);
 
 			const abilityInput = withCurrentSiteId(input);
+			const controller = new AbortController();
+			const { signal } = controller;
+			abortControllerRef.current = controller;
 
-			try {
+			const runAbility = async (): Promise<AbilityOutput> => {
 				// The @wordpress/abilities store has no REST resolver, so
 				// abilities registered only server-side (via wp_register_ability)
 				// are absent from the client store until @wordpress/core-abilities
@@ -238,14 +255,13 @@ export default function useAISuggest<T = AbilityOutput>(
 					// Ignore: fall through to executeAbility / REST fallback.
 				}
 
-				let raw: AbilityOutput;
 				try {
 					// We import the @wordpress/abilities script module dynamically
 					// use webpackIgnore to avoid bundling the script module or adding it to the dependency list
 					const { executeAbility } = await import(
 						/* webpackIgnore: true */ '@wordpress/abilities'
 					);
-					raw = await executeAbility(abilityName, abilityInput);
+					return await executeAbility(abilityName, abilityInput);
 				} catch (executeErr) {
 					// Server-only abilities may still be missing from the client
 					// store. Mirror the canonical WP AI plugin: fall back to the
@@ -255,8 +271,22 @@ export default function useAISuggest<T = AbilityOutput>(
 					if (!isAbilityNotFoundError(executeErr)) {
 						throw executeErr;
 					}
-					raw = await runAbilityViaRest(abilityName, abilityInput);
+					return runAbilityViaRest(abilityName, abilityInput, signal);
 				}
+			};
+
+			const abortPromise = new Promise<never>((_, reject) => {
+				signal.addEventListener('abort', () =>
+					reject(new DOMException('Aborted', 'AbortError'))
+				);
+			});
+			const abilityPromise = runAbility();
+			// The race below may settle first on abort; keep the losing
+			// promise from surfacing as an unhandled rejection.
+			abilityPromise.catch(() => undefined);
+
+			try {
+				const raw = await Promise.race([abilityPromise, abortPromise]);
 
 				// Handle error strings returned inside the result object.
 				if (
@@ -274,18 +304,28 @@ export default function useAISuggest<T = AbilityOutput>(
 					: (raw as unknown as T);
 				setResult(transformed);
 			} catch (err) {
+				if (signal.aborted) {
+					return;
+				}
 				const message =
 					err instanceof Error
 						? err.message
 						: 'An unexpected error occurred.';
 				setError(message);
 			} finally {
+				if (abortControllerRef.current === controller) {
+					abortControllerRef.current = null;
+				}
 				setIsLoading(false);
 				isFetchingRef.current = false;
 			}
 		},
 		[abilityName]
 	);
+
+	const abort = useCallback(() => {
+		abortControllerRef.current?.abort();
+	}, []);
 
 	const reset = useCallback(() => {
 		setResult(null);
@@ -301,6 +341,7 @@ export default function useAISuggest<T = AbilityOutput>(
 		error,
 		result,
 		fetch,
+		abort,
 		reset,
 		dismissError,
 	};

@@ -4,6 +4,9 @@ import {
 	newDateByFormat,
 	decodeHtmlEntities,
 } from '../utilities/helpers';
+import { stripRichText } from '../utilities/richText';
+import { resolveTickLabelEntry } from '../utilities/tickLabelKeys';
+import type { TickLabelEntries } from '../utilities/tickLabelKeys';
 import { timeFormat, timeParse } from 'd3-time-format';
 import { independentAxis, dependentAxis } from '../types/configTypes';
 import { AxisScale, AxisScaleOutput } from '@visx/axis';
@@ -59,16 +62,16 @@ const INPUT_DATE_FORMATS = [
 const formatTicks = (
 	config: independentAxis | dependentAxis,
 	t: number | Date | string,
-	inputDateFormat?: string | null
+	inputDateFormat?: string | null,
+	panelKey?: string | null
 ) => {
 	// Per-tick custom labels (from editor popover).
 	// Values may be a plain string (legacy) or a style object { text?, fill?, ... }.
 	const customTickLabels = (config as any).customTickLabels as
-		| Record<string, string | Record<string, any>>
+		| TickLabelEntries
 		| undefined;
 	if (customTickLabels) {
-		const key = String(t);
-		const entry = customTickLabels[key];
+		const entry = resolveTickLabelEntry(customTickLabels, t, panelKey);
 		if (entry !== undefined && entry !== '') {
 			if (typeof entry === 'object' && entry !== null) {
 				// New format — only override the label text if explicitly set
@@ -176,6 +179,7 @@ const formatTicks = (
  * Colors are now pre-resolved to light-dark() CSS values by getConfig()
  * in prc-chart-builder, so this function only needs to handle the
  * empty/falsy case.
+ * @param color
  */
 const getColor = (color: string) => {
 	if (!color) {
@@ -188,9 +192,33 @@ const getAxisProps = (
 	config: independentAxis | dependentAxis,
 	scale: AxisScale<AxisScaleOutput>,
 	inputDateFormat?: string | null,
-	ticksComponent?: (props: any) => React.ReactElement
+	ticksComponent?: (props: any) => React.ReactElement,
+	/** Small-multiples panel being drawn, so per-tick edits stay in their panel. */
+	panelKey?: string | null
 ) => {
 	const { axis, ticks, axisLabel, tickLabels } = config;
+
+	const labelProps = {
+		fill: getColor(axisLabel.fill),
+		fontSize: axisLabel.fontSize,
+		textAnchor: axisLabel.textAnchor,
+		dy: axisLabel.dy,
+		dx: axisLabel.dx,
+		fontFamily: axisLabel.fontFamily,
+		verticalAnchor: axisLabel.verticalAnchor,
+		angle: axisLabel.angle,
+		width: axisLabel.maxWidth,
+	};
+	// visx draws the axis label as plain text, so the ticks component draws
+	// it instead and keeps the label's rich text formatting.
+	const axisTitle = config.label
+		? {
+				text: config.label,
+				offset: axisLabel.padding,
+				tickLength: ticks.size,
+				props: labelProps,
+			}
+		: null;
 
 	// Parse tickValues if they're strings and scale is time
 	let parsedTickValues = config.tickValues;
@@ -214,36 +242,33 @@ const getAxisProps = (
 		tickStroke: getColor(axis.stroke),
 		tickLength: ticks.size,
 		hideZero: !config.showZero,
-		label: config.label ? decodeHtmlEntities(config.label) : '',
+		label:
+			config.label && !ticksComponent ? stripRichText(config.label) : '',
 		labelOffset: axisLabel.padding,
 		numTicks: config.tickCount,
 		tickValues:
 			config.scale === 'time'
 				? (parsedTickValues as Date[] | undefined)
 				: (parsedTickValues as number[] | undefined),
-		labelProps: {
-			fill: getColor(axisLabel.fill),
-			fontSize: axisLabel.fontSize,
-			textAnchor: axisLabel.textAnchor,
-			dy: axisLabel.dy,
-			dx: axisLabel.dx,
-			fontFamily: axisLabel.fontFamily,
-			verticalAnchor: axisLabel.verticalAnchor,
-			angle: axisLabel.angle,
-			width: axisLabel.maxWidth,
-		},
+		labelProps,
 		tickFormat: (t: any) => {
 			if (t === null) return '';
-			const formatted = formatTicks(config, t, inputDateFormat);
+			const formatted = formatTicks(config, t, inputDateFormat, panelKey);
 			return formatted !== null ? decodeHtmlEntities(formatted) : '';
 		},
-		ticksComponent,
+		ticksComponent:
+			ticksComponent &&
+			((props: any) => ticksComponent({ ...props, axisTitle })),
 		// Function form: visx calls this per-tick so we can apply per-tick style overrides.
 		tickLabelProps: (tick: any) => {
 			const customTickLabels = (config as any).customTickLabels as
-				| Record<string, string | Record<string, any>>
+				| TickLabelEntries
 				| undefined;
-			const entry = customTickLabels?.[String(tick)];
+			const entry = resolveTickLabelEntry(
+				customTickLabels,
+				tick,
+				panelKey
+			);
 			const custom =
 				typeof entry === 'object' && entry !== null ? entry : {};
 			return {
@@ -252,8 +277,8 @@ const getAxisProps = (
 				fontWeight: custom.fontWeight ?? undefined,
 				fontStyle: custom.fontStyle ?? undefined,
 				textAnchor: tickLabels.textAnchor,
-				dx: tickLabels.dx,
-				dy: tickLabels.dy,
+				dx: (tickLabels.dx ?? 0) + (Number(custom.offsetX) || 0),
+				dy: (tickLabels.dy ?? 0) + (Number(custom.offsetY) || 0),
 				fontFamily: tickLabels.fontFamily,
 				verticalAnchor: tickLabels.verticalAnchor,
 				angle: tickLabels.angle,

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import type { FlatData } from '../types/flatData';
 import type { FeatureShape } from '../types/featureShape';
 import stateAbbreviations from '../data/abbreviations.json';
-
+import { hasCategoryValue } from '../utilities/helpers';
 // FIPS code -> two-letter abbreviation (e.g. "06" -> "CA").
 export const fipsToStateAbbr = stateAbbreviations as Record<string, string>;
 
@@ -63,6 +63,10 @@ export interface UseStateGridDataArgs {
  *   1. `d.FIPS` / `d.fips` equals the state's FIPS code.
  *   2. `d.x` equals the state name or FIPS code.
  *   3. `d.x` is a two-letter abbreviation that maps to the state's FIPS code.
+ *
+ * @param rows      Chart table rows.
+ * @param stateFips State FIPS code.
+ * @param stateName State name.
  */
 export function findStateDataRow(
 	rows: FlatData[],
@@ -95,6 +99,11 @@ export function findStateDataRow(
  *
  * Shared by `AlbersUSA` so the state join stays in one place alongside
  * `useWorldCountryData` for world maps.
+ *
+ * @param root0               Hook arguments.
+ * @param root0.features      State features from the topology.
+ * @param root0.flattenedData Flattened chart table rows.
+ * @param root0.category      Category column that marks a state as having data.
  */
 export function useStateData({
 	features,
@@ -124,7 +133,9 @@ export function useStateData({
 
 	const mergedAndFilteredData = useMemo(() => {
 		if (!category) return mergedData;
-		return mergedData.filter((state) => state.properties?.[category]);
+		return mergedData.filter((state) =>
+			hasCategoryValue(state.properties, category)
+		);
 	}, [mergedData, category]);
 
 	return { mergedData, mergedAndFilteredData };
@@ -134,6 +145,10 @@ export function useStateData({
  * Join FlatData rows onto block/hex grid bins (heatmap.json layout).
  *
  * Shared by `BlockUSA` and `HexUSA`.
+ *
+ * @param root0      Hook arguments.
+ * @param root0.grid Grid columns from heatmap.json.
+ * @param root0.rows Chart table rows.
  */
 export function useStateGridData({ grid, rows }: UseStateGridDataArgs) {
 	return useMemo(

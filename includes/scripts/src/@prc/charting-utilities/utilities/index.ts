@@ -10,6 +10,15 @@ export {
 	getCustomLabel,
 	getCustomTooltip,
 } from './helpers';
+export {
+	resolveShapePaint,
+	resolvePointPaint,
+	resolveBarPaint,
+	resolveDivergingSecondaryPaint,
+} from './resolveShapePaint';
+export type { ShapePaint, ShapePaintDefaults } from './resolveShapePaint';
+export { generateSegmentKey, resolveSegmentPaint } from './resolveSegmentPaint';
+export type { SegmentPaint, SegmentPaintDefaults } from './resolveSegmentPaint';
 export { resolveScaleNice } from './resolveScaleNice';
 export { hasExplicitAxisDomain, isAutoAxisDomain } from './isAutoAxisDomain';
 export { getLinearValueDataExtent } from './getLinearValueDataExtent';

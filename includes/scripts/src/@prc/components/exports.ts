@@ -160,6 +160,7 @@ export {
 	createSettingsStore,
 	createSettingsTextareaEdit,
 	DataForm,
+	flushSettingsSaves,
 	mountSettingsPage,
 	SettingsAccordion,
 	SettingsBooleanEdit,
