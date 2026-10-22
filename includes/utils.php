@@ -45,15 +45,11 @@ namespace PRC\Platform\Icons {
 	use WP_HTML_Tag_Processor;
 
 	define( 'PRC_PLATFORM_ICONS_CACHE_TTL', 7 * DAY_IN_SECONDS );
-	if ( defined( 'PRC_PLATFORM_VERSION' ) ) {
-		define( 'PRC_PLATFORM_ICONS_CACHE_KEY', PRC_PLATFORM_VERSION . '_ICONS_' );
-	} else {
-		define( 'PRC_PLATFORM_ICONS_CACHE_KEY', '1.0.0_ICONS' );
-	}
 
 	/**
-	 * Object-cache suffix so sprite-era and badge-era entries are not reused.
-	 * PRC_PLATFORM_ICONS_CACHE_KEY still includes the platform version.
+	 * Object-cache suffix for markup changes made in this file. Bump it when
+	 * render, alias, or wrapper output changes; SVG changes are covered by
+	 * icon_library_cache_version().
 	 */
 	const CACHE_VERSION = 'prc-no-badge';
 
@@ -357,7 +353,21 @@ namespace PRC\Platform\Icons {
 	}
 
 	/**
-	 * Object-cache key. Includes CACHE_VERSION so sprite-era markup is not reused.
+	 * Icon library content hash, so platform version bumps do not cold-start
+	 * the icon caches. Read per call: prc-icon-library loads after this file.
+	 *
+	 * @return string
+	 */
+	function icon_library_cache_version() {
+		if ( defined( 'PRC_ICON_LIBRARY_CONTENT_HASH' ) && '' !== PRC_ICON_LIBRARY_CONTENT_HASH ) {
+			return (string) PRC_ICON_LIBRARY_CONTENT_HASH;
+		}
+		return 'no-icon-library';
+	}
+
+	/**
+	 * Object-cache key. Changes only with the icon library content or
+	 * CACHE_VERSION; superseded keys expire via PRC_PLATFORM_ICONS_CACHE_TTL.
 	 *
 	 * @param string $icon_library Library slug.
 	 * @param string $icon_name    Icon name.
@@ -365,7 +375,7 @@ namespace PRC\Platform\Icons {
 	 * @return string
 	 */
 	function icon_cache_key( $icon_library, $icon_name, $extra ) {
-		return md5( $icon_library . '_' . $icon_name . '_' . $extra . '_' . PRC_PLATFORM_ICONS_CACHE_KEY . '_' . CACHE_VERSION );
+		return md5( $icon_library . '_' . $icon_name . '_' . $extra . '_' . icon_library_cache_version() . '_' . CACHE_VERSION );
 	}
 
 	/**
