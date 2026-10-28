@@ -42,7 +42,11 @@ const INPUT_DATE_FORMATS = [
 	'%b %d, %Y', // 'Aug 15, 2000'
 ];
 
-const abbreviateNumber = (num: number, fixed?: number): string => {
+const abbreviateNumber = (
+	num: number,
+	fixed?: number,
+	exactDecimals = false
+): string => {
 	if (num === null) {
 		return '';
 	} // terminate early
@@ -59,8 +63,14 @@ const abbreviateNumber = (num: number, fixed?: number): string => {
 		k =
 			b.length === 1
 				? 0
-				: Math.floor(Math.min(parseInt(b[1].slice(1)), 14) / 3), // floor at decimals, ceiling at trillions
-		c =
+				: Math.floor(Math.min(parseInt(b[1].slice(1)), 14) / 3); // floor at decimals, ceiling at trillions
+	if (exactDecimals) {
+		return (
+			(num / Math.pow(10, k * 3)).toFixed(fixed) +
+			['', 'K', 'M', 'B', 'T'][k]
+		);
+	}
+	const c =
 			k < 1
 				? num.toFixed(0 + fixed)
 				: (num / Math.pow(10, k * 3)).toFixed(1 + fixed), // divide by power

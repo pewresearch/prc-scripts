@@ -11,6 +11,8 @@ export type MinDisplayValueConfig = {
 	 */
 	truncateDecimal?: boolean;
 	abbreviateValue?: boolean;
+	/** Abbreviate with exactly `toFixedDecimal` places, so 3 billion at one place reads `3.0B`. */
+	abbreviateExactDecimals?: boolean;
 	toLocaleString?: boolean;
 };
 
@@ -32,7 +34,7 @@ export function selectFormattedNumber(
 	const places = config.toFixedDecimal;
 
 	if (config.abbreviateValue) {
-		return abbreviateNumber(datum, places);
+		return abbreviateNumber(datum, places, config.abbreviateExactDecimals);
 	}
 
 	if (true === config.truncateDecimal) {
@@ -93,6 +95,7 @@ export function formatMinDisplayValue(
 	// 10000 on an abbreviated chart reads `<10K`.
 	return `<${selectFormattedNumber(floor, {
 		...config,
+		abbreviateExactDecimals: false,
 		toFixedDecimal: Math.max(
 			config.toFixedDecimal ?? 0,
 			decimalsFor(floor)
