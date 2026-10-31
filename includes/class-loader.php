@@ -2,15 +2,15 @@
 /**
  * Plugin loader.
  *
- * @package    PRC\Platform\Scripts_Plugin
+ * @package    PRC\Platform\Shared_Plugin
  */
 
-namespace PRC\Platform\Scripts_Plugin;
+namespace PRC\Platform\Shared_Plugin;
 
 /**
  * The loader class.
  *
- * @package    PRC\Platform\Scripts_Plugin
+ * @package    PRC\Platform\Shared_Plugin
  */
 class Loader {
 

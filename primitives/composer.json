@@ -1,0 +1,33 @@
+{
+	"name": "prc/primitives",
+	"description": "Shared PHP primitives for the PRC Platform: block utilities, HTML processors, delayed Action Scheduler jobs, URL to post ID resolution, term data store relationships, feature flags, and post publish pipeline lifecycle hooks.",
+	"type": "library",
+	"version": "2.4.0",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=8.2",
+		"dougsisk/laravel-country-state": "^5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"PRC\\Primitives\\BlockUtils\\": "src/block-utils/",
+			"PRC\\Primitives\\HTML_Processors\\": "src/html-processors/",
+			"PRC\\Primitives\\DelayedAction\\": "src/delayed-action/",
+			"PRC\\Primitives\\Feature_Flags\\": "src/feature-flags/",
+			"PRC\\Primitives\\Post_Publish_Pipeline\\": "src/post-publish-pipeline/"
+		},
+		"files": [
+			"src/block-utils/functions.php",
+			"src/html-processors/functions.php",
+			"src/url-helper/url-helper.php",
+			"src/term-data-store/term-data-store.php",
+			"src/feature-flags/functions.php",
+			"src/post-publish-pipeline/functions.php"
+		]
+	},
+	"config": {
+		"platform": {
+			"php": "8.4.0"
+		}
+	}
+}

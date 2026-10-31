@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'pewresearch/prc-scripts',
+        'name' => 'pewresearch/prc-shared',
         'pretty_version' => 'dev-trunk',
         'version' => 'dev-trunk',
-        'reference' => '03ef42b5011bc07b75deea542f81e687146f3324',
+        'reference' => '3915eeaaa01cb816f9f54a42759f90d1059490bf',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -109,19 +109,19 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'pewresearch/prc-scripts' => array(
+        'pewresearch/prc-shared' => array(
             'pretty_version' => 'dev-trunk',
             'version' => 'dev-trunk',
-            'reference' => '03ef42b5011bc07b75deea542f81e687146f3324',
+            'reference' => '3915eeaaa01cb816f9f54a42759f90d1059490bf',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'prc/primitives' => array(
-            'pretty_version' => 'v2.1.0',
-            'version' => '2.1.0.0',
-            'reference' => '42bc453b2b9240c2e8c5f904fbd154fc863d176d',
+            'pretty_version' => '2.4.0',
+            'version' => '2.4.0.0',
+            'reference' => 'a0531c4d668ff6b1628178fb779874f01b8b6c1e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../prc/primitives',
             'aliases' => array(),

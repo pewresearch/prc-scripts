@@ -55,19 +55,27 @@ return array(
 		'path'    => $vendorDir . '/rinvex/countries/src/helpers.php'
 	),
 	'152652665b20977abdd2f757f4ca19d4' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/block-utils/functions.php'
 	),
 	'646031b73df34ef9b67a1d70c16c67ee' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/html-processors/functions.php'
 	),
 	'9548c27ea0a43fb8113fc559facb2477' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/url-helper/url-helper.php'
 	),
 	'a973b381bd3a06d58223a84663a6e6bf' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/term-data-store/term-data-store.php'
+	),
+	'6769b7862d6876e2818337d687c1d64f' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/functions.php'
+	),
+	'0f0dc8a1ac88695cbd045c86e3ea5a55' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/functions.php'
 	),
 );

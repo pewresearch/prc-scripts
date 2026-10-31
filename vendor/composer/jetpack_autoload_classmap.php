@@ -1815,44 +1815,96 @@ return array(
 		'path'    => $vendorDir . '/automattic/jetpack-autoloader/src/class-php-autoloader.php'
 	),
 	'PRC\\Primitives\\BlockUtils\\Lists' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/block-utils/Lists.php'
 	),
 	'PRC\\Primitives\\BlockUtils\\Pagination' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/block-utils/Pagination.php'
 	),
 	'PRC\\Primitives\\BlockUtils\\PostContentBlockFilter' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/block-utils/PostContentBlockFilter.php'
 	),
 	'PRC\\Primitives\\DelayedAction\\ActionSchedulerGateway' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/delayed-action/ActionSchedulerGateway.php'
 	),
 	'PRC\\Primitives\\DelayedAction\\DelayedAction' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/delayed-action/DelayedAction.php'
 	),
 	'PRC\\Primitives\\DelayedAction\\JobState' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/delayed-action/JobState.php'
 	),
 	'PRC\\Primitives\\DelayedAction\\Scheduler' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/delayed-action/Scheduler.php'
 	),
+	'PRC\\Primitives\\Feature_Flags\\Assignment' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/Assignment.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\Audience' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/Audience.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\Evaluator' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/Evaluator.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\Experiment' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/Experiment.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\ExperimentSource' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/ExperimentSource.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\FeatureFlags' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/FeatureFlags.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\Flag' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/Flag.php'
+	),
+	'PRC\\Primitives\\Feature_Flags\\VisitorContext' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/feature-flags/VisitorContext.php'
+	),
 	'PRC\\Primitives\\HTML_Processors\\ElementFinder' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/html-processors/ElementFinder.php'
 	),
 	'PRC\\Primitives\\HTML_Processors\\HeadingProcessor' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/html-processors/HeadingProcessor.php'
 	),
 	'PRC\\Primitives\\HTML_Processors\\TableProcessor' => array(
-		'version' => '2.1.0.0',
+		'version' => '2.4.0.0',
 		'path'    => $vendorDir . '/prc/primitives/src/html-processors/TableProcessor.php'
+	),
+	'PRC\\Primitives\\Post_Publish_Pipeline\\Pipeline' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/Pipeline.php'
+	),
+	'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Post_URL_Resolver' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Post_URL_Resolver.php'
+	),
+	'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Resolved_Post' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Resolved_Post.php'
+	),
+	'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Resolved_Post_URL' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Resolved_Post_URL.php'
+	),
+	'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Unresolved_Post_URL' => array(
+		'version' => '2.4.0.0',
+		'path'    => $vendorDir . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Unresolved_Post_URL.php'
 	),
 	'Path_Processor' => array(
 		'version' => '5.0.17',

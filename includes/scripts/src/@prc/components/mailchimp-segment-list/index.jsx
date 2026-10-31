@@ -145,7 +145,7 @@ function AudienceSegmentList({
 		() => [
 			{
 				value: '',
-				label: __('— Select audience —', 'prc-scripts'),
+				label: __('— Select audience —', 'prc-shared'),
 			},
 			...audiences.map((a) => ({
 				value: String(a.id),
@@ -193,7 +193,7 @@ function AudienceSegmentList({
 				<Spinner />
 			) : (
 				<SelectControl
-					label={__('Mailchimp audience', 'prc-scripts')}
+					label={__('Mailchimp audience', 'prc-shared')}
 					value={String(audienceId ?? '')}
 					options={audienceOptions}
 					onChange={handleAudienceChange}

@@ -1,9 +1,9 @@
 {
-	"name": "@prc/scripts",
+	"name": "@prc/shared",
 	"version": "1.4.4",
 	"description": "Shared first-party (@prc/*) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.",
 	"scripts": {
-		"build": "echo '@prc/scripts is a meta-package; sub-packages built via turbo dependency graph'",
+		"build": "echo '@prc/shared is a meta-package; sub-packages built via turbo dependency graph'",
 		"test": "wp-scripts test-unit-js --config jest.config.js",
 		"typecheck": "tsc --noEmit"
 	},

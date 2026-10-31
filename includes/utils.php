@@ -2,13 +2,13 @@
 /**
  * Utility functions.
  *
- * @package    PRC\Platform\Scripts_Plugin
+ * @package    PRC\Platform\Shared_Plugin
  */
 
-// phpcs:disable Universal.Namespaces.DisallowCurlyBraceSyntax -- Scripts_Plugin and Icons share this file.
+// phpcs:disable Universal.Namespaces.DisallowCurlyBraceSyntax -- Shared_Plugin and Icons share this file.
 // phpcs:disable Universal.Namespaces.OneDeclarationPerFile
 
-namespace PRC\Platform\Scripts_Plugin {
+namespace PRC\Platform\Shared_Plugin {
 
 	/**
 	 * This is a place for "utility" functions.
@@ -30,7 +30,7 @@ namespace PRC\Platform\Scripts_Plugin {
 	 * - In the class, you can use:
 	 *   $result = do_some_utility( $input );
 	 * - Outside in other plugins, you can use:
-	 *   $result = \PRC\Platform\Scripts_Plugin\do_some_utility( $input );
+	 *   $result = \PRC\Platform\Shared_Plugin\do_some_utility( $input );
 	 */
 }
 

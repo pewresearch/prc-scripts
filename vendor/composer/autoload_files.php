@@ -22,4 +22,6 @@ return array(
     '646031b73df34ef9b67a1d70c16c67ee' => $vendorDir . '/prc/primitives/src/html-processors/functions.php',
     '9548c27ea0a43fb8113fc559facb2477' => $vendorDir . '/prc/primitives/src/url-helper/url-helper.php',
     'a973b381bd3a06d58223a84663a6e6bf' => $vendorDir . '/prc/primitives/src/term-data-store/term-data-store.php',
+    '6769b7862d6876e2818337d687c1d64f' => $vendorDir . '/prc/primitives/src/feature-flags/functions.php',
+    '0f0dc8a1ac88695cbd045c86e3ea5a55' => $vendorDir . '/prc/primitives/src/post-publish-pipeline/functions.php',
 );

@@ -109,7 +109,7 @@ final class Settings_Page_Boot {
 			return;
 		}
 
-		$version = defined( 'PRC_SCRIPTS_VERSION' ) ? PRC_SCRIPTS_VERSION : '1.0.0';
+		$version = defined( 'PRC_SHARED_VERSION' ) ? PRC_SHARED_VERSION : '1.0.0';
 		wp_register_script( 'firebase', false, array(), $version, true );
 	}
 
@@ -117,7 +117,7 @@ final class Settings_Page_Boot {
 	 * Path to Gutenberg's generated @wordpress/boot asset file.
 	 */
 	public static function get_gutenberg_boot_asset_path(): string {
-		return dirname( PRC_SCRIPTS_DIR ) . '/gutenberg/build/modules/boot/index.min.asset.php';
+		return dirname( PRC_SHARED_DIR ) . '/gutenberg/build/modules/boot/index.min.asset.php';
 	}
 
 	/**
@@ -139,14 +139,14 @@ final class Settings_Page_Boot {
 	 * Built ESM stage module path.
 	 */
 	public static function get_content_module_path(): string {
-		return PRC_SCRIPTS_DIR . '/includes/scripts/build/@prc/components/boot/content.js';
+		return PRC_SHARED_DIR . '/includes/scripts/build/@prc/components/boot/content.js';
 	}
 
 	/**
 	 * Built dummy page loader path.
 	 */
 	public static function get_loader_module_path(): string {
-		return PRC_SCRIPTS_DIR . '/includes/scripts/build/@prc/components/boot/loader.js';
+		return PRC_SHARED_DIR . '/includes/scripts/build/@prc/components/boot/loader.js';
 	}
 
 	/**
@@ -201,7 +201,7 @@ final class Settings_Page_Boot {
 	private static function enqueue_boot_runtime( string $script_handle, string $version, string $container_id ): void {
 		wp_register_script_module(
 			self::CONTENT_MODULE_ID,
-			plugins_url( 'includes/scripts/build/@prc/components/boot/content.js', PRC_SCRIPTS_FILE ),
+			plugins_url( 'includes/scripts/build/@prc/components/boot/content.js', PRC_SHARED_FILE ),
 			array(),
 			$version
 		);
@@ -251,7 +251,7 @@ final class Settings_Page_Boot {
 
 		wp_register_script_module(
 			self::PAGE_MODULE_ID,
-			plugins_url( 'includes/scripts/build/@prc/components/boot/loader.js', PRC_SCRIPTS_FILE ),
+			plugins_url( 'includes/scripts/build/@prc/components/boot/loader.js', PRC_SHARED_FILE ),
 			$boot_dependencies,
 			$version
 		);

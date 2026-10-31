@@ -165,8 +165,8 @@ function LegacyMailchimpInterestSelect({
  */
 function AudienceSegmentSelect({
 	className,
-	audienceLabel = __('Mailchimp audience', 'prc-scripts'),
-	segmentLabel = __('Segment (optional)', 'prc-scripts'),
+	audienceLabel = __('Mailchimp audience', 'prc-shared'),
+	segmentLabel = __('Segment (optional)', 'prc-shared'),
 	audienceId = '',
 	segmentId = '',
 	onAudienceChange,
@@ -188,7 +188,7 @@ function AudienceSegmentSelect({
 		() => [
 			{
 				value: '',
-				label: __('— Select audience —', 'prc-scripts'),
+				label: __('— Select audience —', 'prc-shared'),
 			},
 			...audiences.map((a) => ({
 				value: String(a.id),
@@ -202,7 +202,7 @@ function AudienceSegmentSelect({
 		const options = [
 			{
 				value: '',
-				label: __('Entire audience', 'prc-scripts'),
+				label: __('Entire audience', 'prc-shared'),
 			},
 			...segments.map((s) => ({
 				value: String(s.id),
@@ -219,7 +219,7 @@ function AudienceSegmentSelect({
 				value: normalizedSegmentId,
 				label: sprintf(
 					/* translators: %s: Mailchimp saved segment ID */
-					__('Saved segment (%s)', 'prc-scripts'),
+					__('Saved segment (%s)', 'prc-shared'),
 					normalizedSegmentId
 				),
 			});
@@ -271,7 +271,7 @@ function AudienceSegmentSelect({
 							disabled={disabled}
 							help={__(
 								'Optional. Restrict signup targeting to a saved segment of the audience.',
-								'prc-scripts'
+								'prc-shared'
 							)}
 							__nextHasNoMarginBottom
 						/>

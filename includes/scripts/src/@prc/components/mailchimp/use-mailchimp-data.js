@@ -52,7 +52,7 @@ export function useMailchimpAudiences() {
 				if (!cancelled) {
 					setError(
 						err?.message ??
-							__('Could not load audiences.', 'prc-scripts')
+							__('Could not load audiences.', 'prc-shared')
 					);
 					setLoading(false);
 				}
@@ -102,7 +102,7 @@ export function useMailchimpSegments(audienceId) {
 				if (!cancelled) {
 					setError(
 						err?.message ??
-							__('Could not load segments.', 'prc-scripts')
+							__('Could not load segments.', 'prc-shared')
 					);
 					setLoading(false);
 				}

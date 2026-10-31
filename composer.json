@@ -1,17 +1,20 @@
 {
-	"name": "pewresearch/prc-scripts",
+	"name": "pewresearch/prc-shared",
 	"description": "Shared first-party (@prc/*) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"require": {
 		"php": ">=8.2",
 		"automattic/jetpack-autoloader": "^5.0",
-		"prc/primitives": "^2.0"
+		"prc/primitives": "^2.4"
 	},
 	"repositories": {
 		"prc-primitives": {
-			"type": "vcs",
-			"url": "https://github.com/pewresearch/prc-primitives.git"
+			"type": "path",
+			"url": "primitives",
+			"options": {
+				"symlink": false
+			}
 		}
 	},
 	"config": {

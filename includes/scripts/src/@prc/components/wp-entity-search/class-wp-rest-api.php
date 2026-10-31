@@ -168,7 +168,7 @@ class Rest_API_Endpoint {
 		if ( empty( $filtered ) ) {
 			return new WP_Error(
 				'invalid_entity_sub_type',
-				__( 'No valid entity_sub_type values were provided.', 'prc-scripts' ),
+				__( 'No valid entity_sub_type values were provided.', 'prc-shared' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -390,7 +390,7 @@ class Rest_API_Endpoint {
 		if ( ! current_user_can( 'list_users' ) ) {
 			return new WP_Error(
 				'rest_forbidden_user_search',
-				__( 'You are not allowed to search users.', 'prc-scripts' ),
+				__( 'You are not allowed to search users.', 'prc-shared' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -478,7 +478,7 @@ class Rest_API_Endpoint {
 
 		return new WP_Error(
 			'invalid_entity_type',
-			__( 'Invalid entity_type.', 'prc-scripts' ),
+			__( 'Invalid entity_type.', 'prc-shared' ),
 			array( 'status' => 400 )
 		);
 	}
@@ -496,7 +496,7 @@ class Rest_API_Endpoint {
 		if ( ! in_array( $entity_type, self::ALLOWED_ENTITY_TYPES, true ) ) {
 			return new WP_Error(
 				'invalid_entity_type',
-				__( 'Invalid entity_type.', 'prc-scripts' ),
+				__( 'Invalid entity_type.', 'prc-shared' ),
 				array( 'status' => 400 )
 			);
 		}

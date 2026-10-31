@@ -1,10 +1,10 @@
-# PRC Scripts
+# PRC Shared
 
-> Canonical docs: [docs/plugins/prc-scripts/](../../docs/plugins/prc-scripts/)
+> Canonical docs: [docs/plugins/prc-shared/](../../docs/plugins/prc-shared/)
 
 Shared first-party (`@prc/*`) and third-party JavaScript, stylesheets, and script modules for all PRC Platform plugins.
 
-This plugin owns the `Scripts` and `Script_Modules` registration classes that were previously bundled inside `prc-platform-core`. Every leaf `prc-*` plugin that consumes shared script handles (e.g. `prc-components`, `prc-controls`, `prc-charting-utilities`) declares `Requires Plugins: prc-scripts` in its main plugin file header.
+This plugin owns the `Scripts` and `Script_Modules` registration classes that were previously bundled inside `prc-platform-core`. Every leaf `prc-*` plugin that consumes shared script handles (e.g. `prc-components`, `prc-controls`, `prc-charting-utilities`) declares `Requires Plugins: prc-shared` in its main plugin file header.
 
 PHP namespaces (`PRC\Platform\Scripts`, `PRC\Platform\Script_Modules`) are unchanged from the previous home so REST API endpoint classes that hardcode them keep working.
 
@@ -29,12 +29,12 @@ A bare `export * from 'd3'` against the UMD file produced an empty module object
 Rebuild both vendors after changing D3 versions:
 
 ```bash
-npx turbo build --filter=@prc/scripts
+npx turbo build --filter=@prc/shared
 ```
 
 ## Load order
 
-`prc-scripts` is registered in `client-mu-plugins/plugin-loader.php` after `prc-icon-library` / `prc-post-publish-pipeline` and immediately before `prc-block-library`, ensuring its handles are available before any plugin that lists it in `Requires Plugins:`.
+`prc-shared` is registered in `client-mu-plugins/plugin-loader.php` after `prc-icon-library` and the post publish pipeline `boot()` call, and immediately before `prc-block-library`, ensuring its handles are available before any plugin that lists it in `Requires Plugins:`.
 
 ## Presence gate (`presenceApiEnabled`)
 
@@ -42,7 +42,7 @@ npx turbo build --filter=@prc/scripts
 
 ## Storybook
 
-The monorepo ships a **root Storybook** (`.storybook/`) that discovers stories colocated with `@prc/*` modules under `plugins/prc-scripts/includes/scripts/src/@prc/` and chart stories under `plugins/prc-charting-library/src/`. This mirrors the centralized Playwright setup — one config at the repo root, stories next to the components they document.
+The monorepo ships a **root Storybook** (`.storybook/`) that discovers stories colocated with `@prc/*` modules under `plugins/prc-shared/includes/scripts/src/@prc/` and chart stories under `plugins/prc-charting-library/src/`. This mirrors the centralized Playwright setup — one config at the repo root, stories next to the components they document.
 
 ```bash
 # Dev server (http://localhost:6006)
@@ -71,7 +71,7 @@ Import decorators via the `@prc-storybook` alias (e.g. `import { withBlockEditor
 
 ### Adding a story
 
-1. Colocate `*.stories.tsx` (or `*.mdx`) next to the component under `plugins/prc-scripts/includes/scripts/src/@prc/<package>/`.
+1. Colocate `*.stories.tsx` (or `*.mdx`) next to the component under `plugins/prc-shared/includes/scripts/src/@prc/<package>/`.
 2. For editor-dependent UI, wrap with `withBlockEditor` or `withEditor`.
 3. For REST-backed controls, add or extend fixtures in `.storybook/mocks/api-fetch-handlers.ts`.
 4. Icon stories rely on committed FontAwesome sprites served from `.storybook/main.ts` `staticDirs` at the same `/wp-content/plugins/prc-icon-library/...` path production uses.

@@ -1,6 +1,6 @@
 /**
  * Whether Presence API can be read and written on this site. Reads the flag
- * emitted by `Scripts::localize_platform_info()` in `prc-scripts`, which in
+ * emitted by `Scripts::localize_platform_info()` in `prc-shared`, which in
  * turn reflects `wp_presence_is_available()` on the PHP side.
  *
  * Note: `wp_localize_script()` casts PHP booleans to strings ("1" for true,

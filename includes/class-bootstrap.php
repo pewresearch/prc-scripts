@@ -2,10 +2,10 @@
 /**
  * Bootstrap class.
  *
- * @package    PRC\Platform\Scripts_Plugin
+ * @package    PRC\Platform\Shared_Plugin
  */
 
-namespace PRC\Platform\Scripts_Plugin;
+namespace PRC\Platform\Shared_Plugin;
 
 use PRC\Platform\Scripts;
 use PRC\Platform\Script_Modules;
@@ -14,7 +14,7 @@ use WP_Error;
 /**
  * Bootstrap class.
  *
- * @package    PRC\Platform\Scripts_Plugin
+ * @package    PRC\Platform\Shared_Plugin
  */
 class Bootstrap {
 	/**
@@ -52,7 +52,7 @@ class Bootstrap {
 	 */
 	public function __construct() {
 		$this->version     = '1.0.0';
-		$this->plugin_name = 'prc-scripts';
+		$this->plugin_name = 'prc-shared';
 
 		$this->load_dependencies();
 		$this->init_dependencies();
@@ -116,7 +116,7 @@ class Bootstrap {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    PRC\Platform\Scripts_Plugin\Loader
+	 * @return    PRC\Platform\Shared_Plugin\Loader
 	 */
 	public function get_loader() {
 		return $this->loader;

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
+class ComposerStaticInitd4fe8702beb6897ff69f5afcd4f6b8c3
 {
     public static $files = array (
         '606a39d89246991a373564698c2d8383' => __DIR__ . '/..' . '/symfony/polyfill-php85/bootstrap.php',
@@ -23,6 +23,8 @@ class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
         '646031b73df34ef9b67a1d70c16c67ee' => __DIR__ . '/..' . '/prc/primitives/src/html-processors/functions.php',
         '9548c27ea0a43fb8113fc559facb2477' => __DIR__ . '/..' . '/prc/primitives/src/url-helper/url-helper.php',
         'a973b381bd3a06d58223a84663a6e6bf' => __DIR__ . '/..' . '/prc/primitives/src/term-data-store/term-data-store.php',
+        '6769b7862d6876e2818337d687c1d64f' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/functions.php',
+        '0f0dc8a1ac88695cbd045c86e3ea5a55' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -49,7 +51,9 @@ class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
+            'PRC\\Primitives\\Post_Publish_Pipeline\\' => 37,
             'PRC\\Primitives\\HTML_Processors\\' => 31,
+            'PRC\\Primitives\\Feature_Flags\\' => 29,
             'PRC\\Primitives\\DelayedAction\\' => 29,
             'PRC\\Primitives\\BlockUtils\\' => 26,
         ),
@@ -123,9 +127,17 @@ class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
         ),
+        'PRC\\Primitives\\Post_Publish_Pipeline\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline',
+        ),
         'PRC\\Primitives\\HTML_Processors\\' =>
         array (
             0 => __DIR__ . '/..' . '/prc/primitives/src/html-processors',
+        ),
+        'PRC\\Primitives\\Feature_Flags\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/prc/primitives/src/feature-flags',
         ),
         'PRC\\Primitives\\DelayedAction\\' =>
         array (
@@ -622,9 +634,22 @@ class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
         'PRC\\Primitives\\DelayedAction\\DelayedAction' => __DIR__ . '/..' . '/prc/primitives/src/delayed-action/DelayedAction.php',
         'PRC\\Primitives\\DelayedAction\\JobState' => __DIR__ . '/..' . '/prc/primitives/src/delayed-action/JobState.php',
         'PRC\\Primitives\\DelayedAction\\Scheduler' => __DIR__ . '/..' . '/prc/primitives/src/delayed-action/Scheduler.php',
+        'PRC\\Primitives\\Feature_Flags\\Assignment' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/Assignment.php',
+        'PRC\\Primitives\\Feature_Flags\\Audience' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/Audience.php',
+        'PRC\\Primitives\\Feature_Flags\\Evaluator' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/Evaluator.php',
+        'PRC\\Primitives\\Feature_Flags\\Experiment' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/Experiment.php',
+        'PRC\\Primitives\\Feature_Flags\\ExperimentSource' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/ExperimentSource.php',
+        'PRC\\Primitives\\Feature_Flags\\FeatureFlags' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/FeatureFlags.php',
+        'PRC\\Primitives\\Feature_Flags\\Flag' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/Flag.php',
+        'PRC\\Primitives\\Feature_Flags\\VisitorContext' => __DIR__ . '/..' . '/prc/primitives/src/feature-flags/VisitorContext.php',
         'PRC\\Primitives\\HTML_Processors\\ElementFinder' => __DIR__ . '/..' . '/prc/primitives/src/html-processors/ElementFinder.php',
         'PRC\\Primitives\\HTML_Processors\\HeadingProcessor' => __DIR__ . '/..' . '/prc/primitives/src/html-processors/HeadingProcessor.php',
         'PRC\\Primitives\\HTML_Processors\\TableProcessor' => __DIR__ . '/..' . '/prc/primitives/src/html-processors/TableProcessor.php',
+        'PRC\\Primitives\\Post_Publish_Pipeline\\Pipeline' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/Pipeline.php',
+        'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Post_URL_Resolver' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Post_URL_Resolver.php',
+        'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Resolved_Post' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Resolved_Post.php',
+        'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Resolved_Post_URL' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Resolved_Post_URL.php',
+        'PRC\\Primitives\\Post_Publish_Pipeline\\Post_Resolution\\Unresolved_Post_URL' => __DIR__ . '/..' . '/prc/primitives/src/post-publish-pipeline/Post_Resolution/Unresolved_Post_URL.php',
         'Pdo\\Dblib' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Dblib.php',
         'Pdo\\Firebird' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Firebird.php',
         'Pdo\\Mysql' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Pdo/Mysql.php',
@@ -765,9 +790,9 @@ class ComposerStaticInit3cf039becddf81c72a79defeaffdf429
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3cf039becddf81c72a79defeaffdf429::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3cf039becddf81c72a79defeaffdf429::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3cf039becddf81c72a79defeaffdf429::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitd4fe8702beb6897ff69f5afcd4f6b8c3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitd4fe8702beb6897ff69f5afcd4f6b8c3::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitd4fe8702beb6897ff69f5afcd4f6b8c3::$classMap;
 
         }, null, ClassLoader::class);
     }

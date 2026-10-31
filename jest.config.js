@@ -1,10 +1,10 @@
 /**
- * Jest configuration for prc-scripts unit tests.
- * Unit tests live under monorepo root tests/prc-scripts/unit/.
+ * Jest configuration for prc-shared unit tests.
+ * Unit tests live under monorepo root tests/prc-shared/unit/.
  */
 const path = require('path');
 
-const unitRoot = path.resolve(__dirname, '../../tests/prc-scripts/unit');
+const unitRoot = path.resolve(__dirname, '../../tests/prc-shared/unit');
 
 module.exports = {
 	...require('@wordpress/scripts/config/jest-unit.config'),

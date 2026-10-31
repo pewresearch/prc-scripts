@@ -19,7 +19,7 @@ These are intentionally **not** folded into the charting-library reorg: differen
 
 The library reorg (Ticket A) is single-package, behavior-preserving, `patch`, no public API change. Touching `@prc/charting-utilities`:
 
-- is a **different workspace** (`prc-scripts`) with **three consumers** — `prc-charting-library`, `prc-chart-builder`, `prc-custom-charts` — almost all importing via the package `index.ts`.
+- is a **different workspace** (`prc-shared`) with **three consumers** — `prc-charting-library`, `prc-chart-builder`, `prc-custom-charts` — almost all importing via the package `index.ts`.
 - Ticket C specifically **changes the public surface** (adds exports → `minor`) and repoints the 5 label/leader-line anchor tests across packages.
 
 Ticket A leaves a clean seam (`labels/engine/`) precisely so Ticket C is a near-mechanical lift.

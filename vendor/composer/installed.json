@@ -759,78 +759,43 @@
         },
         {
             "name": "prc/primitives",
-            "version": "v2.1.0",
-            "version_normalized": "2.1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pewresearch/prc-primitives.git",
-                "reference": "42bc453b2b9240c2e8c5f904fbd154fc863d176d"
-            },
+            "version": "2.4.0",
+            "version_normalized": "2.4.0.0",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pewresearch/prc-primitives/zipball/42bc453b2b9240c2e8c5f904fbd154fc863d176d",
-                "reference": "42bc453b2b9240c2e8c5f904fbd154fc863d176d",
-                "shasum": ""
+                "type": "path",
+                "url": "primitives",
+                "reference": "a0531c4d668ff6b1628178fb779874f01b8b6c1e"
             },
             "require": {
                 "dougsisk/laravel-country-state": "^5.0",
                 "php": ">=8.2"
             },
-            "require-dev": {
-                "phpunit/phpunit": "^9.6",
-                "wp-phpunit/wp-phpunit": "^6.4",
-                "yoast/phpunit-polyfills": "^1.1"
-            },
-            "time": "2026-09-30T02:30:09+00:00",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-trunk": "2.x-dev"
-                }
-            },
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "PRC\\Primitives\\BlockUtils\\": "src/block-utils/",
                     "PRC\\Primitives\\HTML_Processors\\": "src/html-processors/",
-                    "PRC\\Primitives\\DelayedAction\\": "src/delayed-action/"
+                    "PRC\\Primitives\\DelayedAction\\": "src/delayed-action/",
+                    "PRC\\Primitives\\Feature_Flags\\": "src/feature-flags/",
+                    "PRC\\Primitives\\Post_Publish_Pipeline\\": "src/post-publish-pipeline/"
                 },
                 "files": [
                     "src/block-utils/functions.php",
                     "src/html-processors/functions.php",
                     "src/url-helper/url-helper.php",
-                    "src/term-data-store/term-data-store.php"
-                ]
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "PRC\\Primitives\\BlockUtils\\Tests\\": "tests/block-utils/",
-                    "PRC\\Primitives\\HTML_Processors\\Tests\\": "tests/html/",
-                    "PRC\\Primitives\\DelayedAction\\Tests\\": "tests/delayed-action/",
-                    "PRC\\Primitives\\URL_Helper\\Tests\\": "tests/url-helper/",
-                    "PRC\\Primitives\\TDS\\Tests\\": "tests/term-data-store/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "test:unit": [
-                    "phpunit --testsuite unit"
-                ],
-                "test:integration": [
-                    "phpunit --testsuite integration"
-                ],
-                "test:html": [
-                    "phpunit --testsuite html"
+                    "src/term-data-store/term-data-store.php",
+                    "src/feature-flags/functions.php",
+                    "src/post-publish-pipeline/functions.php"
                 ]
             },
             "license": [
                 "GPL-2.0-or-later"
             ],
-            "description": "Shared PHP primitives for the PRC Platform: block utilities, HTML processors, delayed Action Scheduler jobs, URL to post ID resolution, and term data store relationships.",
-            "support": {
-                "source": "https://github.com/pewresearch/prc-primitives/tree/v2.1.0"
+            "description": "Shared PHP primitives for the PRC Platform: block utilities, HTML processors, delayed Action Scheduler jobs, URL to post ID resolution, term data store relationships, feature flags, and post publish pipeline lifecycle hooks.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
             },
             "install-path": "../prc/primitives"
         },
